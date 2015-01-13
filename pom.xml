@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.mario</groupId>
+	<artifactId>java-restful-api</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>java-restful-api Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<!-- VERSIONS -->
+		<junit.version>3.8.1</junit.version>
+		<jetty-maven-plugin.version>9.3.0.M1</jetty-maven-plugin.version>
+		<resteasy-jaxrs.version>3.0.10.Final</resteasy-jaxrs.version>
+		<resteasy-jackson2-provider.version>3.0.10.Final</resteasy-jackson2-provider.version>
+		<java-compiler.version>1.7</java-compiler.version>
+
+		<!-- VARIABLES -->
+		<!-- this should be in a file -->
+		<context-path>/api</context-path>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy-jaxrs.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<version>${resteasy-jackson2-provider.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>java-restful-api</finalName>
+		<plugins>
+
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty-maven-plugin.version}</version>
+				<configuration>
+					<scanTargetPatterns>
+						<!-- scans src/main/resources[**/*.xml, **/*.properties] -->
+						<scanTargetPattern>
+							<directory>src/main/resources</directory>
+							<includes>
+								<include>**/*.xml</include>
+								<include>**/*.properties</include>
+							</includes>
+						</scanTargetPattern>
+					</scanTargetPatterns>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>${context-path}</contextPath>
+					</webApp>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java-compiler.version}</source>
+					<target>${java-compiler.version}</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
