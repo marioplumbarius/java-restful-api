@@ -99,7 +99,7 @@
 							</includes>
 						</scanTargetPattern>
 					</scanTargetPatterns>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<scanIntervalSeconds>20</scanIntervalSeconds>
 					<webApp>
 						<contextPath>${context-path}</contextPath>
 					</webApp>
