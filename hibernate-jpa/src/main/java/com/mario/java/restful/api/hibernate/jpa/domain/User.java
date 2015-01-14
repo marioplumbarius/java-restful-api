@@ -1,7 +1,5 @@
 package com.mario.java.restful.api.hibernate.jpa.domain;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +10,8 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User extends Base {
+
     private static final long serialVersionUID = 1L;
 
     @Id
