@@ -17,6 +17,10 @@
 		<resteasy-jackson2-provider.version>3.0.10.Final</resteasy-jackson2-provider.version>
 		<java-compiler.version>1.7</java-compiler.version>
 		<hibernate-core.version>4.3.8.Final</hibernate-core.version>
+		<hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
+		<hibernate-jpa-2.0-api.version>1.0.1.Final</hibernate-jpa-2.0-api.version>
+		<hibernate-entitymanager.version>4.3.8.Final</hibernate-entitymanager.version>
+		<mysql-connector-java.version>5.1.34</mysql-connector-java.version>
 
 		<!-- VARIABLES -->
 		<!-- this should be in a file -->
@@ -49,6 +53,30 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate-core.version}</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>${hibernate-jpa-2.0-api.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate-entitymanager.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+        </dependency>
 
 	</dependencies>
 
@@ -71,7 +99,7 @@
 							</includes>
 						</scanTargetPattern>
 					</scanTargetPatterns>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<scanIntervalSeconds>20</scanIntervalSeconds>
 					<webApp>
 						<contextPath>${context-path}</contextPath>
 					</webApp>
