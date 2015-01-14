@@ -6,11 +6,11 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class SessionManagerDao {
+public class SessionManager {
 	private Session session;
 	private Transaction transaction;
 
-	public SessionManagerDao() {
+	public SessionManager() {
 	}
 
 	public Session openSession() {
