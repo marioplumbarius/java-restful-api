@@ -21,6 +21,6 @@
 		<property name="hibernate.current_session_context_class">thread</property>
 
 		<!-- model classes to load -->
-		<mapping class="com.mario.java.restful.api.domain.User" />
+		<mapping class="com.mario.java.restful.api.hibernate.jpa.domain.User" />
 	</session-factory>
 </hibernate-configuration>

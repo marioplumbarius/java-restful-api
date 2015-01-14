@@ -1,11 +1,11 @@
-package com.mario.java.restful.api.application;
+package com.mario.java.restful.api.hibernate.jpa.application;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import com.mario.java.restful.api.resource.UserResource;
+import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
 
 public class ApiApplication extends Application {
     private Set<Object> singletons = new HashSet<Object>();

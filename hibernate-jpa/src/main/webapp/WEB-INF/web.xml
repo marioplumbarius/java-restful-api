@@ -10,7 +10,7 @@
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>com.mario.java.restful.api.application.ApiApplication</param-value>
+			<param-value>com.mario.java.restful.api.hibernate.jpa.application.ApiApplication</param-value>
 		</init-param>
 	</servlet>
 

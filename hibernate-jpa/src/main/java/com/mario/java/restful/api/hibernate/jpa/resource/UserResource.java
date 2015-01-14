@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.resource;
+package com.mario.java.restful.api.hibernate.jpa.resource;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import javax.ws.rs.QueryParam;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.mario.java.restful.api.domain.User;
-import com.mario.java.restful.api.service.UserService;
-import com.mario.java.restful.api.util.SessionManager;
+import com.mario.java.restful.api.hibernate.jpa.domain.User;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.SessionManager;
 
 @Path("/users")
 public class UserResource {

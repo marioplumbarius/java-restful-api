@@ -1,10 +1,10 @@
-package com.mario.java.restful.api.dao.implementation;
+package com.mario.java.restful.api.hibernate.jpa.dao.implementation;
 
 import java.util.List;
 
-import com.mario.java.restful.api.dao.interfaces.UserDaoInterface;
-import com.mario.java.restful.api.domain.User;
-import com.mario.java.restful.api.util.SessionManagerDao;
+import com.mario.java.restful.api.hibernate.jpa.dao.interfacee.UserDaoInterface;
+import com.mario.java.restful.api.hibernate.jpa.domain.User;
+import com.mario.java.restful.api.hibernate.jpa.util.SessionManagerDao;
 
 public class UserDaoImplementation implements UserDaoInterface<User, Long> {
 	public SessionManagerDao sessionManager = new SessionManagerDao();

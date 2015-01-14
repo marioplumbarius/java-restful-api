@@ -1,9 +1,9 @@
-package com.mario.java.restful.api.service;
+package com.mario.java.restful.api.hibernate.jpa.service;
 
 import java.util.List;
 
-import com.mario.java.restful.api.dao.implementation.UserDaoImplementation;
-import com.mario.java.restful.api.domain.User;
+import com.mario.java.restful.api.hibernate.jpa.dao.implementation.UserDaoImplementation;
+import com.mario.java.restful.api.hibernate.jpa.domain.User;
 
 public class UserService {
 	private UserDaoImplementation userDao;

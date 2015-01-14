@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.dao.interfaces;
+package com.mario.java.restful.api.hibernate.jpa.dao.interfacee;
 
 import java.io.Serializable;
 import java.util.List;
