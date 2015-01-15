@@ -26,7 +26,7 @@ public class UserService {
 
     public User find(Long id) {
         this.userDao.sessionManager.openSession();
-        User user = this.userDao.findById(id);
+        User user = this.userDao.find(id);
         this.userDao.sessionManager.closeSession();
 
         return user;
@@ -34,7 +34,7 @@ public class UserService {
 
     public void delete(Long id) {
         this.userDao.sessionManager.openSessionWithTransaction();
-        User user = this.userDao.findById(id);
+        User user = this.userDao.find(id);
         this.userDao.delete(user);
         this.userDao.sessionManager.closeSessionWithTransaction();
     }

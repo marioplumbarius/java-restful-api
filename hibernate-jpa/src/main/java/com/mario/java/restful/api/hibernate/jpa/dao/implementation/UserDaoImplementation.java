@@ -21,7 +21,7 @@ public class UserDaoImplementation implements UserDaoInterface<User, Long> {
     }
 
     @Override
-    public User findById(Long id) {
+    public User find(Long id) {
         User user = (User) this.sessionManager.getSession().get(User.class, id);
         return user;
     }
