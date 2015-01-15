@@ -5,6 +5,16 @@
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
 
+	<!-- RESTEasy configuration -->
+	<listener>
+		<listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+	</listener>
+
+	<!-- RestEasy <-> Spring connector (Resteasy can access Spring beans) -->
+	<listener>
+		<listener-class>org.jboss.resteasy.plugins.spring.SpringContextLoaderListener</listener-class>
+	</listener>
+	
 	<servlet>
 		<servlet-name>Application</servlet-name>
 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>

@@ -14,21 +14,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.mario.java.restful.api.hibernate.jpa.domain.User;
 import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
+@Component
 @Path("/users")
 @Produces("application/json")
 public class UserResource {
 
+    @Autowired
+    private UserService service;
     private Map<String, String> errors;
     private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
-    private UserService service;
 
     @GET
     public List<User> findAll() {
-        this.service = new UserService();
         List<User> users = this.service.findAll();
 
         return users;
@@ -37,7 +41,6 @@ public class UserResource {
     @GET
     @Path("{id}")
     public User find(@PathParam("id") Long id) {
-        this.service = new UserService();
         User user = this.service.find(id);
 
         return user;
@@ -45,7 +48,6 @@ public class UserResource {
 
     @POST
     public Response create(User user) {
-        this.service = new UserService();
         Response res = null;
 
         if (this.validator.isValid(user)) {
