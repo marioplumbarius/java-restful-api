@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -65,10 +66,26 @@ public class UserResource {
     public Response update(@PathParam("id") Long id, User user) {
         Response res = null;
         this.service = new UserService();
-        this.service.update(id, user);
 
-        res = Response.ok().build();
+        if (this.validator.isValid(user)) {
+            this.service.update(id, user);
+            res = Response.ok().build();
+        } else {
+            this.errors = this.validator.getErrors();
+            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
+                    .build();
+        }
 
         return res;
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response delete(@PathParam("id") Long id) {
+        this.service = new UserService();
+
+        this.service.delete(id);
+
+        return Response.ok().build();
     }
 }
