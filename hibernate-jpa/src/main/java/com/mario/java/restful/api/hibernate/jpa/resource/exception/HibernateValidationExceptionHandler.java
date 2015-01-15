@@ -8,12 +8,12 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class ValidationExceptionHandler {
+public class HibernateValidationExceptionHandler {
 
     private final Validator validator;
     private Map<String, String> errors;
 
-    public ValidationExceptionHandler() {
+    public HibernateValidationExceptionHandler() {
         this.validator = Validation.buildDefaultValidatorFactory()
                 .getValidator();
         this.errors = new HashMap<String, String>();
