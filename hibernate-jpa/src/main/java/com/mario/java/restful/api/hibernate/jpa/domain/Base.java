@@ -1,14 +1,14 @@
 package com.mario.java.restful.api.hibernate.jpa.domain;
 
-import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-public class Base implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@MappedSuperclass
+public abstract class Base {
 
     @CreationTimestamp
     private Date createdAt;
@@ -22,5 +22,9 @@ public class Base implements Serializable {
 
     public Date getUpdatedAt() {
         return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
