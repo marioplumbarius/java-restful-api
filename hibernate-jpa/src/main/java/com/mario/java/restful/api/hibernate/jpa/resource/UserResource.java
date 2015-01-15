@@ -14,16 +14,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.mario.java.restful.api.hibernate.jpa.domain.User;
 import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
+@Component
 @Path("/users")
 @Produces("application/json")
 public class UserResource {
 
     private Map<String, String> errors;
     private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
+    @Autowired
     private UserService service;
 
     @GET
@@ -45,7 +50,6 @@ public class UserResource {
 
     @POST
     public Response create(User user) {
-        this.service = new UserService();
         Response res = null;
 
         if (this.validator.isValid(user)) {
@@ -65,7 +69,6 @@ public class UserResource {
     @Path("{id}")
     public Response update(@PathParam("id") Long id, User user) {
         Response res = null;
-        this.service = new UserService();
 
         if (this.validator.isValid(user)) {
             this.service.update(id, user);
@@ -82,8 +85,6 @@ public class UserResource {
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
-        this.service = new UserService();
-
         this.service.delete(id);
 
         return Response.ok().build();
