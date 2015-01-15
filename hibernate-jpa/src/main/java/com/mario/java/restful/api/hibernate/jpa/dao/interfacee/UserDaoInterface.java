@@ -17,4 +17,6 @@ public interface UserDaoInterface<T, Id extends Serializable> {
 
     public void deleteAll();
 
+    public T merge(Id id, T entity);
+
 }

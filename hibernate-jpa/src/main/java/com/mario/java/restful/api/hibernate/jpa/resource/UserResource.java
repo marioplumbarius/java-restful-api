@@ -1,5 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.resource;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,8 @@ public class UserResource {
 
         if (this.validator.isValid(user)) {
             this.service.persist(user);
-            res = Response.created(null).build();
+            URI uri = URI.create("/users/" + user.getId());
+            res = Response.created(uri).entity(user).build();
         } else {
             this.errors = this.validator.getErrors();
             res = Response.status(Status.BAD_REQUEST).entity(this.errors)
@@ -63,9 +65,9 @@ public class UserResource {
     public Response update(@PathParam("id") Long id, User user) {
         Response res = null;
         this.service = new UserService();
-        this.service.update(id, user);
+        User updatedUser = this.service.merge(id, user);
 
-        res = Response.status(Status.NO_CONTENT).entity(null).build();
+        res = Response.ok().entity(updatedUser).build();
 
         return res;
     }

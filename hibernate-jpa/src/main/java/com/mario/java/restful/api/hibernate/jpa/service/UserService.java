@@ -52,4 +52,12 @@ public class UserService {
         this.userDao.deleteAll();
         this.userDao.sessionManager.closeSessionWithTransaction();
     }
+
+    public User merge(Long id, User user) {
+        this.userDao.sessionManager.openSessionWithTransaction();
+        User mergedUser = this.userDao.merge(id, user);
+        this.userDao.sessionManager.closeSessionWithTransaction();
+
+        return mergedUser;
+    }
 }
