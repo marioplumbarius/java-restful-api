@@ -2,12 +2,9 @@ package com.mario.java.restful.api.hibernate.jpa.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.mario.java.restful.api.hibernate.jpa.dao.implementation.UserDaoImplementation;
 import com.mario.java.restful.api.hibernate.jpa.domain.User;
 
-@Service
 public class UserService {
     private UserDaoImplementation userDao;
 
