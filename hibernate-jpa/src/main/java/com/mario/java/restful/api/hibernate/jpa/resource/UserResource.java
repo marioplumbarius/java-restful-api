@@ -50,7 +50,7 @@ public class UserResource {
         if (this.validator.isValid(user)) {
             this.service.persist(user);
             URI uri = URI.create("/users/" + user.getId());
-            res = Response.created(uri).entity(user).build();
+            res = Response.created(uri).build();
         } else {
             this.errors = this.validator.getErrors();
             res = Response.status(Status.BAD_REQUEST).entity(this.errors)
@@ -65,9 +65,9 @@ public class UserResource {
     public Response update(@PathParam("id") Long id, User user) {
         Response res = null;
         this.service = new UserService();
-        User updatedUser = this.service.merge(id, user);
+        this.service.update(id, user);
 
-        res = Response.ok().entity(updatedUser).build();
+        res = Response.ok().build();
 
         return res;
     }

@@ -45,9 +45,4 @@ public class UserDaoImplementation implements UserDaoInterface<User, Long> {
         for (User user : users)
             this.delete(user);
     }
-
-    @Override
-    public User merge(Long id, User entity) {
-        return (User) this.sessionManager.getSession().merge(entity);
-    }
 }
