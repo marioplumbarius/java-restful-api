@@ -15,7 +15,8 @@ public class UserDaoImplementation implements UserDaoInterface<User, Long> {
     }
 
     @Override
-    public void update(User entity) {
+    public void update(Long id, User entity) {
+        entity.setId(id);
         this.sessionManager.getSession().update(entity);
     }
 

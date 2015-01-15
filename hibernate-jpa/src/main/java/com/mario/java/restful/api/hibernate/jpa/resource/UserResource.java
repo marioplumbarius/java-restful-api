@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -12,17 +13,21 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.User;
-import com.mario.java.restful.api.hibernate.jpa.resource.exception.ValidationExceptionHandler;
+import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
 @Path("/users")
 @Produces("application/json")
 public class UserResource {
 
+    private Map<String, String> errors;
+    private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
+    private UserService service;
+
     @GET
     public List<User> findAll() {
-        UserService userService = new UserService();
-        List<User> users = userService.findAll();
+        this.service = new UserService();
+        List<User> users = this.service.findAll();
 
         return users;
     }
@@ -30,28 +35,37 @@ public class UserResource {
     @GET
     @Path("{id}")
     public User find(@PathParam("id") Long id) {
-        UserService userService = new UserService();
-        User user = userService.findById(id);
+        this.service = new UserService();
+        User user = this.service.find(id);
 
         return user;
     }
 
     @POST
     public Response create(User user) {
+        this.service = new UserService();
         Response res = null;
-        UserService userService = new UserService();
 
-        try {
-            userService.persist(user);
+        if (this.validator.isValid(user)) {
+            this.service.persist(user);
             res = Response.created(null).build();
-        } catch (Exception e) {
-            ValidationExceptionHandler validator = new ValidationExceptionHandler();
-            Map<String, String> errors = null;
-
-            if (!validator.isValid(user)) errors = validator.getErrors();
-
-            res = Response.status(Status.BAD_REQUEST).entity(errors).build();
+        } else {
+            this.errors = this.validator.getErrors();
+            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
+                    .build();
         }
+
+        return res;
+    }
+
+    @PUT
+    @Path("{id}")
+    public Response update(@PathParam("id") Long id, User user) {
+        Response res = null;
+        this.service = new UserService();
+        this.service.update(id, user);
+
+        res = Response.status(Status.NO_CONTENT).entity(null).build();
 
         return res;
     }
