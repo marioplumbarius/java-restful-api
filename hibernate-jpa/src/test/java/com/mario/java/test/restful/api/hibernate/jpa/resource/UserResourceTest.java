@@ -32,7 +32,7 @@ public class UserResourceTest {
     private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
 
     @Mock
-    private Response response;
+    private Response res;
 
     @InjectMocks
     private UserResource resource = new UserResource();
@@ -48,6 +48,7 @@ public class UserResourceTest {
 
     @After
     public void tearDown() throws Exception {
+        this.res = null;
     }
 
     @Test
@@ -66,14 +67,14 @@ public class UserResourceTest {
     public void testCreateWhenUserIsValid() {
         Mockito.when(this.validator.isValid(this.validUser)).thenReturn(true);
 
-        Response res = this.resource.create(this.validUser);
+        this.res = this.resource.create(this.validUser);
 
         Mockito.verify(this.validator).isValid(this.validUser);
         Mockito.verify(this.service).persist(this.validUser);
 
-        Assert.assertNotNull(res);
+        Assert.assertNotNull(this.res);
         Assert.assertEquals(Response.Status.CREATED.getStatusCode(),
-                res.getStatus());
+                this.res.getStatus());
 
         // TODO
         // - assert response body (without errors)
@@ -84,15 +85,15 @@ public class UserResourceTest {
         Mockito.when(this.validator.isValid(this.invalidUser))
                 .thenReturn(false);
 
-        Response res = this.resource.create(this.invalidUser);
+        this.res = this.resource.create(this.invalidUser);
 
         Mockito.verify(this.validator).isValid(this.invalidUser);
         Mockito.verifyZeroInteractions(this.service);
         Mockito.verify(this.validator).getErrors();
 
-        Assert.assertNotNull(res);
+        Assert.assertNotNull(this.res);
         Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(),
-                res.getStatus());
+                this.res.getStatus());
 
         // TODO
         // - assert response body (with errors)
@@ -102,13 +103,14 @@ public class UserResourceTest {
     public void testUpdateWhenUserIsValid() {
         Mockito.when(this.validator.isValid(this.validUser)).thenReturn(true);
 
-        Response res = this.resource.update(this.validId, this.validUser);
+        this.res = this.resource.update(this.validId, this.validUser);
 
         Mockito.verify(this.validator).isValid(this.validUser);
         Mockito.verify(this.service).update(this.validId, this.validUser);
 
-        Assert.assertNotNull(res);
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), res.getStatus());
+        Assert.assertNotNull(this.res);
+        Assert.assertEquals(Response.Status.OK.getStatusCode(),
+                this.res.getStatus());
 
         // TODO
         // - assert response body (without errors)
@@ -119,15 +121,15 @@ public class UserResourceTest {
         Mockito.when(this.validator.isValid(this.invalidUser))
         .thenReturn(false);
 
-        Response res = this.resource.update(this.validId, this.invalidUser);
+        this.res = this.resource.update(this.validId, this.invalidUser);
 
         Mockito.verify(this.validator).isValid(this.invalidUser);
         Mockito.verifyZeroInteractions(this.service);
         Mockito.verify(this.validator).getErrors();
 
-        Assert.assertNotNull(res);
+        Assert.assertNotNull(this.res);
         Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(),
-                res.getStatus());
+                this.res.getStatus());
 
         // TODO
         // - assert response body (with errors)
@@ -135,10 +137,11 @@ public class UserResourceTest {
 
     @Test
     public void testDelete() {
-        Response res = this.resource.delete(this.validId);
+        this.res = this.resource.delete(this.validId);
 
         Mockito.verify(this.service).delete(this.validId);
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), res.getStatus());
+        Assert.assertEquals(Response.Status.OK.getStatusCode(),
+                this.res.getStatus());
     }
 
     private void setUpMocks() {
