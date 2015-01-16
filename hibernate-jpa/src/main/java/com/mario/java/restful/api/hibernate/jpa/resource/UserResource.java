@@ -67,7 +67,6 @@ public class UserResource {
     @Path("{id}")
     public Response update(@PathParam("id") Long id, User user) {
         Response res = null;
-        this.service = new UserService();
 
         if (this.validator.isValid(user)) {
             this.service.update(id, user);
@@ -84,8 +83,6 @@ public class UserResource {
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
-        this.service = new UserService();
-
         this.service.delete(id);
 
         return Response.ok().build();
