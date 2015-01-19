@@ -73,8 +73,7 @@ public class UserResourceTest {
         Mockito.verify(this.service).persist(this.validUser);
 
         Assert.assertNotNull(this.res);
-        Assert.assertEquals(Response.Status.CREATED.getStatusCode(),
-                this.res.getStatus());
+        Assert.assertEquals(Response.Status.CREATED.getStatusCode(), this.res.getStatus());
 
         // TODO
         // - assert response body (without errors)
@@ -82,8 +81,7 @@ public class UserResourceTest {
 
     @Test
     public void testCreateWhenUserIsInvalid() {
-        Mockito.when(this.validator.isValid(this.invalidUser))
-                .thenReturn(false);
+        Mockito.when(this.validator.isValid(this.invalidUser)).thenReturn(false);
 
         this.res = this.resource.create(this.invalidUser);
 
@@ -92,8 +90,7 @@ public class UserResourceTest {
         Mockito.verify(this.validator).getErrors();
 
         Assert.assertNotNull(this.res);
-        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(),
-                this.res.getStatus());
+        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), this.res.getStatus());
 
         // TODO
         // - assert response body (with errors)
@@ -109,8 +106,7 @@ public class UserResourceTest {
         Mockito.verify(this.service).update(this.validId, this.validUser);
 
         Assert.assertNotNull(this.res);
-        Assert.assertEquals(Response.Status.OK.getStatusCode(),
-                this.res.getStatus());
+        Assert.assertEquals(Response.Status.OK.getStatusCode(), this.res.getStatus());
 
         // TODO
         // - assert response body (without errors)
@@ -118,8 +114,7 @@ public class UserResourceTest {
 
     @Test
     public void testUpdateWhenUserIsInvalid() {
-        Mockito.when(this.validator.isValid(this.invalidUser))
-        .thenReturn(false);
+        Mockito.when(this.validator.isValid(this.invalidUser)).thenReturn(false);
 
         this.res = this.resource.update(this.validId, this.invalidUser);
 
@@ -128,8 +123,7 @@ public class UserResourceTest {
         Mockito.verify(this.validator).getErrors();
 
         Assert.assertNotNull(this.res);
-        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(),
-                this.res.getStatus());
+        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), this.res.getStatus());
 
         // TODO
         // - assert response body (with errors)
@@ -140,14 +134,12 @@ public class UserResourceTest {
         this.res = this.resource.delete(this.validId);
 
         Mockito.verify(this.service).delete(this.validId);
-        Assert.assertEquals(Response.Status.OK.getStatusCode(),
-                this.res.getStatus());
+        Assert.assertEquals(Response.Status.OK.getStatusCode(), this.res.getStatus());
     }
 
     private void setUpMocks() {
         MockitoAnnotations.initMocks(this);
         Mockito.when(this.service.findAll()).thenReturn(this.users);
-        Mockito.when(this.service.find(this.validId))
-        .thenReturn(this.validUser);
+        Mockito.when(this.service.find(this.validId)).thenReturn(this.validUser);
     }
 }
