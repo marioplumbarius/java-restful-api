@@ -1,57 +1,80 @@
 package com.mario.java.test.restful.api.hibernate.jpa.service;
 
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.beforeEach;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.describe;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.it;
 import static org.mockito.Mockito.*;
+
+import org.hibernate.Session;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.dao.implementation.UserDaoImplementation;
 import com.mario.java.restful.api.hibernate.jpa.domain.User;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.SessionManager;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
-
-import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 
 @RunWith(OleasterRunner.class)
 public class UserServiceTest {
 
-    @Mock
-    private UserService service;
+	@Mock
+	private SessionManager sessionManager;
 
-    @InjectMocks
-    private UserDaoImplementation userDao;
+	@Mock
+	private Session session;
 
-    private User user;
-    private Long id;
+	@Mock
+	private UserDaoImplementation userDao;
 
-    {
-        beforeEach(() -> {
-            MockitoAnnotations.initMocks(this);
+	private UserService service;
 
-            this.service = new UserService();
-        });
+	private User user;
+	private Long id;
 
-        afterEach(() -> {
-            this.user = null;
-            this.id = null;
-        });
+	{
+		beforeEach(() -> {
+			MockitoAnnotations.initMocks(this);
 
-        describe("#persist", () -> {
-            beforeEach(() -> {
-                this.user = UserFactory.createValidUser();
-                this.service.persist(this.user);
-            });
+			when(this.sessionManager.getSession()).thenReturn(this.session);
 
-            it("opens a new session with transaction", () -> {
-                verify(this.userDao.sessionManager).openSessionWithTransaction();
-            });
+			this.userDao = new UserDaoImplementation(this.sessionManager);
+			this.service = new UserService(this.userDao);
+		});
 
-            it("closes the session", () -> {
-                verify(this.userDao.sessionManager).closeSessionWithTransaction();
-            });
+		afterEach(() -> {
+			this.user = null;
+			this.id = null;
+			// this.sessionManager = null;
+			// this.userDao = null;
+			// this.service = null;
+		});
 
-        });
-    }
+		describe(
+				"#persist",
+				() -> {
+					beforeEach(() -> {
+						this.user = UserFactory.createValidUser();
+						this.service.persist(this.user);
+					});
+
+					it("opens a new session with transaction", () -> {
+						verify(this.sessionManager)
+						.openSessionWithTransaction();
+					});
+
+					it("persists the user to database", () -> {
+						verify(this.userDao).persist(this.user);
+					});
+
+					it("closes the session", () -> {
+						verify(this.userDao.sessionManager)
+						.closeSessionWithTransaction();
+					});
+
+				});
+	}
 }

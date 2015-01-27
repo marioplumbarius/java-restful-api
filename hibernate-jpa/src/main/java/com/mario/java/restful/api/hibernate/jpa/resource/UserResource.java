@@ -26,65 +26,65 @@ import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 @Produces("application/json")
 public class UserResource {
 
-    @Autowired
-    private UserService service;
-    private Map<String, String> errors;
-    private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
+	@Autowired
+	private UserService service;
+	private Map<String, String> errors;
+	private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
 
-    @GET
-    public List<User> findAll() {
-        List<User> users = this.service.findAll();
+	@GET
+	public List<User> findAll() {
+		List<User> users = this.service.findAll();
 
-        return users;
-    }
+		return users;
+	}
 
-    @GET
-    @Path("{id}")
-    public User find(@PathParam("id") Long id) {
-        User user = this.service.find(id);
+	@GET
+	@Path("{id}")
+	public User find(@PathParam("id") Long id) {
+		User user = this.service.find(id);
 
-        return user;
-    }
+		return user;
+	}
 
-    @POST
-    public Response create(User user) {
-        Response res = null;
+	@POST
+	public Response create(User user) {
+		Response res = null;
 
-        if (this.validator.isValid(user)) {
-            this.service.persist(user);
-            URI uri = URI.create("/users/" + user.getId());
-            res = Response.created(uri).build();
-        } else {
-            this.errors = this.validator.getErrors();
-            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
-                    .build();
-        }
+		if (this.validator.isValid(user)) {
+			this.service.persist(user);
+			URI uri = URI.create("/users/" + user.getId());
+			res = Response.created(uri).build();
+		} else {
+			this.errors = this.validator.getErrors();
+			res = Response.status(Status.BAD_REQUEST).entity(this.errors)
+					.build();
+		}
 
-        return res;
-    }
+		return res;
+	}
 
-    @PUT
-    @Path("{id}")
-    public Response update(@PathParam("id") Long id, User user) {
-        Response res = null;
+	@PUT
+	@Path("{id}")
+	public Response update(@PathParam("id") Long id, User user) {
+		Response res = null;
 
-        if (this.validator.isValid(user)) {
-            this.service.update(id, user);
-            res = Response.ok().build();
-        } else {
-            this.errors = this.validator.getErrors();
-            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
-                    .build();
-        }
+		if (this.validator.isValid(user)) {
+			this.service.update(id, user);
+			res = Response.ok().build();
+		} else {
+			this.errors = this.validator.getErrors();
+			res = Response.status(Status.BAD_REQUEST).entity(this.errors)
+					.build();
+		}
 
-        return res;
-    }
+		return res;
+	}
 
-    @DELETE
-    @Path("{id}")
-    public Response delete(@PathParam("id") Long id) {
-        this.service.delete(id);
+	@DELETE
+	@Path("{id}")
+	public Response delete(@PathParam("id") Long id) {
+		this.service.delete(id);
 
-        return Response.ok().build();
-    }
+		return Response.ok().build();
+	}
 }

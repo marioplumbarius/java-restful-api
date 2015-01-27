@@ -9,50 +9,54 @@ import com.mario.java.restful.api.hibernate.jpa.domain.User;
 
 @Service
 public class UserService {
-    private UserDaoImplementation userDao;
+	private UserDaoImplementation userDao;
 
-    public UserService() {
-        this.userDao = new UserDaoImplementation();
-    }
+	public UserService() {
+		this(new UserDaoImplementation());
+	}
 
-    public void persist(User user) {
-        this.userDao.sessionManager.openSessionWithTransaction();
-        this.userDao.persist(user);
-        this.userDao.sessionManager.closeSessionWithTransaction();
-    }
+	public UserService(UserDaoImplementation userDaoImplementation) {
+		this.userDao = userDaoImplementation;
+	}
 
-    public void update(Long id, User user) {
-        this.userDao.sessionManager.openSessionWithTransaction();
-        this.userDao.update(id, user);
-        this.userDao.sessionManager.closeSessionWithTransaction();
-    }
+	public void persist(User user) {
+		this.userDao.sessionManager.openSessionWithTransaction();
+		this.userDao.persist(user);
+		this.userDao.sessionManager.closeSessionWithTransaction();
+	}
 
-    public User find(Long id) {
-        this.userDao.sessionManager.openSession();
-        User user = this.userDao.find(id);
-        this.userDao.sessionManager.closeSession();
+	public void update(Long id, User user) {
+		this.userDao.sessionManager.openSessionWithTransaction();
+		this.userDao.update(id, user);
+		this.userDao.sessionManager.closeSessionWithTransaction();
+	}
 
-        return user;
-    }
+	public User find(Long id) {
+		this.userDao.sessionManager.openSession();
+		User user = this.userDao.find(id);
+		this.userDao.sessionManager.closeSession();
 
-    public void delete(Long id) {
-        this.userDao.sessionManager.openSessionWithTransaction();
-        User user = this.userDao.find(id);
-        this.userDao.delete(user);
-        this.userDao.sessionManager.closeSessionWithTransaction();
-    }
+		return user;
+	}
 
-    public List<User> findAll() {
-        this.userDao.sessionManager.openSession();
-        List<User> users = this.userDao.findAll();
-        this.userDao.sessionManager.closeSession();
+	public void delete(Long id) {
+		this.userDao.sessionManager.openSessionWithTransaction();
+		User user = this.userDao.find(id);
+		this.userDao.delete(user);
+		this.userDao.sessionManager.closeSessionWithTransaction();
+	}
 
-        return users;
-    }
+	public List<User> findAll() {
+		this.userDao.sessionManager.openSession();
+		List<User> users = this.userDao.findAll();
+		this.userDao.sessionManager.closeSession();
 
-    public void deleteAll() {
-        this.userDao.sessionManager.openSessionWithTransaction();
-        this.userDao.deleteAll();
-        this.userDao.sessionManager.closeSessionWithTransaction();
-    }
+		return users;
+	}
+
+	public void deleteAll() {
+		this.userDao.sessionManager.openSessionWithTransaction();
+		this.userDao.deleteAll();
+		this.userDao.sessionManager.closeSessionWithTransaction();
+	}
 }
