@@ -14,7 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.User;
+import org.hibernate.ObjectNotFoundException;
+
+import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
@@ -27,22 +29,30 @@ public class UserResource {
     private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
 
     @GET
-    public List<User> findAll() {
-        List<User> users = this.service.findAll();
+    public List<UserDomain> findAll() {
+        List<UserDomain> users = this.service.findAll();
 
         return users;
     }
     
     @GET
     @Path("{id}")
-    public User find(@PathParam("id") Long id) {
-        User user = this.service.find(id);
+    public Response find(@PathParam("id") Long id) {
+        Response res = null;
+        
+    	UserDomain user = this.service.find(id);
+        
+        if(user == null) {
+        	res = Response.status(Status.NOT_FOUND).build();
+        } else {
+        	res = Response.ok(user).build();
+        }
 
-        return user;
+        return res;
     }
 
     @POST
-    public Response create(User user) {
+    public Response create(UserDomain user) {
         Response res = null;
 
         if (this.validator.isValid(user)) {
@@ -60,14 +70,20 @@ public class UserResource {
 
     @PUT
     @Path("{id}")
-    public Response update(@PathParam("id") Long id, User user) {
+    public Response update(@PathParam("id") Long id, UserDomain user) {
         Response res = null;
 
-        if (this.validator.isValid(user)) {
-            this.service.update(id, user);
-            res = Response.ok().build();
+        if (user.isValid()) {
+        	
+        	try {
+        		this.service.update(id, user);
+        		res = Response.noContent().build();
+        	} catch (ObjectNotFoundException e) {
+				res = Response.status(Status.NOT_FOUND).build();
+			}
+        	
         } else {
-            this.errors = this.validator.getErrors();
+            this.errors = user.getErrors();
             res = Response.status(Status.BAD_REQUEST).entity(this.errors)
                     .build();
         }
@@ -80,6 +96,6 @@ public class UserResource {
     public Response delete(@PathParam("id") Long id) {
         this.service.delete(id);
 
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 }

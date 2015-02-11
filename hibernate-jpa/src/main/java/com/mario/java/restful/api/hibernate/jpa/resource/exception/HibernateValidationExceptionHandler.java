@@ -11,6 +11,7 @@ import javax.validation.Validator;
 public class HibernateValidationExceptionHandler {
 
     private final Validator validator;
+    
     private Map<String, String> errors;
 
     public HibernateValidationExceptionHandler() {

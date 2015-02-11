@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "users")
-public class User extends Base implements Serializable {
+public class UserDomain extends BaseDomain implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,10 +27,10 @@ public class User extends Base implements Serializable {
     @Size(min = 1, max = 20)
     private String name;
 
-    public User() {
+    public UserDomain() {
     }
 
-    public User(String name) {
+    public UserDomain(String name) {
         this.name = name;
     }
 
