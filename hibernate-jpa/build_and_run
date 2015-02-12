@@ -1,1 +1,1 @@
-mvn clean install && mvn jetty:run
+export JAVA_HOME=$JAVA_HOME_8 ; mvn clean install && mvn jetty:run ; export JAVA_HOME=$JAVA_HOME_7
