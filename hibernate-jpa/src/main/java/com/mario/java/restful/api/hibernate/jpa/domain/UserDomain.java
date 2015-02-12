@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -32,6 +33,11 @@ public class UserDomain extends BaseDomain implements Serializable {
 
     public UserDomain(String name) {
         this.name = name;
+    }
+    
+    public UserDomain(String name, HibernateValidationExceptionHandler validator) {
+    	super(validator);
+    	this.name = name;
     }
 
     public String getName() {

@@ -19,52 +19,57 @@ import javax.ws.rs.core.Response.Status;
 import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
 @Path("/users")
 @Produces("application/json")
 public class UserResource {
 
-    private UserService service = new UserService();
-    private Map<String, String> errors;
-    private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
-    
+    private UserService service;
+
+    public UserResource() {
+        this(new UserService());
+    }
+
+    public UserResource(UserService service) {
+        this.service = service;
+    }
+
     @GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
         Response res = null;
-        
-    	UserDomain user = this.service.find(id);
-        
-        if(user == null) {
-        	res = Response.status(Status.NOT_FOUND).build();
+
+        UserDomain user = this.service.find(id);
+
+        if (user == null) {
+            res = Response.status(Status.NOT_FOUND).build();
         } else {
-        	res = Response.ok(user).build();
+            res = Response.ok(user).build();
         }
 
         return res;
     }
-    
+
     @GET
     @Path("findBy/{key}/{value}")
     public List<UserDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
-    	List<UserDomain> users = this.service.findBy(key, value);
+        List<UserDomain> users = this.service.findBy(key, value);
 
         return users;
     }
-    
+
     @GET
     public List<UserDomain> findAll(@QueryParam("name") String name) {
-    	List<UserDomain> users = null;
-    	
-    	if(name != null){
-    		Map<String, String> criterias = new HashMap<String, String>();
-        	criterias.put("name", name);
-        	users = this.service.findAll(criterias);
-    	} else {
-    		users = this.service.findAll();
-    	}
+        List<UserDomain> users = null;
+
+        if (name != null) {
+            Map<String, String> criterias = new HashMap<String, String>();
+            criterias.put("name", name);
+            users = this.service.findAll(criterias);
+        } else {
+            users = this.service.findAll();
+        }
 
         return users;
     }
@@ -73,14 +78,12 @@ public class UserResource {
     public Response create(UserDomain user) {
         Response res = null;
 
-        if (this.validator.isValid(user)) {
+        if (user.isValid()) {
             this.service.persist(user);
             URI uri = URI.create("/users/" + user.getId());
             res = Response.created(uri).build();
         } else {
-            this.errors = this.validator.getErrors();
-            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
-                    .build();
+            res = Response.status(Status.BAD_REQUEST).entity(user.getErrors()).build();
         }
 
         return res;
@@ -92,18 +95,16 @@ public class UserResource {
         Response res = null;
 
         if (user.isValid()) {
-        	
-        	try {
-        		this.service.update(id, user);
-        		res = Response.noContent().build();
-        	} catch (ObjectNotFoundException e) {
-				res = Response.status(Status.NOT_FOUND).build();
-			}
-        	
+
+            try {
+                this.service.update(id, user);
+                res = Response.noContent().build();
+            } catch (ObjectNotFoundException e) {
+                res = Response.status(Status.NOT_FOUND).build();
+            }
+
         } else {
-            this.errors = user.getErrors();
-            res = Response.status(Status.BAD_REQUEST).entity(this.errors)
-                    .build();
+            res = Response.status(Status.BAD_REQUEST).entity(user.getErrors()).build();
         }
 
         return res;
@@ -116,7 +117,7 @@ public class UserResource {
 
         return Response.noContent().build();
     }
-    
+
     @DELETE
     public Response deleteAll() {
         this.service.deleteAll();

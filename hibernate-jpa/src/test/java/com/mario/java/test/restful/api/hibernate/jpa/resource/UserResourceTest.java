@@ -1,145 +1,99 @@
-//package com.mario.java.test.restful.api.hibernate.jpa.resource;
-//
-//import java.util.List;
-//
-//import javax.ws.rs.core.Response;
-//
-//import org.junit.After;
-//import org.junit.Assert;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.MockitoAnnotations;
-//import org.mockito.runners.MockitoJUnitRunner;
-//
-//import com.mario.java.restful.api.hibernate.jpa.domain.User;
-//import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
-//import com.mario.java.restful.api.hibernate.jpa.resource.exception.HibernateValidationExceptionHandler;
-//import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-//import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
-//import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public class UserResourceTest {
-//
-//    @Mock
-//    private UserService service;
-//
-//    @Mock
-//    private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
-//
-//    @Mock
-//    private Response res;
-//
-//    @InjectMocks
-//    private UserResource resource = new UserResource();
-//    private User validUser = UserFactory.createValidUser();
-//    private User invalidUser = UserFactory.createInvalidUser();
-//    private Long validId = IdFactory.createValidId();
-//    private List<User> users;
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        this.setUpMocks();
-//    }
-//
-//    @After
-//    public void tearDown() throws Exception {
-//        this.res = null;
-//    }
-//
-//    @Test
-//    public void testFindAll() {
-//        this.resource.findAll();
-//        Mockito.verify(this.service).findAll();
-//    }
-//
-//    @Test
-//    public void testFind() {
-//        this.resource.find(this.validId);
-//        Mockito.verify(this.service).find(this.validId);
-//    }
-//
-//    @Test
-//    public void testCreateWhenUserIsValid() {
-//        Mockito.when(this.validator.isValid(this.validUser)).thenReturn(true);
-//
-//        this.res = this.resource.create(this.validUser);
-//
-//        Mockito.verify(this.validator).isValid(this.validUser);
-//        Mockito.verify(this.service).persist(this.validUser);
-//
-//        Assert.assertNotNull(this.res);
-//        Assert.assertEquals(Response.Status.CREATED.getStatusCode(), this.res.getStatus());
-//
-//        // TODO
-//        // - assert response body (without errors)
-//    }
-//
-//    @Test
-//    public void testCreateWhenUserIsInvalid() {
-//        Mockito.when(this.validator.isValid(this.invalidUser)).thenReturn(false);
-//
-//        this.res = this.resource.create(this.invalidUser);
-//
-//        Mockito.verify(this.validator).isValid(this.invalidUser);
-//        Mockito.verifyZeroInteractions(this.service);
-//        Mockito.verify(this.validator).getErrors();
-//
-//        Assert.assertNotNull(this.res);
-//        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), this.res.getStatus());
-//
-//        // TODO
-//        // - assert response body (with errors)
-//    }
-//
-//    @Test
-//    public void testUpdateWhenUserIsValid() {
-//        Mockito.when(this.validator.isValid(this.validUser)).thenReturn(true);
-//
-//        this.res = this.resource.update(this.validId, this.validUser);
-//
-//        Mockito.verify(this.validator).isValid(this.validUser);
-//        Mockito.verify(this.service).update(this.validId, this.validUser);
-//
-//        Assert.assertNotNull(this.res);
-//        Assert.assertEquals(Response.Status.OK.getStatusCode(), this.res.getStatus());
-//
-//        // TODO
-//        // - assert response body (without errors)
-//    }
-//
-//    @Test
-//    public void testUpdateWhenUserIsInvalid() {
-//        Mockito.when(this.validator.isValid(this.invalidUser)).thenReturn(false);
-//
-//        this.res = this.resource.update(this.validId, this.invalidUser);
-//
-//        Mockito.verify(this.validator).isValid(this.invalidUser);
-//        Mockito.verifyZeroInteractions(this.service);
-//        Mockito.verify(this.validator).getErrors();
-//
-//        Assert.assertNotNull(this.res);
-//        Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), this.res.getStatus());
-//
-//        // TODO
-//        // - assert response body (with errors)
-//    }
-//
-//    @Test
-//    public void testDelete() {
-//        this.res = this.resource.delete(this.validId);
-//
-//        Mockito.verify(this.service).delete(this.validId);
-//        Assert.assertEquals(Response.Status.OK.getStatusCode(), this.res.getStatus());
-//    }
-//
-//    private void setUpMocks() {
-//        MockitoAnnotations.initMocks(this);
-//        Mockito.when(this.service.findAll()).thenReturn(this.users);
-//        Mockito.when(this.service.find(this.validId)).thenReturn(this.validUser);
-//    }
-//}
+package com.mario.java.test.restful.api.hibernate.jpa.resource;
+
+import static com.mscharhag.oleaster.matcher.Matchers.expect;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.beforeEach;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.describe;
+import static com.mscharhag.oleaster.runner.StaticRunnerSupport.it;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
+import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
+import com.mscharhag.oleaster.runner.OleasterRunner;
+
+@RunWith(OleasterRunner.class)
+public class UserResourceTest {
+
+    private UserResource resource;
+
+    @Mock
+    private UserService service;
+
+    private UserDomain validUser;
+    // private UserDomain invalidUser;
+
+    private Long id;
+    private Response response;
+
+    {
+        beforeEach(() -> {
+            MockitoAnnotations.initMocks(this);
+            this.validUser = UserFactory.createValidUser();
+            // this.invalidUser = UserFactory.createInvalidUser();
+
+            this.resource = new UserResource(this.service);
+        });
+
+        afterEach(() -> {
+            this.validUser = null;
+            // this.invalidUser = null;
+            this.response = null;
+        });
+
+        describe("#find", () -> {
+
+            beforeEach(() -> {
+                this.id = IdFactory.createValidId();
+                Mockito.when(this.service.find(this.id)).thenReturn(null);
+            });
+
+            it("searches for users by id", () -> {
+                this.resource.find(this.id);
+                Mockito.verify(this.service).find(this.id);
+            });
+
+            describe("when the user is not found", () -> {
+
+                beforeEach(() -> {
+                    Mockito.when(this.service.find(this.id)).thenReturn(null);
+                    this.response = this.resource.find(this.id);
+                });
+
+                it("returns an empty body", () -> {
+                    expect(this.response.getEntity()).toEqual(null);
+                });
+
+                it("returns a 404 http status", () -> {
+                    expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
+                });
+
+            });
+
+            describe("when the user is found", () -> {
+                beforeEach(() -> {
+                    Mockito.when(this.service.find(this.id)).thenReturn(this.validUser);
+                    this.response = this.resource.find(this.id);
+                });
+
+                it("returns the user in the response body", () -> {
+                    expect(this.response.getEntity()).toEqual(this.validUser);
+                });
+
+                it("returns a 200 http status", () -> {
+                    expect(this.response.getStatus()).toEqual(Status.OK.getStatusCode());
+                });
+            });
+
+        });
+    }
+}

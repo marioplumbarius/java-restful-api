@@ -27,7 +27,8 @@ public class UserService {
     }
 
     public UserDomain find(Long id) {
-        UserDomain user = this.userCrud.find(id);
+    	UserDomain user = this.userCrud.find(id);
+        
         return user;
     }
     
