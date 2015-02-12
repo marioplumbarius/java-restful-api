@@ -1,6 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.resource;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -27,13 +29,6 @@ public class UserResource {
     private UserService service = new UserService();
     private Map<String, String> errors;
     private HibernateValidationExceptionHandler validator = new HibernateValidationExceptionHandler();
-
-    @GET
-    public List<UserDomain> findAll() {
-        List<UserDomain> users = this.service.findAll();
-
-        return users;
-    }
     
     @GET
     @Path("{id}")
@@ -49,6 +44,29 @@ public class UserResource {
         }
 
         return res;
+    }
+    
+    @GET
+    @Path("findBy/{key}/{value}")
+    public List<UserDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
+    	List<UserDomain> users = this.service.findBy(key, value);
+
+        return users;
+    }
+    
+    @GET
+    public List<UserDomain> findAll(@QueryParam("name") String name) {
+    	List<UserDomain> users = null;
+    	
+    	if(name != null){
+    		Map<String, String> criterias = new HashMap<String, String>();
+        	criterias.put("name", name);
+        	users = this.service.findAll(criterias);
+    	} else {
+    		users = this.service.findAll();
+    	}
+
+        return users;
     }
 
     @POST
@@ -95,6 +113,13 @@ public class UserResource {
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
         this.service.delete(id);
+
+        return Response.noContent().build();
+    }
+    
+    @DELETE
+    public Response deleteAll() {
+        this.service.deleteAll();
 
         return Response.noContent().build();
     }
