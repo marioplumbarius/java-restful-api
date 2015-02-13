@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.hibernate.ObjectNotFoundException;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -107,74 +108,74 @@ public class UserResourceTest {
 
         });
 
-        describe("#findBy", ()->{
-            beforeEach(()->{
+        describe("#findBy", () -> {
+            beforeEach(() -> {
                 Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
             });
 
-            it("finds users by the given criteria", ()->{
+            it("finds users by the given criteria", () -> {
                 this.resource.findBy(this.key, this.value);
-                Mockito.verify(this.service).findBy(this.key,  this.value);
+                Mockito.verify(this.service).findBy(this.key, this.value);
             });
 
-            describe("when there are users matching the criteria", ()->{
-                beforeEach(()->{
+            describe("when there are users matching the criteria", () -> {
+                beforeEach(() -> {
                     this.users.add(this.validUser);
                     Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(this.users);
                 });
 
-                it("returns the list of users", ()->{
+                it("returns the list of users", () -> {
                     List<UserDomain> returnedUsers = this.resource.findBy(this.key, this.value);
                     expect(returnedUsers.get(0)).toEqual(this.users.get(0));
                     expect(returnedUsers.size()).toEqual(this.users.size());
                 });
             });
 
-            describe("when there aren't users matching the criteria", ()->{
-                beforeEach(()->{
+            describe("when there aren't users matching the criteria", () -> {
+                beforeEach(() -> {
                     Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
                 });
 
-                it("returns an empty list", ()->{
+                it("returns an empty list", () -> {
                     List<UserDomain> returnedUsers = this.resource.findBy(this.key, this.value);
                     expect(returnedUsers).toBeNull();
                 });
             });
         });
 
-        describe("#findAll", ()->{
+        describe("#findAll", () -> {
 
-            describe("when the user provide the 'name' query param", ()->{
+            describe("when the user provide the 'name' query param", () -> {
 
-                beforeEach(()->{
+                beforeEach(() -> {
                     Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
                     this.resource.findAll(this.name);
                 });
 
-                it("filters the search by name", ()->{
+                it("filters the search by name", () -> {
                     Map<String, String> criterias = new HashMap<String, String>();
                     criterias.put("name", this.name);
                     Mockito.verify(this.service).findAll(criterias);
                 });
 
-                describe("when there aren't records matching the criteria", ()->{
-                    beforeEach(()->{
+                describe("when there aren't records matching the criteria", () -> {
+                    beforeEach(() -> {
                         Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
                     });
 
-                    it("returns an empty list", ()->{
+                    it("returns an empty list", () -> {
                         List<UserDomain> returnedUsers = this.resource.findAll(this.name);
                         expect(returnedUsers).toBeNull();
                     });
                 });
 
-                describe("when there are records matching the criteria", ()->{
-                    beforeEach(()->{
+                describe("when there are records matching the criteria", () -> {
+                    beforeEach(() -> {
                         this.users.add(this.validUser);
                         Mockito.when(this.service.findAll(Matchers.any())).thenReturn(this.users);
                     });
 
-                    it("returns the list of users found", ()->{
+                    it("returns the list of users found", () -> {
                         List<UserDomain> returnedUsers = this.resource.findAll(this.name);
                         expect(returnedUsers.get(0)).toEqual(this.users.get(0));
                         expect(returnedUsers.size()).toEqual(this.users.size());
@@ -182,34 +183,34 @@ public class UserResourceTest {
                 });
             });
 
-            describe("when the user does not search by name", ()->{
-                beforeEach(()->{
+            describe("when the user does not search by name", () -> {
+                beforeEach(() -> {
                     Mockito.when(this.service.findAll(null)).thenReturn(null);
                     this.resource.findAll(null);
                 });
 
-                it("does not filter the search by name", ()->{
+                it("does not filter the search by name", () -> {
                     Mockito.verify(this.service).findAll();
                 });
 
-                describe("when no users are found", ()->{
-                    beforeEach(()->{
+                describe("when no users are found", () -> {
+                    beforeEach(() -> {
                         Mockito.when(this.service.findAll()).thenReturn(null);
                     });
 
-                    it("returns an empty list", ()->{
+                    it("returns an empty list", () -> {
                         List<UserDomain> returnedUsers = this.resource.findAll(null);
                         expect(returnedUsers).toBeNull();
                     });
                 });
 
-                describe("when there are users found", ()->{
-                    beforeEach(()->{
+                describe("when there are users found", () -> {
+                    beforeEach(() -> {
                         this.users.add(this.validUser);
                         Mockito.when(this.service.findAll()).thenReturn(this.users);
                     });
 
-                    it("returns the list of users found", ()->{
+                    it("returns the list of users found", () -> {
                         List<UserDomain> returnedUsers = this.resource.findAll(null);
                         expect(returnedUsers.get(0)).toEqual(this.users.get(0));
                         expect(returnedUsers.size()).toEqual(this.users.size());
@@ -270,6 +271,114 @@ public class UserResourceTest {
                 it("returns validation errors", () -> {
                     Mockito.verify(this.invalidUser).getErrors();
                     expect(this.response.getEntity()).toBeNotNull();
+                });
+            });
+        });
+
+        describe("#update", () -> {
+
+            beforeEach(() -> {
+                Mockito.when(this.validUser.isValid()).thenReturn(true);
+                Mockito.when(this.invalidUser.isValid()).thenReturn(false);
+            });
+
+            it("verifies if the user is valid", () -> {
+                this.resource.create(this.validUser);
+                Mockito.verify(this.validUser).isValid();
+            });
+
+            describe("when the user is valid", () -> {
+                describe("when the user exists", () -> {
+                    beforeEach(() -> {
+                        this.response = this.resource.update(this.id, this.validUser);
+                    });
+
+                    it("updates the user", () -> {
+                        Mockito.verify(this.service).update(this.id, this.validUser);
+                    });
+
+                    it("returns 204 http status code", () -> {
+                        expect(this.response.getStatus()).toEqual(Status.NO_CONTENT.getStatusCode());
+                    });
+
+                    it("returns an empty response body", () -> {
+                        expect(this.response.getEntity()).toBeNull();
+                    });
+                });
+
+                describe("when the user does not exist", () -> {
+                    beforeEach(() -> {
+                        Mockito.doThrow(new ObjectNotFoundException(this.id, this.validUser.getClass().getName())).when(this.service).update(this.id, this.validUser);
+                        this.response = this.resource.update(this.id, this.validUser);
+                    });
+
+                    it("returns 404 http status code", () -> {
+                        expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
+                    });
+
+                    it("returns an empty response body", () -> {
+                        expect(this.response.getEntity()).toBeNull();
+                    });
+                });
+            });
+
+            describe("when the user is invalid", () -> {
+                beforeEach(() -> {
+                    Mockito.when(this.validUser.isValid()).thenReturn(false);
+                    this.response = this.resource.create(this.invalidUser);
+                });
+
+                it("does not persist the user", () -> {
+                    Mockito.verify(this.service, Mockito.never()).persist(this.validUser);
+                });
+
+                it("does not return the user URI", () -> {
+                    expect(this.response.getLocation()).toBeNull();
+                });
+
+                it("returns 422 http status code", () -> {
+                    expect(this.response.getStatus()).toEqual(Status.BAD_REQUEST.getStatusCode());
+                });
+
+                it("returns validation errors", () -> {
+                    Mockito.verify(this.invalidUser).getErrors();
+                    expect(this.response.getEntity()).toBeNotNull();
+                });
+            });
+        });
+
+        describe("#delete", () -> {
+
+            describe("when the user exists", () -> {
+                beforeEach(() -> {
+                    this.response = this.resource.delete(this.id);
+                });
+
+                it("deletes the user", () -> {
+                    Mockito.verify(this.service).delete(this.id);
+                });
+
+                it("returns 204 http status code", () -> {
+                    expect(this.response.getStatus()).toEqual(Status.NO_CONTENT.getStatusCode());
+                });
+
+                it("returns an empty response body", () -> {
+                    expect(this.response.getEntity()).toBeNull();
+                });
+            });
+
+            describe("when the user does not exist", () -> {
+                beforeEach(() -> {
+                    Mockito.doThrow(new ObjectNotFoundException(this.id, null)).when(this.service).delete(this.id);
+                    this.response = this.resource.delete(this.id);
+                });
+
+                it("returns 404 http status code", () -> {
+                    expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
+                });
+
+                it("returns an empty response body", () -> {
+                    expect(this.response.getEntity()).toBeNull();
                 });
             });
         });
