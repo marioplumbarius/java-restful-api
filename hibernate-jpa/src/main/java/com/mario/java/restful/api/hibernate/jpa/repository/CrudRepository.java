@@ -48,9 +48,7 @@ public class CrudRepository<T, ID extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public final T find(ID id){
 		this.sessionManager.openSession();
-		System.out.println("before");
 		T entity = (T) this.sessionManager.getSession().get(this.domainClass, id);
-		System.out.println("after");
 		this.sessionManager.closeSession();
 		return entity;
 	}
