@@ -5,13 +5,16 @@ import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 
 public final class UserFactory {
 
-    public static String URI = "/users/null";
+    public static String URI = "/users/{id}";
 
     public static UserDomain createInvalidUser() {
         return new UserDomain("invalid name, so many characters, wowwwww");
     }
 
     public static UserDomain createValidUser() {
-        return new UserDomain("valid name");
+        UserDomain user = new UserDomain("valid name");
+        user.setId(new Long(1));
+
+        return user;
     }
 }
