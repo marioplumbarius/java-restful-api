@@ -113,15 +113,15 @@ public class UserResource {
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
-        this.service.delete(id);
+        Response res = null;
 
-        return Response.noContent().build();
-    }
+        try {
+            this.service.delete(id);
+            res = Response.noContent().build();
+        } catch (ObjectNotFoundException e) {
+            res = Response.status(Status.NOT_FOUND).build();
+        }
 
-    @DELETE
-    public Response deleteAll() {
-        this.service.deleteAll();
-
-        return Response.noContent().build();
+        return res;
     }
 }

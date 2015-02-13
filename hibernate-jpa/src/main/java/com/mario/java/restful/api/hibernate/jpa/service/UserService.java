@@ -23,33 +23,33 @@ public class UserService {
 
     public void update(Long id, UserDomain user) {
         user.setId(id);
-    	this.userCrud.update(id, user);
+        this.userCrud.update(id, user);
     }
 
     public UserDomain find(Long id) {
-    	UserDomain user = this.userCrud.find(id);
-        
+        UserDomain user = this.userCrud.find(id);
+
         return user;
     }
-    
+
     public List<UserDomain> findBy(String key, String value){
-    	List<UserDomain> users = this.userCrud.findBy(key, value);
-    	return users;
+        List<UserDomain> users = this.userCrud.findBy(key, value);
+        return users;
     }
 
     public List<UserDomain> findAll() {
         List<UserDomain> users = this.userCrud.findAll();
         return users;
     }
-    
+
     public List<UserDomain> findAll(Map<String, String> criterias){
-    	List<UserDomain> users = this.userCrud.findAll(criterias);
+        List<UserDomain> users = this.userCrud.findAll(criterias);
         return users;
     }
-    
+
     public void delete(Long id) {
         UserDomain user = this.userCrud.find(id);
-        this.userCrud.delete(user);
+        this.userCrud.delete(id, user);
     }
 
     public void deleteAll() {
