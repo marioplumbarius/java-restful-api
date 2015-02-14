@@ -31,7 +31,6 @@
     <junit.version>4.12</junit.version>
     <mockito-core.version>1.10.19</mockito-core.version>
     <oleaster.version>0.1.0</oleaster.version>
-    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
 
     <!-- VARIABLES -->
     <context-path>/api</context-path>
@@ -127,27 +126,7 @@
   <build>
     <finalName>java-restful-api</finalName>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven-failsafe-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
+    
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -170,31 +149,6 @@
           <stopPort>8080</stopPort>
           <stopKey>STOP</stopKey>
         </configuration>
-
-        <!-- integration test configuration -->
-        <executions>
-          <execution>
-            <id>start-jetty</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <!-- stop any previous instance to free up the port -->
-              <goal>stop</goal>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-              <daemon>true</daemon>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>stop-jetty</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
