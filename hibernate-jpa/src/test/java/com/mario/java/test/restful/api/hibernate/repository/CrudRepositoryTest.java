@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.StaleStateException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
@@ -70,6 +72,8 @@ public class CrudRepositoryTest {
 			this.id = IdFactory.createValidId();
 			this.key = "anyKey";
 			this.value = "anyValue";
+
+			Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 		});
 
 		afterEach(()->{
@@ -85,7 +89,6 @@ public class CrudRepositoryTest {
 		describe("#findAll", ()->{
 			describe("with criterias", ()->{
 				beforeEach(()->{
-					Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 					Mockito.when(this.session.createCriteria(UserDomain.class)).thenReturn(this.criteria);
 					Mockito.when(this.criteria.add(Matchers.any())).thenReturn(this.criteria);
 					Mockito.when(this.criteria.list()).thenReturn(this.entities);
@@ -132,7 +135,6 @@ public class CrudRepositoryTest {
 
 			describe("without criterias", ()->{
 				beforeEach(()->{
-					Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 					Mockito.when(this.session.createQuery("from UserDomain")).thenReturn(this.query);
 					Mockito.when(this.query.list()).thenReturn(null);
 					this.crudRepository.findAll();
@@ -178,7 +180,6 @@ public class CrudRepositoryTest {
 
 		describe("#find", ()->{
 			beforeEach(()->{
-				Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 				Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(this.entity);
 				this.crudRepository.find(this.id);
 			});
@@ -221,7 +222,6 @@ public class CrudRepositoryTest {
 
 		describe("#findBy", () -> {
 			beforeEach(() -> {
-				Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 				Mockito.when(this.session.createCriteria(UserDomain.class)).thenReturn(this.criteria);
 				Mockito.when(this.criteria.add(Matchers.any())).thenReturn(this.criteria);
 				Mockito.when(this.criteria.list()).thenReturn(null);
@@ -261,6 +261,58 @@ public class CrudRepositoryTest {
 
 				it("returns null", () -> {
 					expect(this.listResponse).toBeNull();
+				});
+			});
+		});
+
+		describe("#persist", () -> {
+			beforeEach(() -> {
+				this.crudRepository.persist(this.entity);
+			});
+
+			it("open a transactional session", () -> {
+				Mockito.verify(this.sessionManager).openSessionWithTransaction();
+			});
+
+			it("persists the entity", () -> {
+				Mockito.verify(this.session).save(this.entity);
+			});
+
+			it("closes the transactional section", () -> {
+				Mockito.verify(this.sessionManager).closeSessionWithTransaction();
+			});
+		});
+
+		describe("#update", () -> {
+			beforeEach(() -> {
+				this.crudRepository.update(this.id, this.entity);
+			});
+
+			it("open a transactional session", () -> {
+				Mockito.verify(this.sessionManager).openSessionWithTransaction();
+			});
+
+			describe("when the entity exists on database", () -> {
+				it("updates the entity", () -> {
+					Mockito.verify(this.session).update(this.entity);
+				});
+
+				it("closes the transactional section", () -> {
+					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
+				});
+			});
+
+			describe("when the entity does not exist on database", () -> {
+				beforeEach(() -> {
+					Mockito.doThrow(new StaleStateException(null)).when(this.session).update(this.entity);
+				});
+				it("throws an 'object not found' exception", () -> {
+					try {
+						this.crudRepository.update(this.id, this.entity);
+						expect(true).toBeFalse();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists:");
+					}
 				});
 			});
 		});
