@@ -24,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
 import com.mario.java.restful.api.hibernate.jpa.util.SessionManager;
+import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @RunWith(OleasterRunner.class)
@@ -47,25 +48,31 @@ public class CrudRepositoryTest {
 	private Map<String, String> criterias;
 
 	@Mock
-	private UserDomain userDomain;
+	private UserDomain entity;
+
+	private Long id;
 
 	private List<UserDomain> entities;
-	private List<UserDomain> response;
+	private List<UserDomain> listResponse;
+	private UserDomain singleResponse;
 
 	{
 		beforeEach(()->{
 			MockitoAnnotations.initMocks(this);
 
 			this.entities = new ArrayList<UserDomain>();
-			this.entities.add(this.userDomain);
+			this.entities.add(this.entity);
 
 			this.criterias = new HashMap<String, String>();
 			this.criterias.put("key", "value");
+
+			this.id = IdFactory.createValidId();
 		});
 
 		afterEach(()->{
 			this.entities = null;
 			this.criterias = null;
+			this.id = null;
 		});
 
 		describe("#findAll", ()->{
@@ -96,22 +103,22 @@ public class CrudRepositoryTest {
 				describe("when there're entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.criteria.list()).thenReturn(this.entities);
-						this.response = this.crudRepository.findAll(this.criterias);
+						this.listResponse = this.crudRepository.findAll(this.criterias);
 					});
 
 					it("returns the entities found", ()->{
-						expect(this.response).toEqual(this.entities);
+						expect(this.listResponse).toEqual(this.entities);
 					});
 				});
 
 				describe("when there aren't entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.criteria.list()).thenReturn(null);
-						this.response = this.crudRepository.findAll(this.criterias);
+						this.listResponse = this.crudRepository.findAll(this.criterias);
 					});
 
 					it("returns null", ()->{
-						expect(this.response).toBeNull();
+						expect(this.listResponse).toBeNull();
 					});
 				});
 			});
@@ -141,23 +148,66 @@ public class CrudRepositoryTest {
 				describe("when there're entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.query.list()).thenReturn(this.entities);
-						this.response = this.crudRepository.findAll();
+						this.listResponse = this.crudRepository.findAll();
 					});
 
 					it("returns the entities found", ()->{
-						expect(this.response).toEqual(this.entities);
+						expect(this.listResponse).toEqual(this.entities);
 					});
 				});
 
 				describe("when there aren't entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.query.list()).thenReturn(null);
-						this.response = this.crudRepository.findAll();
+						this.listResponse = this.crudRepository.findAll();
 					});
 
 					it("returns null", ()->{
-						expect(this.response).toBeNull();
+						expect(this.listResponse).toBeNull();
 					});
+				});
+			});
+		});
+
+		describe("#find", ()->{
+			beforeEach(()->{
+				Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
+				Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(this.entity);
+				this.crudRepository.find(this.id);
+			});
+
+			it("opens a session", ()->{
+				Mockito.verify(this.sessionManager).openSession();
+			});
+
+			it("makes a find query by id", ()->{
+				Mockito.verify(this.sessionManager).getSession();
+				Mockito.verify(this.session).get(UserDomain.class, this.id);
+			});
+
+			it("closes the session", ()->{
+				Mockito.verify(this.sessionManager).closeSession();
+			});
+
+			describe("when the entity is found", ()->{
+				beforeEach(()->{
+					Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(this.entity);
+					this.singleResponse = this.crudRepository.find(this.id);
+				});
+
+				it("returns the entity found", ()->{
+					expect(this.singleResponse).toEqual(this.entity);
+				});
+			});
+
+			describe("when the entity is not found", ()->{
+				beforeEach(()->{
+					Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(null);
+					this.singleResponse = this.crudRepository.find(this.id);
+				});
+
+				it("returns null", ()->{
+					expect(this.singleResponse).toBeNull();
 				});
 			});
 		});
