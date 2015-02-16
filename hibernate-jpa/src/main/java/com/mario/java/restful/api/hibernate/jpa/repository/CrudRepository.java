@@ -86,13 +86,19 @@ public class CrudRepository<T, ID extends Serializable> {
 			this.sessionManager.getSession().delete(entity);
 			this.sessionManager.closeSessionWithTransaction();
 		} catch (IllegalArgumentException e) {
-			throw (new ObjectNotFoundException(id, null));
+			throw (new ObjectNotFoundException(id, entity.getClass().getName()));
 		}
 	}
 
 	public void deleteAll() {
 		List<T> entities = this.findAll();
-		for (T entity : entities)
-			this.delete(null, entity);
+
+		if(entities != null){
+			for (T entity : entities) {
+				this.delete(null, entity);
+			}
+		} else {
+			throw (new ObjectNotFoundException(null, null));
+		}
 	}
 }

@@ -74,6 +74,7 @@ public class CrudRepositoryTest {
 			this.value = "anyValue";
 
 			Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
+			Mockito.when(this.session.createQuery("from UserDomain")).thenReturn(this.query);
 		});
 
 		afterEach(()->{
@@ -135,7 +136,6 @@ public class CrudRepositoryTest {
 
 			describe("without criterias", ()->{
 				beforeEach(()->{
-					Mockito.when(this.session.createQuery("from UserDomain")).thenReturn(this.query);
 					Mockito.when(this.query.list()).thenReturn(null);
 					this.crudRepository.findAll();
 				});
@@ -297,7 +297,7 @@ public class CrudRepositoryTest {
 					Mockito.verify(this.session).update(this.entity);
 				});
 
-				it("closes the transactional section", () -> {
+				it("closes the transactional session", () -> {
 					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
 				});
 			});
@@ -314,6 +314,78 @@ public class CrudRepositoryTest {
 						expect(e.getMessage()).toContain("No row with the given identifier exists:");
 					}
 				});
+			});
+		});
+
+		describe("#delete", () -> {
+			beforeEach(() -> {
+				this.crudRepository.delete(this.id, this.entity);
+			});
+
+			it("open a transactional session", () -> {
+				Mockito.verify(this.sessionManager).openSessionWithTransaction();
+			});
+
+			describe("when the entity exists on database", () -> {
+				it("deletes the entity", () -> {
+					Mockito.verify(this.session).delete(this.entity);
+				});
+
+				it("closes the transactional session", () -> {
+					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
+				});
+			});
+
+			describe("when the entity does not exist on database", () -> {
+				beforeEach(() -> {
+					Mockito.doThrow(new IllegalArgumentException()).when(this.session).delete(this.entity);
+				});
+
+				it("throws an 'object not found' exception", () -> {
+					try {
+						this.crudRepository.delete(this.id, this.entity);
+						expect(true).toBeFalse();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists:");
+					}
+				});
+			});
+		});
+
+		describe("#deleteAll", () -> {
+			beforeEach(() -> {
+				Mockito.when(this.query.list()).thenReturn(this.entities);
+
+				this.crudRepository.deleteAll();
+			});
+
+			it("finds all entities", () -> {
+				Mockito.verify(this.session).createQuery("from UserDomain");
+				Mockito.verify(this.query).list();
+			});
+
+			describe("when there're entities found", () -> {
+				it("deletes all entities", () -> {
+					for(UserDomain entity : this.entities){
+						Mockito.verify(this.session).delete(entity);
+					}
+				});
+			});
+
+			describe("when there aren't entities found", () -> {
+				beforeEach(() -> {
+					Mockito.when(this.query.list()).thenReturn(null);
+				});
+
+				it("throws an 'object not found' exception", () -> {
+					try {
+						this.crudRepository.deleteAll();
+						expect(true).toBeFalse();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists:");
+					}
+				});
+
 			});
 		});
 	}
