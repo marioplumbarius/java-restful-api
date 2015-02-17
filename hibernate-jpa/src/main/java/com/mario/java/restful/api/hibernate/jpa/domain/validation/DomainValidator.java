@@ -15,8 +15,12 @@ public class DomainValidator {
 	private Map<String, String> errors;
 
 	public DomainValidator() {
-		this.validator = Validation.buildDefaultValidatorFactory()
-				.getValidator();
+		this(Validation.buildDefaultValidatorFactory()
+				.getValidator());
+	}
+
+	public DomainValidator(Validator validator){
+		this.validator = validator;
 		this.errors = new HashMap<String, String>();
 	}
 
