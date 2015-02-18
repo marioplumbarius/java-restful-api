@@ -35,6 +35,10 @@ public class UserDomain extends BaseDomain implements Serializable {
 		this.name = name;
 	}
 
+	public UserDomain(DomainValidator validator) {
+		super(validator);
+	}
+
 	public UserDomain(String name, DomainValidator validator) {
 		super(validator);
 		this.name = name;
