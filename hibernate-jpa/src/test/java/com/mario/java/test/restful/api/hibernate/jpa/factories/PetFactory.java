@@ -11,9 +11,11 @@ public final class PetFactory {
     }
 
     public static PetDomain createValidPet() {
-        PetDomain pet = new PetDomain(NameFactory.createValidName());
+        PetDomain pet = new PetDomain();
+        pet.setName(NameFactory.createValidName());
+        pet.setAge(10);
         pet.setId(new Long(1));
-        pet.setUserId(new Long(1));
+        pet.setUserId(new Long(11));
 
         return pet;
     }
