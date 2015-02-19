@@ -84,11 +84,11 @@ public class PetDomain extends BaseDomain implements Serializable {
         this.age = age;
     }
 
-    public void setUser(UserDomain user){
+    private void setUser(UserDomain user) {
         this.user = user;
     }
 
-    public UserDomain getUser(){
+    private UserDomain getUser() {
         return this.user;
     }
 
