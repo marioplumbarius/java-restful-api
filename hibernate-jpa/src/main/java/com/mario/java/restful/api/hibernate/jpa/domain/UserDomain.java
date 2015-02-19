@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
@@ -24,8 +24,8 @@ public class UserDomain extends BaseDomain implements Serializable {
 	@GeneratedValue
 	private Long id;
 
-	@NotBlank
-	@Size(min = 1, max = 20)
+	@NotEmpty
+	@Size(max = 20)
 	private String name;
 
 	public UserDomain() {
