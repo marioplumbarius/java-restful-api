@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,108 +19,127 @@ import javax.ws.rs.core.Response.Status;
 
 import org.hibernate.ObjectNotFoundException;
 
+import com.mario.java.restful.api.hibernate.jpa.annotations.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 
 @Path("/pets")
+@Consumes("application/json")
 @Produces("application/json")
 public class PetResource {
 
-	private PetService service;
+    private PetService service;
 
-	public PetResource() {
-		this(new PetService());
-	}
+    public PetResource() {
+        this(new PetService());
+    }
 
-	public PetResource(PetService service) {
-		this.service = service;
-	}
+    public PetResource(PetService service) {
+        this.service = service;
+    }
 
-	@GET
-	@Path("{id}")
-	public Response find(@PathParam("id") Long id) {
-		Response res = null;
+    @GET
+    @Path("{id}")
+    public Response find(@PathParam("id") Long id) {
+        Response res = null;
 
-		PetDomain pet = this.service.find(id);
+        PetDomain pet = this.service.find(id);
 
-		if (pet == null) {
-			res = Response.status(Status.NOT_FOUND).build();
-		} else {
-			res = Response.ok(pet).build();
-		}
+        if (pet == null) {
+            res = Response.status(Status.NOT_FOUND).build();
+        } else {
+            res = Response.ok(pet).build();
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	@GET
-	@Path("findBy/{key}/{value}")
-	public List<PetDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
-		List<PetDomain> pets = this.service.findBy(key, value);
+    @GET
+    @Path("findBy/{key}/{value}")
+    public List<PetDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
+        List<PetDomain> pets = this.service.findBy(key, value);
 
-		return pets;
-	}
+        return pets;
+    }
 
-	@GET
-	public List<PetDomain> findAll(@QueryParam("name") String name) {
-		List<PetDomain> pets = null;
+    @GET
+    public List<PetDomain> findAll(@QueryParam("name") String name) {
+        List<PetDomain> pets = null;
 
-		if (name != null) {
-			Map<String, String> criterias = new HashMap<String, String>();
-			criterias.put("name", name);
-			pets = this.service.findAll(criterias);
-		} else {
-			pets = this.service.findAll();
-		}
+        if (name != null) {
+            Map<String, String> criterias = new HashMap<String, String>();
+            criterias.put("name", name);
+            pets = this.service.findAll(criterias);
+        } else {
+            pets = this.service.findAll();
+        }
 
-		return pets;
-	}
+        return pets;
+    }
 
-	@POST
-	public Response create(PetDomain pet) {
-		Response res = null;
+    @POST
+    public Response create(PetDomain pet) {
+        Response res = null;
 
-		if (pet.isValid()) {
-			this.service.persist(pet);
-			URI uri = URI.create("/pets/" + pet.getId());
-			res = Response.created(uri).build();
-		} else {
-			res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
-		}
+        if (pet.isValid()) {
+            this.service.persist(pet);
+            URI uri = URI.create("/pets/" + pet.getId());
+            res = Response.created(uri).build();
+        } else {
+            res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	@PUT
-	@Path("{id}")
-	public Response update(@PathParam("id") Long id, PetDomain pet) {
-		Response res = null;
+    @PUT
+    @Path("{id}")
+    public Response update(@PathParam("id") Long id, PetDomain pet) {
+        Response res = null;
 
-		if(pet.isValid()){
-			try {
-				this.service.update(id, pet);
-				res = Response.noContent().build();
-			} catch (ObjectNotFoundException e) {
-				res = Response.status(Status.NOT_FOUND).build();
-			}
-		} else {
-			res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
-		}
+        if(pet.isValid()){
+            try {
+                this.service.update(id, pet);
+                res = Response.noContent().build();
+            } catch (ObjectNotFoundException e) {
+                res = Response.status(Status.NOT_FOUND).build();
+            }
+        } else {
+            res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	@DELETE
-	@Path("{id}")
-	public Response delete(@PathParam("id") Long id) {
-		Response res = null;
+    @PATCH
+    @Path("{id}")
+    public Response patch(@PathParam("id") Long id, PetDomain pet) {
+        Response res = null;
 
-		try {
-			this.service.delete(id);
-			res = Response.noContent().build();
-		} catch (ObjectNotFoundException e) {
-			res = Response.status(Status.NOT_FOUND).build();
-		}
+        PetDomain currentPet = this.service.find(id);
 
-		return res;
-	}
+        if (currentPet != null) {
+            pet.patch(currentPet);
+            res = this.update(id, pet);
+        } else {
+            res = Response.status(Status.NOT_FOUND).build();
+        }
+
+        return res;
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response delete(@PathParam("id") Long id) {
+        Response res = null;
+
+        try {
+            this.service.delete(id);
+            res = Response.noContent().build();
+        } catch (ObjectNotFoundException e) {
+            res = Response.status(Status.NOT_FOUND).build();
+        }
+
+        return res;
+    }
 }
