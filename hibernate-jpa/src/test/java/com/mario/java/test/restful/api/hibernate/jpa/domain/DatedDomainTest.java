@@ -16,45 +16,63 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 @RunWith(OleasterRunner.class)
 public class DatedDomainTest {
 
-	// TODO
-	// how to test the generated createdAt and updatedAt?
-	// how to test the it has the mappedsuperclass annotation?
+    // TODO
+    // how to test the generated createdAt and updatedAt?
+    // how to test the it has the mappedsuperclass annotation?
 
-	public class DatedDomainMock extends DatedDomain{};
+    public class DatedDomainMock extends DatedDomain{};
 
-	private DatedDomainMock datedDomainMock;
+    private DatedDomainMock datedDomainMock;
 
-	private Date updatedAt;
+    private Date updatedAt;
+    private Date createdAt;
 
-	{
-		beforeEach(() -> {
-			this.datedDomainMock = new DatedDomainMock();
-			this.updatedAt = new Date();
-		});
+    {
+        beforeEach(() -> {
+            this.datedDomainMock = new DatedDomainMock();
+            this.updatedAt = new Date();
+            this.createdAt = new Date();
+        });
 
-		afterEach(() -> {
-			this.updatedAt = null;
-		});
+        afterEach(() -> {
+            this.updatedAt = null;
+            this.createdAt = null;
+        });
 
-		// weak test
-		describe("#getCreatedAt", () -> {
-			it("returns the createdAt", () -> {
-				expect(this.datedDomainMock.getCreatedAt()).toBeNull();
-			});
-		});
+        describe("@createdAt", () -> {
+            beforeEach(() -> {
+                this.datedDomainMock.setCreatedAt(this.updatedAt);
+            });
 
-		describe("#getUpdatedAt", () -> {
-			it("returns the updatedAt", () -> {
-				this.datedDomainMock.setUpdatedAt(this.updatedAt);
-				expect(this.datedDomainMock.getUpdatedAt()).toEqual(this.updatedAt);
-			});
-		});
+            describe("#getCreatedAt", () -> {
+                it("returns the createdAt", () -> {
+                    expect(this.datedDomainMock.getCreatedAt()).toEqual(this.createdAt);
+                });
+            });
 
-		describe("#setUpdatedAt", () -> {
-			it("sets the updatedAt", () -> {
-				this.datedDomainMock.setUpdatedAt(this.updatedAt);
-				expect(this.datedDomainMock.getUpdatedAt()).toEqual(this.updatedAt);
-			});
-		});
-	}
+            describe("#setCreatedAt", () -> {
+                it("sets the createdAt", () -> {
+                    expect(this.datedDomainMock.getCreatedAt()).toEqual(this.createdAt);
+                });
+            });
+        });
+
+        describe("@updatedAt", () -> {
+            beforeEach(() -> {
+                this.datedDomainMock.setUpdatedAt(this.updatedAt);
+            });
+
+            describe("#getUpdatedAt", () -> {
+                it("returns the updatedAt", () -> {
+                    expect(this.datedDomainMock.getUpdatedAt()).toEqual(this.updatedAt);
+                });
+            });
+
+            describe("#setUpdatedAt", () -> {
+                it("sets the updatedAt", () -> {
+                    expect(this.datedDomainMock.getUpdatedAt()).toEqual(this.updatedAt);
+                });
+            });
+        });
+    }
 }
