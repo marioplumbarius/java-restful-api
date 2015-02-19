@@ -8,7 +8,7 @@ public final class UserFactory {
     public static String URI = "/users/{id}";
 
     public static UserDomain createInvalidUser() {
-        return new UserDomain("invalid name, so many characters, wowwwww");
+        return new UserDomain(NameFactory.createName("", 21));
     }
 
     public static UserDomain createValidUser() {
