@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,6 +35,7 @@ public class UserDomain extends BaseDomain implements Serializable {
 	private String name;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
+	@JsonManagedReference
 	private List<PetDomain> pets;
 
 	public UserDomain() {
