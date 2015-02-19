@@ -49,19 +49,7 @@ public class PetDomain extends BaseDomain implements Serializable {
 
     public PetDomain(){}
 
-    public PetDomain(String name){
-        this.name = name;
-    }
-
-    public PetDomain(int age){
-        this.age = age;
-    }
-
-    public PetDomain(DomainValidator validator){
-        super(validator);
-    }
-
-    public PetDomain(String name, int age){
+    public PetDomain(String name, int age) {
         this.name = name;
         this.age = age;
     }

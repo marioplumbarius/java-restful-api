@@ -7,7 +7,7 @@ public final class PetFactory {
     public static String URI = "/pets/{id}";
 
     public static PetDomain createInvalidPet() {
-        return new PetDomain(NameFactory.createName("", 21));
+        return new PetDomain();
     }
 
     public static PetDomain createValidPet() {
