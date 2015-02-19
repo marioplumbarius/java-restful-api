@@ -22,5 +22,6 @@
 
 		<!-- model classes to load -->
 		<mapping class="com.mario.java.restful.api.hibernate.jpa.domain.UserDomain" />
+		<mapping class="com.mario.java.restful.api.hibernate.jpa.domain.PetDomain" />
 	</session-factory>
 </hibernate-configuration>

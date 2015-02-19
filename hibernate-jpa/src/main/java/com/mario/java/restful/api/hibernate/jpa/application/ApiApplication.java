@@ -5,24 +5,26 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
 import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
 
 public class ApiApplication extends Application {
-    private Set<Object> singletons = new HashSet<Object>();
-    private Set<Class<?>> empty = new HashSet<Class<?>>();
+	private Set<Object> singletons = new HashSet<Object>();
+	private Set<Class<?>> empty = new HashSet<Class<?>>();
 
-    public ApiApplication() {
-        this.singletons.add(new UserResource());
-    }
+	public ApiApplication() {
+		this.singletons.add(new UserResource());
+		this.singletons.add(new PetResource());
+	}
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        return this.empty;
-    }
+	@Override
+	public Set<Class<?>> getClasses() {
+		return this.empty;
+	}
 
-    @Override
-    public Set<Object> getSingletons() {
-        return this.singletons;
-    }
+	@Override
+	public Set<Object> getSingletons() {
+		return this.singletons;
+	}
 
 }
