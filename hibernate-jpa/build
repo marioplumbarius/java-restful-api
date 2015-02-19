@@ -1,0 +1,1 @@
+export JAVA_HOME=$JAVA_HOME_8 ; mvn clean install ; export JAVA_HOME=$JAVA_HOME_7
