@@ -7,6 +7,8 @@ import static com.mscharhag.oleaster.runner.StaticRunnerSupport.describe;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.it;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
@@ -24,157 +27,199 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 @RunWith(OleasterRunner.class)
 public class UserDomainTest {
 
-	@Mock
-	private DomainValidator domainValidator;
+    @Mock
+    private DomainValidator domainValidator;
 
-	private UserDomain userDomain;
+    @Mock
+    private PetDomain pet;
 
-	private String name;
-	private Long id;
+    private UserDomain userDomain;
 
-	{
+    private String name;
+    private Long id;
+    private List<PetDomain> pets;
 
-		beforeEach(() -> {
-			MockitoAnnotations.initMocks(this);
+    {
 
-			this.userDomain = new UserDomain();
-			this.name = "any name";
-			this.id = IdFactory.createValidId();
-		});
+        beforeEach(() -> {
+            MockitoAnnotations.initMocks(this);
 
-		afterEach(() -> {
-			this.userDomain = null;
-			this.name = null;
-			this.id = null;
-		});
+            this.userDomain = new UserDomain();
+            this.name = "any name";
+            this.id = IdFactory.createValidId();
+            this.pets = new ArrayList<PetDomain>();
+            this.pets.add(this.pet);
+        });
 
-		it("is an Entity", () -> {
-			// TODO
-		});
+        afterEach(() -> {
+            this.userDomain = null;
+            this.name = null;
+            this.id = null;
+            this.pets = null;
+        });
 
-		it("represents the table 'users'", () -> {
-			// TODO
-		});
+        it("is an Entity", () -> {
+            // TODO
+        });
 
-		it("ignores unkown json properties", () -> {
-			boolean ignored;
-			try {
-				ObjectMapper mapper = new ObjectMapper();
-				String obj = "{\"name\":\"mario\",\"id\":12,\"createdAt\":null,\"updatedAt\":null,\"age\":22}";
-				mapper.readValue(obj, UserDomain.class);
-				ignored = true;
-			} catch (UnrecognizedPropertyException e) {
-				ignored = false;
-			}
+        it("represents the table 'users'", () -> {
+            // TODO
+        });
 
-			expect(ignored).toBeTrue();
-		});
+        it("ignores unkown json properties", () -> {
+            boolean ignored;
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                String obj = "{\"name\":\"mario\",\"id\":12,\"createdAt\":null,\"updatedAt\":null,\"age\":22}";
+                mapper.readValue(obj, UserDomain.class);
+                ignored = true;
+            } catch (UnrecognizedPropertyException e) {
+                ignored = false;
+            }
 
-		describe("@id", () -> {
-			it("is auto generated", () -> {
-				// TODO
-			});
+            expect(ignored).toBeTrue();
+        });
 
-			it("is the primary key", () -> {
-				// TODO
-			});
-		});
+        it("extends BaseDomain", () -> {
+            expect(this.userDomain instanceof BaseDomain).toBeTrue();
+        });
 
-		it("extends BaseDomain", () -> {
-			expect(this.userDomain instanceof BaseDomain).toBeTrue();
-		});
+        it("implements Serializable", () -> {
+            expect(this.userDomain instanceof Serializable).toBeTrue();
+        });
 
-		it("implements Serializable", () -> {
-			expect(this.userDomain instanceof Serializable).toBeTrue();
-		});
+        describe("@id", () -> {
+            it("is auto generated", () -> {
+                // TODO
+            });
 
-		describe("#constructor (default)", () -> {
-			beforeEach(() -> {
-				this.userDomain = new UserDomain();
-			});
+            it("is the primary key", () -> {
+                // TODO
+            });
+        });
 
-			it("assigns a null id", () -> {
-				expect(this.userDomain.getId()).toBeNull();
-			});
+        describe("@name", () -> {
 
-			it("assigns a null name", () -> {
-				expect(this.userDomain.getName()).toBeNull();
-			});
-		});
+            it("cannot be empty", () -> {
+                this.userDomain.setName(null);
+                expect(this.userDomain.isValid()).toBeFalse();
+            });
 
-		describe("#constructor (name)", () -> {
-			beforeEach(() -> {
-				this.userDomain = new UserDomain(this.name);
-			});
+            it("cannot have less than 1 character", () -> {
+                this.userDomain.setName("");
+                expect(this.userDomain.isValid()).toBeFalse();
+            });
 
-			it("assigns a null id", () -> {
-				expect(this.userDomain.getId()).toBeNull();
-			});
+            it("cannot have more than 20 characters", () -> {
+                this.userDomain.setName(NameFactory.createName("", 21));
+                expect(this.userDomain.isValid()).toBeFalse();
+            });
 
-			it("assigns the provided name", () -> {
-				expect(this.userDomain.getName()).toEqual(this.name);
-			});
-		});
+            it("can have between 1 - 20 characters", () -> {
+                this.userDomain.setName(NameFactory.createName("", 15));
+                expect(this.userDomain.isValid()).toBeTrue();
+            });
 
-		describe("#getName", () -> {
-			beforeEach(() -> {
-				this.userDomain.setName(this.name);
-			});
+        });
 
-			it("returns the name", () -> {
-				expect(this.userDomain.getName()).toEqual(this.name);
-			});
-		});
+        describe("@pets", () -> {
+            it("is a json managed reference", () -> {
+                // TODO
+            });
 
-		describe("#setName", () -> {
-			beforeEach(() -> {
-				this.name = "another name";
-				this.userDomain.setName(this.name);
-			});
+            it("has an OneToMany annotation", () -> {
+                // TODO
+            });
+        });
 
-			it("sets the name", () -> {
-				expect(this.userDomain.getName()).toEqual(this.name);
-			});
-		});
+        describe("#constructor (default)", () -> {
+            beforeEach(() -> {
+                this.userDomain = new UserDomain();
+            });
 
-		describe("#getId", () -> {
-			beforeEach(() -> {
-				this.userDomain.setId(this.id);
-			});
+            it("assigns a null id", () -> {
+                expect(this.userDomain.getId()).toBeNull();
+            });
 
-			it("returns the id", () -> {
-				expect(this.userDomain.getId()).toEqual(this.id);
-			});
-		});
+            it("assigns a null name", () -> {
+                expect(this.userDomain.getName()).toBeNull();
+            });
+        });
 
-		describe("#setId", () -> {
-			beforeEach(() -> {
-				this.id = IdFactory.createValidId();
-				this.userDomain.setId(this.id);
-			});
+        describe("#constructor (name)", () -> {
+            beforeEach(() -> {
+                this.userDomain = new UserDomain(this.name);
+            });
 
-			it("sets the id", () -> {
-				expect(this.userDomain.getId()).toEqual(this.id);
-			});
-		});
+            it("assigns a null id", () -> {
+                expect(this.userDomain.getId()).toBeNull();
+            });
 
-		describe("@name", () -> {
+            it("assigns the provided name", () -> {
+                expect(this.userDomain.getName()).toEqual(this.name);
+            });
+        });
 
-			it("cannot be blank", () -> {
-				this.userDomain.setName(null);
-				expect(this.userDomain.isValid()).toBeFalse();
-			});
+        describe("#getName", () -> {
+            beforeEach(() -> {
+                this.userDomain.setName(this.name);
+            });
 
-			it("cannot have less than 1 character", () -> {
-				this.userDomain.setName("");
-				expect(this.userDomain.isValid()).toBeFalse();
-			});
+            it("returns the name", () -> {
+                expect(this.userDomain.getName()).toEqual(this.name);
+            });
+        });
 
-			it("cannot have more than 20 characters", () -> {
-				this.userDomain.setName(NameFactory.createName("", 21));
-				expect(this.userDomain.isValid()).toBeFalse();
-			});
+        describe("#setName", () -> {
+            beforeEach(() -> {
+                this.name = "another name";
+                this.userDomain.setName(this.name);
+            });
 
-		});
-	}
+            it("sets the name", () -> {
+                expect(this.userDomain.getName()).toEqual(this.name);
+            });
+        });
+
+        describe("#getId", () -> {
+            beforeEach(() -> {
+                this.userDomain.setId(this.id);
+            });
+
+            it("returns the id", () -> {
+                expect(this.userDomain.getId()).toEqual(this.id);
+            });
+        });
+
+        describe("#setId", () -> {
+            beforeEach(() -> {
+                this.id = IdFactory.createValidId();
+                this.userDomain.setId(this.id);
+            });
+
+            it("sets the id", () -> {
+                expect(this.userDomain.getId()).toEqual(this.id);
+            });
+        });
+
+        describe("#setPets", () -> {
+            beforeEach(() -> {
+                this.userDomain.setPets(this.pets);
+            });
+
+            it("sets the pets", () -> {
+                expect(this.userDomain.getPets()).toEqual(this.pets);
+            });
+        });
+
+        describe("#getPets", () -> {
+            beforeEach(() -> {
+                this.userDomain.setPets(this.pets);
+            });
+
+            it("gets the pets", () -> {
+                expect(this.userDomain.getPets()).toEqual(this.pets);
+            });
+        });
+    }
 }
