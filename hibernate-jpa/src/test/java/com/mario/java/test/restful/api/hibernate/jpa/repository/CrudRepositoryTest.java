@@ -25,7 +25,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
-import com.mario.java.restful.api.hibernate.jpa.util.SessionManager;
+import com.mario.java.restful.api.hibernate.jpa.util.SessionManagerSingleton;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
@@ -33,7 +33,7 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 public class CrudRepositoryTest {
 
 	@Mock
-	private SessionManager sessionManager;
+	private SessionManagerSingleton sessionManager;
 
 	@InjectMocks
 	private CrudRepository<UserDomain, Long> crudRepository = new CrudRepository<UserDomain, Long>(this.sessionManager, "UserDomain", UserDomain.class);

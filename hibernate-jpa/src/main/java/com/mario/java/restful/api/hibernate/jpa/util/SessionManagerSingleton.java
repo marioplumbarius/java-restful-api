@@ -6,19 +6,40 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class SessionManager {
+public class SessionManagerSingleton {
 	private SessionFactory sessionFactory;
 	private Session session;
     private Transaction transaction;
+    private static SessionManagerSingleton instance = null;
 
-    public SessionManager() {
-    	this(SessionManager.getSessionFactory());
+    protected SessionManagerSingleton() {
+    	this(SessionManagerSingleton.getSessionFactory());
     }
-    
-    public SessionManager(SessionFactory sessionFactory) {
+
+    protected SessionManagerSingleton(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-    
+
+    public static SessionManagerSingleton getInstance(){
+    	if(SessionManagerSingleton.instance == null){
+    		SessionManagerSingleton.instance = new SessionManagerSingleton();
+    	}
+
+    	return instance;
+    }
+
+    public static void setInstance(SessionManagerSingleton instance){
+    	SessionManagerSingleton.instance = instance;
+    }
+
+    public static SessionManagerSingleton getInstance(SessionFactory sessionFactory){
+    	if(instance == null){
+    		instance = new SessionManagerSingleton(sessionFactory);
+    	}
+
+    	return instance;
+    }
+
     public Session getSession(){
     	return this.session;
     }
@@ -30,12 +51,12 @@ public class SessionManager {
     public void closeSession() {
         this.session.close();
     }
-    
+
     public void openSessionWithTransaction() {
         this.session = this.sessionFactory.openSession();
         this.transaction = this.session.beginTransaction();
     }
-    
+
     public void closeSessionWithTransaction() {
         this.transaction.commit();
         this.session.close();

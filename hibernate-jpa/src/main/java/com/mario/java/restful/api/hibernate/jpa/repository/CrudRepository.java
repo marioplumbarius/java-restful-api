@@ -8,19 +8,19 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.StaleStateException;
 import org.hibernate.criterion.Restrictions;
 
-import com.mario.java.restful.api.hibernate.jpa.util.SessionManager;
+import com.mario.java.restful.api.hibernate.jpa.util.SessionManagerSingleton;
 
 public class CrudRepository<T, ID extends Serializable> {
 
 	private String domainName;
 	private Class<T> domainClass;
-	private SessionManager sessionManager;
+	private SessionManagerSingleton sessionManager;
 
 	public CrudRepository(String domainName, Class<T> domainClass) {
-		this(new SessionManager(), domainName, domainClass);
+		this(SessionManagerSingleton.getInstance(), domainName, domainClass);
 	}
 
-	public CrudRepository(SessionManager sessionManager, String domainName, Class<T> domainClass){
+	public CrudRepository(SessionManagerSingleton sessionManager, String domainName, Class<T> domainClass){
 		this.sessionManager = sessionManager;
 		this.domainName = domainName;
 		this.domainClass = domainClass;
