@@ -201,25 +201,5 @@ public class UserDomainTest {
                 expect(this.userDomain.getId()).toEqual(this.id);
             });
         });
-
-        describe("#setPets", () -> {
-            beforeEach(() -> {
-                this.userDomain.setPets(this.pets);
-            });
-
-            it("sets the pets", () -> {
-                expect(this.userDomain.getPets()).toEqual(this.pets);
-            });
-        });
-
-        describe("#getPets", () -> {
-            beforeEach(() -> {
-                this.userDomain.setPets(this.pets);
-            });
-
-            it("gets the pets", () -> {
-                expect(this.userDomain.getPets()).toEqual(this.pets);
-            });
-        });
     }
 }

@@ -3,9 +3,7 @@ package com.mario.java.restful.api.hibernate.jpa.domain;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -14,9 +12,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,8 +30,7 @@ public class UserDomain extends BaseDomain implements Serializable {
 	@Size(min = 1, max = 20)
 	private String name;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
-	@JsonManagedReference
+	@OneToMany(mappedBy="user")
 	private List<PetDomain> pets;
 
 	public UserDomain() {
@@ -68,14 +63,5 @@ public class UserDomain extends BaseDomain implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public void setPets(List<PetDomain> pets){
-		this.pets = pets;
-	}
-
-	@JsonIgnore
-	public List<PetDomain> getPets(){
-		return this.pets;
 	}
 }
