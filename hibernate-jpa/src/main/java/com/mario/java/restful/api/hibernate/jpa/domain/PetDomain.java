@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
@@ -40,7 +39,6 @@ public class PetDomain extends BaseDomain implements Serializable {
 
     @ManyToOne(optional=false)
     @PrimaryKeyJoinColumn
-    @JsonBackReference
     private UserDomain user;
 
     @NotNull
