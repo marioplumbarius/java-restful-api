@@ -54,7 +54,7 @@ public class CrudRepository<T, ID extends Serializable> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findBy(String key, String value){
+	public List<T> findAll(String key, Object value){
 		List<T> entities = null;
 
 		this.sessionManager.openSession();
@@ -92,13 +92,32 @@ public class CrudRepository<T, ID extends Serializable> {
 
 	public void deleteAll() {
 		List<T> entities = this.findAll();
+		this.deleteAll(entities);
+	}
 
+	public void deleteAll(String key, String value){
+		List<T> entities = this.findAll(key, value);
+		this.deleteAll(entities);
+	}
+
+	public void deleteAll(Map<String, String> criterias){
+		List<T> entities = this.findAll(criterias);
+		this.deleteAll(entities);
+	}
+
+	public void deleteAll(List<T> entities){
 		if(entities != null){
-			for (T entity : entities) {
-				this.delete(null, entity);
-			}
+			this.deleteAllPrivate(entities);
 		} else {
-			throw (new ObjectNotFoundException(null, null));
+			throw (new ObjectNotFoundException(null, this.domainName));
 		}
+	}
+
+	private void deleteAllPrivate(List<T> entities){
+		this.sessionManager.openSessionWithTransaction();
+		for (T entity : entities) {
+			this.sessionManager.getSession().delete(entity);
+		}
+		this.sessionManager.closeSessionWithTransaction();
 	}
 }

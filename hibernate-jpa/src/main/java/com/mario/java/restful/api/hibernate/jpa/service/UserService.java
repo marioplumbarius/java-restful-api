@@ -3,18 +3,23 @@ package com.mario.java.restful.api.hibernate.jpa.service;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.ObjectNotFoundException;
+
+import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
 
 public class UserService {
 	private CrudRepository<UserDomain, Long> userCrud;
+	private CrudRepository<PetDomain, Long> petCrud;
 
 	public UserService() {
-		this(new CrudRepository<UserDomain, Long>("UserDomain", UserDomain.class));
+		this(new CrudRepository<UserDomain, Long>("UserDomain", UserDomain.class),new CrudRepository<PetDomain, Long>("PetDomain", PetDomain.class));
 	}
 
-	public UserService(CrudRepository<UserDomain, Long> userCrud){
+	public UserService(CrudRepository<UserDomain, Long> userCrud, CrudRepository<PetDomain, Long> petCrud){
 		this.userCrud = userCrud;
+		this.petCrud = petCrud;
 	}
 
 	public void persist(UserDomain user) {
@@ -32,8 +37,10 @@ public class UserService {
 		return user;
 	}
 
+	// TODO - refactor
+	// rename this method from findBy -> findAll
 	public List<UserDomain> findBy(String key, String value){
-		List<UserDomain> users = this.userCrud.findBy(key, value);
+		List<UserDomain> users = this.userCrud.findAll(key, value);
 		return users;
 	}
 
@@ -49,10 +56,23 @@ public class UserService {
 
 	public void delete(Long id) {
 		UserDomain user = this.userCrud.find(id);
-		this.userCrud.delete(id, user);
+
+		if(user != null){
+			this.deletePets(user);
+			this.userCrud.delete(id, user);
+		} else {
+			throw new ObjectNotFoundException(id, UserDomain.class.getName());
+		}
 	}
 
 	public void deleteAll() {
+		this.petCrud.deleteAll();
 		this.userCrud.deleteAll();
+	}
+
+	private void deletePets(UserDomain user){
+		List<PetDomain> pets = this.petCrud.findAll("user.id", user.getId());
+
+		if(pets != null) this.petCrud.deleteAll(pets);
 	}
 }
