@@ -55,14 +55,6 @@ public class PetResource {
     }
 
     @GET
-    @Path("findBy/{key}/{value}")
-    public List<PetDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
-        List<PetDomain> pets = this.service.findBy(key, value);
-
-        return pets;
-    }
-
-    @GET
     public List<PetDomain> findAll(@QueryParam("name") String name) {
         List<PetDomain> pets = null;
 

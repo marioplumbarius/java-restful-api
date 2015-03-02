@@ -123,10 +123,6 @@ public class UserDomainTest {
         });
 
         describe("@pets", () -> {
-            it("is a json managed reference", () -> {
-                // TODO
-            });
-
             it("has an OneToMany annotation", () -> {
                 // TODO
             });

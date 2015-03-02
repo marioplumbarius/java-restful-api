@@ -129,41 +129,6 @@ public class PetServiceTest {
             });
         });
 
-        describe("#findBy", () -> {
-            beforeEach(() -> {
-                Mockito.when(this.petCrud.findBy(this.key, this.value)).thenReturn(this.pets);
-                this.petService.findBy(this.key, this.value);
-            });
-
-            it("searches for the pet by a specific key/filter", () -> {
-                Mockito.verify(this.petCrud).findBy(this.key, this.value);
-            });
-
-            describe("when there are pets matching the search", () -> {
-                beforeEach(() -> {
-                    Mockito.when(this.petCrud.findBy(this.key, this.value)).thenReturn(this.pets);
-                    this.returnedPets = this.petService.findBy(this.key, this.value);
-                });
-
-                it("returns the pets found", () -> {
-                    expect(this.returnedPets.size()).toEqual(this.pets.size());
-                    expect(this.returnedPets.get(0).getId()).toBeNotNull();
-                    expect(this.returnedPets.get(0).getId()).toEqual(this.pets.get(0).getId());
-                });
-            });
-
-            describe("when there aren't pets matching the search", () -> {
-                beforeEach(() -> {
-                    Mockito.when(this.petCrud.findBy(this.key, this.value)).thenReturn(null);
-                    this.returnedPets = this.petService.findBy(this.key, this.value);
-                });
-
-                it("return null", () -> {
-                    expect(this.returnedPets).toBeNull();
-                });
-            });
-        });
-
         describe("#findAll", () -> {
 
             describe("when the search is made without criterias", () -> {

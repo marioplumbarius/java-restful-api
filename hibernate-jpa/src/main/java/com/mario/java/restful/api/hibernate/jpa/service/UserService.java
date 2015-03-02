@@ -1,5 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,13 +38,6 @@ public class UserService {
 		return user;
 	}
 
-	// TODO - refactor
-	// rename this method from findBy -> findAll
-	public List<UserDomain> findBy(String key, String value){
-		List<UserDomain> users = this.userCrud.findAll(key, value);
-		return users;
-	}
-
 	public List<UserDomain> findAll() {
 		List<UserDomain> users = this.userCrud.findAll();
 		return users;
@@ -71,7 +65,9 @@ public class UserService {
 	}
 
 	private void deletePets(UserDomain user){
-		List<PetDomain> pets = this.petCrud.findAll("user.id", user.getId());
+		Map<String, String> criterias = new HashMap<String, String>();
+		criterias.put("user.id", user.getId().toString());
+		List<PetDomain> pets = this.petCrud.findAll(criterias);
 
 		if(pets != null) this.petCrud.deleteAll(pets);
 	}

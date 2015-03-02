@@ -54,14 +54,6 @@ public class UserResource {
     }
 
     @GET
-    @Path("findBy/{key}/{value}")
-    public List<UserDomain> findBy(@PathParam("key") String key, @PathParam("value") String value) {
-        List<UserDomain> users = this.service.findBy(key, value);
-
-        return users;
-    }
-
-    @GET
     public List<UserDomain> findAll(@QueryParam("name") String name) {
         List<UserDomain> users = null;
 

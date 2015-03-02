@@ -32,11 +32,6 @@ public class PetService {
 		return pet;
 	}
 
-	public List<PetDomain> findBy(String key, String value){
-		List<PetDomain> pets = this.petCrud.findBy(key, value);
-		return pets;
-	}
-
 	public List<PetDomain> findAll() {
 		List<PetDomain> pets = this.petCrud.findAll();
 		return pets;

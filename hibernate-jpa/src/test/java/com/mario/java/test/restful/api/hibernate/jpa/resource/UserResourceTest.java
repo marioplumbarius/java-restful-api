@@ -47,8 +47,6 @@ public class UserResourceTest {
 	private List<UserDomain> users;
 	private Long id;
 	private Response response;
-	private String key = "key";
-	private String value = "value";
 	private String name = "anything";
 
 	{
@@ -107,41 +105,6 @@ public class UserResourceTest {
 				});
 			});
 
-		});
-
-		describe("#findBy", () -> {
-			beforeEach(() -> {
-				Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
-			});
-
-			it("finds users by the given criteria", () -> {
-				this.resource.findBy(this.key, this.value);
-				Mockito.verify(this.service).findBy(this.key, this.value);
-			});
-
-			describe("when there are users matching the criteria", () -> {
-				beforeEach(() -> {
-					this.users.add(this.validUser);
-					Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(this.users);
-				});
-
-				it("returns the list of users", () -> {
-					List<UserDomain> returnedUsers = this.resource.findBy(this.key, this.value);
-					expect(returnedUsers.get(0)).toEqual(this.users.get(0));
-					expect(returnedUsers.size()).toEqual(this.users.size());
-				});
-			});
-
-			describe("when there aren't users matching the criteria", () -> {
-				beforeEach(() -> {
-					Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
-				});
-
-				it("returns an empty list", () -> {
-					List<UserDomain> returnedUsers = this.resource.findBy(this.key, this.value);
-					expect(returnedUsers).toBeNull();
-				});
-			});
 		});
 
 		describe("#findAll", () -> {

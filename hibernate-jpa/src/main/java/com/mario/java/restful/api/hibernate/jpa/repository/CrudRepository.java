@@ -53,17 +53,6 @@ public class CrudRepository<T, ID extends Serializable> {
 		return entity;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(String key, Object value){
-		List<T> entities = null;
-
-		this.sessionManager.openSession();
-		entities = this.sessionManager.getSession().createCriteria(this.domainClass).add(Restrictions.eq(key, value)).list();
-		this.sessionManager.closeSession();
-
-		return entities;
-	}
-
 	public void persist(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().save(entity);
@@ -92,11 +81,6 @@ public class CrudRepository<T, ID extends Serializable> {
 
 	public void deleteAll() {
 		List<T> entities = this.findAll();
-		this.deleteAll(entities);
-	}
-
-	public void deleteAll(String key, String value){
-		List<T> entities = this.findAll(key, value);
 		this.deleteAll(entities);
 	}
 

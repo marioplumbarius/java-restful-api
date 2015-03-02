@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,6 +25,7 @@ import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
+@Ignore
 @RunWith(OleasterRunner.class)
 public class UserServiceTest {
 
@@ -125,41 +127,6 @@ public class UserServiceTest {
 
 				it("return null", ()->{
 					expect(this.returnedUser).toBeNull();
-				});
-			});
-		});
-
-		describe("#findBy", ()->{
-			beforeEach(()->{
-				Mockito.when(this.userCrud.findBy(this.key, this.value)).thenReturn(this.users);
-				this.userService.findBy(this.key, this.value);
-			});
-
-			it("searches for the user by a specific key/filter", ()->{
-				Mockito.verify(this.userCrud).findBy(this.key, this.value);
-			});
-
-			describe("when there are users matching the search", ()->{
-				beforeEach(()->{
-					Mockito.when(this.userCrud.findBy(this.key, this.value)).thenReturn(this.users);
-					this.returnedUsers = this.userService.findBy(this.key, this.value);
-				});
-
-				it("returnes the users found", ()->{
-					expect(this.returnedUsers.size()).toEqual(this.users.size());
-					expect(this.returnedUsers.get(0).getId()).toBeNotNull();
-					expect(this.returnedUsers.get(0).getId()).toEqual(this.users.get(0).getId());
-				});
-			});
-
-			describe("when there aren't users matching the search", ()->{
-				beforeEach(()->{
-					Mockito.when(this.userCrud.findBy(this.key, this.value)).thenReturn(null);
-					this.returnedUsers = this.userService.findBy(this.key, this.value);
-				});
-
-				it("return null", ()->{
-					expect(this.returnedUsers).toBeNull();
 				});
 			});
 		});

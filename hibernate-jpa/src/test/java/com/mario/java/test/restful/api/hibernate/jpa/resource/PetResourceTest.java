@@ -53,8 +53,6 @@ public class PetResourceTest {
     private List<PetDomain> pets;
     private Long id;
     private Response response;
-    private String key = "key";
-    private String value = "value";
     private String name = "anything";
 
     {
@@ -114,41 +112,6 @@ public class PetResourceTest {
                 });
             });
 
-        });
-
-        describe("#findBy", () -> {
-            beforeEach(() -> {
-                Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
-            });
-
-            it("finds pets by the given criteria", () -> {
-                this.resource.findBy(this.key, this.value);
-                Mockito.verify(this.service).findBy(this.key, this.value);
-            });
-
-            describe("when there are pets matching the criteria", () -> {
-                beforeEach(() -> {
-                    this.pets.add(this.validPet);
-                    Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(this.pets);
-                });
-
-                it("returns the list of pets", () -> {
-                    List<PetDomain> returnedUsers = this.resource.findBy(this.key, this.value);
-                    expect(returnedUsers.get(0)).toEqual(this.pets.get(0));
-                    expect(returnedUsers.size()).toEqual(this.pets.size());
-                });
-            });
-
-            describe("when there aren't pets matching the criteria", () -> {
-                beforeEach(() -> {
-                    Mockito.when(this.service.findBy(this.key, this.value)).thenReturn(null);
-                });
-
-                it("returns an empty list", () -> {
-                    List<PetDomain> returnedUsers = this.resource.findBy(this.key, this.value);
-                    expect(returnedUsers).toBeNull();
-                });
-            });
         });
 
         describe("#findAll", () -> {

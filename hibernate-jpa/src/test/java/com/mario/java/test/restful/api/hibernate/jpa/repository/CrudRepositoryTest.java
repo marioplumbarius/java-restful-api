@@ -53,7 +53,6 @@ public class CrudRepositoryTest {
 	private UserDomain entity;
 
 	private Long id;
-	private String key, value;
 
 	private List<UserDomain> entities;
 	private List<UserDomain> listResponse;
@@ -70,8 +69,6 @@ public class CrudRepositoryTest {
 			this.criterias.put("key", "value");
 
 			this.id = IdFactory.createValidId();
-			this.key = "anyKey";
-			this.value = "anyValue";
 
 			Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 			Mockito.when(this.session.createQuery("from UserDomain")).thenReturn(this.query);
@@ -81,8 +78,6 @@ public class CrudRepositoryTest {
 			this.entities = null;
 			this.criterias = null;
 			this.id = null;
-			this.key = null;
-			this.value = null;
 			this.listResponse = null;
 			this.singleResponse = null;
 		});
@@ -220,50 +215,6 @@ public class CrudRepositoryTest {
 			});
 		});
 
-		describe("#findBy", () -> {
-			beforeEach(() -> {
-				Mockito.when(this.session.createCriteria(UserDomain.class)).thenReturn(this.criteria);
-				Mockito.when(this.criteria.add(Matchers.any())).thenReturn(this.criteria);
-				Mockito.when(this.criteria.list()).thenReturn(null);
-				this.crudRepository.findBy(this.key, this.value);
-			});
-
-			it("opens a session", () -> {
-				Mockito.verify(this.sessionManager).openSession();
-			});
-
-			it("makes a find query with a single criteria", () -> {
-				Mockito.verify(this.session).createCriteria(UserDomain.class);
-				Mockito.verify(this.criteria).add(Matchers.any());
-				Mockito.verify(this.criteria).list();
-			});
-
-			it("closes the session", () -> {
-				Mockito.verify(this.sessionManager).closeSession();
-			});
-
-			describe("when there're entities matching the search", () -> {
-				beforeEach(() -> {
-					Mockito.when(this.criteria.list()).thenReturn(this.entities);
-					this.listResponse = this.crudRepository.findBy(this.key, this.value);
-				});
-
-				it("returns the found entities", () -> {
-					expect(this.listResponse).toEqual(this.entities);
-				});
-			});
-
-			describe("when there aren't entities matching the search", () -> {
-				beforeEach(() -> {
-					Mockito.when(this.criteria.list()).thenReturn(null);
-					this.listResponse = this.crudRepository.findBy(this.key, this.value);
-				});
-
-				it("returns null", () -> {
-					expect(this.listResponse).toBeNull();
-				});
-			});
-		});
 
 		describe("#persist", () -> {
 			beforeEach(() -> {
