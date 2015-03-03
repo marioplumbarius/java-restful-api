@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.ObjectNotFoundException;
+import org.hibernate.StaleStateException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
@@ -29,7 +30,13 @@ public class UserService {
 
 	public void update(Long id, UserDomain user) {
 		user.setId(id);
-		this.userCrud.update(id, user);
+
+		try {
+			this.userCrud.update(id, user);
+		} catch (StaleStateException e) {
+			throw new ObjectNotFoundException(id, user.getClass().getName());
+		}
+
 	}
 
 	public UserDomain find(Long id) {

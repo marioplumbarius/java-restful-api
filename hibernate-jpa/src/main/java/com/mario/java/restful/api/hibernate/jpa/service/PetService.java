@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.ObjectNotFoundException;
+import org.hibernate.StaleStateException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
@@ -25,7 +26,12 @@ public class PetService {
 
 	public void update(Long id, PetDomain pet) {
 		pet.setId(id);
-		this.petCrud.update(id, pet);
+
+		try {
+			this.petCrud.update(id, pet);
+		} catch (StaleStateException e) {
+			throw new ObjectNotFoundException(id, pet.getClass().getName());
+		}
 	}
 
 	public PetDomain find(Long id) {

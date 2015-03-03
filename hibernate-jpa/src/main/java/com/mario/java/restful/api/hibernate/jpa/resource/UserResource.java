@@ -89,14 +89,7 @@ public class UserResource {
         Response res = null;
 
         if (user.isValid()) {
-
-            try {
-                this.service.update(id, user);
-                res = Response.noContent().build();
-            } catch (ObjectNotFoundException e) {
-                res = Response.status(Status.NOT_FOUND).build();
-            }
-
+        	res = this.updateHelper(id, user);
         } else {
             res = Response.status(422).entity(user.getErrors()).build();
         }
@@ -117,5 +110,18 @@ public class UserResource {
         }
 
         return res;
+    }
+
+    private Response updateHelper(Long id, UserDomain user){
+    	Response res;
+
+    	try {
+            this.service.update(id, user);
+            res = Response.noContent().build();
+        } catch (ObjectNotFoundException e) {
+            res = Response.status(Status.NOT_FOUND).build();
+        }
+
+    	return res;
     }
 }
