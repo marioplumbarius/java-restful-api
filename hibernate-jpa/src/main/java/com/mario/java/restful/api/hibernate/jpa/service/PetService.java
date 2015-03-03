@@ -51,11 +51,12 @@ public class PetService {
 	}
 
 	public void delete(Long id) {
-		PetDomain pet = this.petCrud.find(id);
+		PetDomain pet = new PetDomain();
+		pet.setId(id);
 
-		if(pet != null){
-			this.petCrud.delete(id, pet);
-		} else {
+		try {
+			this.petCrud.delete(pet);
+		} catch (StaleStateException e) {
 			throw new ObjectNotFoundException(id, PetDomain.class.getName());
 		}
 	}

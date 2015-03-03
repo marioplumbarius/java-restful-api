@@ -56,13 +56,15 @@ public class UserService {
 	}
 
 	public void delete(Long id) {
-		UserDomain user = this.userCrud.find(id);
+		UserDomain user = new UserDomain();
+		user.setId(id);
 
-		if(user != null){
-			this.deletePets(id);
-			this.userCrud.delete(id, user);
-		} else {
-			throw new ObjectNotFoundException(id, UserDomain.class.getName());
+		this.deletePets(id);
+
+		try {
+			this.userCrud.delete(user);
+		} catch (StaleStateException e) {
+			throw new ObjectNotFoundException(id, user.getClass().getName());
 		}
 	}
 
