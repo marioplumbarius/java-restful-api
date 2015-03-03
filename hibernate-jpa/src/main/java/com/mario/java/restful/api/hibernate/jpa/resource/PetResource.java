@@ -63,7 +63,7 @@ public class PetResource {
         List<PetDomain> pets = null;
 
         if (name != null) {
-            Map<String, String> criterias = new HashMap<String, String>();
+            Map<String, Object> criterias = new HashMap<String, Object>();
             criterias.put("name", name);
             pets = this.petService.findAll(criterias);
         } else {

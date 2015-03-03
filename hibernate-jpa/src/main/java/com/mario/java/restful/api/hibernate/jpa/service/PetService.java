@@ -3,6 +3,8 @@ package com.mario.java.restful.api.hibernate.jpa.service;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.ObjectNotFoundException;
+
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
 
@@ -37,14 +39,19 @@ public class PetService {
 		return pets;
 	}
 
-	public List<PetDomain> findAll(Map<String, String> criterias){
+	public List<PetDomain> findAll(Map<String, Object> criterias){
 		List<PetDomain> pets = this.petCrud.findAll(criterias);
 		return pets;
 	}
 
 	public void delete(Long id) {
 		PetDomain pet = this.petCrud.find(id);
-		this.petCrud.delete(id, pet);
+
+		if(pet != null){
+			this.petCrud.delete(id, pet);
+		} else {
+			throw new ObjectNotFoundException(id, PetDomain.class.getName());
+		}
 	}
 
 	public void deleteAll() {

@@ -43,7 +43,7 @@ public class UserService {
 		return users;
 	}
 
-	public List<UserDomain> findAll(Map<String, String> criterias){
+	public List<UserDomain> findAll(Map<String, Object> criterias){
 		List<UserDomain> users = this.userCrud.findAll(criterias);
 		return users;
 	}
@@ -52,7 +52,7 @@ public class UserService {
 		UserDomain user = this.userCrud.find(id);
 
 		if(user != null){
-			this.deletePets(user);
+			this.deletePets(id);
 			this.userCrud.delete(id, user);
 		} else {
 			throw new ObjectNotFoundException(id, UserDomain.class.getName());
@@ -64,9 +64,9 @@ public class UserService {
 		this.userCrud.deleteAll();
 	}
 
-	private void deletePets(UserDomain user){
-		Map<String, String> criterias = new HashMap<String, String>();
-		criterias.put("user.id", user.getId().toString());
+	private void deletePets(Object id){
+		Map<String, Object> criterias = new HashMap<String, Object>();
+		criterias.put("user.id", id);
 		List<PetDomain> pets = this.petCrud.findAll(criterias);
 
 		if(pets != null) this.petCrud.deleteAll(pets);

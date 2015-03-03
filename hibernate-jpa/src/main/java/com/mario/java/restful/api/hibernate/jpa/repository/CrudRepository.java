@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.ObjectNotFoundException;
-import org.hibernate.StaleStateException;
 import org.hibernate.criterion.Restrictions;
 
 import com.mario.java.restful.api.hibernate.jpa.util.SessionManagerSingleton;
@@ -35,7 +34,7 @@ public class CrudRepository<T, ID extends Serializable> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(Map<String, String> criterias){
+	public List<T> findAll(Map<String, Object> criterias){
 		List<T> entities = null;
 
 		this.sessionManager.openSession();
@@ -60,23 +59,15 @@ public class CrudRepository<T, ID extends Serializable> {
 	}
 
 	public void update(ID id, T entity) {
-		try {
-			this.sessionManager.openSessionWithTransaction();
-			this.sessionManager.getSession().update(entity);
-			this.sessionManager.closeSessionWithTransaction();
-		} catch (StaleStateException e) {
-			throw(new ObjectNotFoundException(id, entity.getClass().getName()));
-		}
+		this.sessionManager.openSessionWithTransaction();
+		this.sessionManager.getSession().update(entity);
+		this.sessionManager.closeSessionWithTransaction();
 	}
 
 	public void delete(ID id, T entity) {
-		try {
-			this.sessionManager.openSessionWithTransaction();
-			this.sessionManager.getSession().delete(entity);
-			this.sessionManager.closeSessionWithTransaction();
-		} catch (IllegalArgumentException e) {
-			throw (new ObjectNotFoundException(id, entity.getClass().getName()));
-		}
+		this.sessionManager.openSessionWithTransaction();
+		this.sessionManager.getSession().delete(entity);
+		this.sessionManager.closeSessionWithTransaction();
 	}
 
 	public void deleteAll() {
@@ -84,7 +75,7 @@ public class CrudRepository<T, ID extends Serializable> {
 		this.deleteAll(entities);
 	}
 
-	public void deleteAll(Map<String, String> criterias){
+	public void deleteAll(Map<String, Object> criterias){
 		List<T> entities = this.findAll(criterias);
 		this.deleteAll(entities);
 	}

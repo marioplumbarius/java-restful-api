@@ -58,7 +58,7 @@ public class UserResource {
         List<UserDomain> users = null;
 
         if (name != null) {
-            Map<String, String> criterias = new HashMap<String, String>();
+            Map<String, Object> criterias = new HashMap<String, Object>();
             criterias.put("name", name);
             users = this.service.findAll(criterias);
         } else {
