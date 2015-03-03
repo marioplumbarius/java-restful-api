@@ -77,7 +77,7 @@ public class UserResource {
             URI uri = URI.create("/users/" + user.getId());
             res = Response.created(uri).build();
         } else {
-            res = Response.status(Status.BAD_REQUEST).entity(user.getErrors()).build();
+            res = Response.status(422).entity(user.getErrors()).build();
         }
 
         return res;
@@ -98,7 +98,7 @@ public class UserResource {
             }
 
         } else {
-            res = Response.status(Status.BAD_REQUEST).entity(user.getErrors()).build();
+            res = Response.status(422).entity(user.getErrors()).build();
         }
 
         return res;

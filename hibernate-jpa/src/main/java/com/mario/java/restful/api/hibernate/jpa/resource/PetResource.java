@@ -80,7 +80,7 @@ public class PetResource {
         if (pet.isValid()) {
         	res = this.createHelper(pet);
         } else {
-            res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
+            res = Response.status(422).entity(pet.getErrors()).build();
         }
 
         return res;
@@ -94,7 +94,7 @@ public class PetResource {
         if(pet.isValid()){
             res = this.updateHelper(id, pet);
         } else {
-            res = Response.status(Status.BAD_REQUEST).entity(pet.getErrors()).build();
+            res = Response.status(422).entity(pet.getErrors()).build();
         }
 
         return res;
@@ -143,7 +143,7 @@ public class PetResource {
     		// TODO
 			// move error defined messages to a file
 			Map<String, String> errors = DomainValidator.buildError("userId", "not found");
-			res = Response.status(Status.NOT_FOUND).entity(errors).build();
+			res = Response.status(422).entity(errors).build();
     	}
 
     	return res;
