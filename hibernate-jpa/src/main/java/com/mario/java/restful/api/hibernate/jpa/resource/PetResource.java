@@ -140,10 +140,7 @@ public class PetResource {
             URI uri = URI.create("/pets/" + pet.getId());
             res = Response.created(uri).build();
     	} else {
-    		// TODO
-			// move error defined messages to a file
-			Map<String, String> errors = DomainValidator.buildError("userId", "not found");
-			res = Response.status(422).entity(errors).build();
+    		res = this.buildUserIdNotFoundResponse();
     	}
 
     	return res;
@@ -152,13 +149,24 @@ public class PetResource {
     private Response updateHelper(Long id, PetDomain pet){
     	Response res;
 
-    	try {
-            this.petService.update(id, pet);
-            res = Response.noContent().build();
-        } catch (ObjectNotFoundException e) {
-            res = Response.status(Status.NOT_FOUND).build();
-        }
+    	if(this.userService.find(pet.getUserId()) != null){
+    		try {
+                this.petService.update(id, pet);
+                res = Response.noContent().build();
+            } catch (ObjectNotFoundException e) {
+                res = Response.status(Status.NOT_FOUND).build();
+            }
+    	} else {
+    		res = this.buildUserIdNotFoundResponse();
+    	}
 
     	return res;
+    }
+
+    private Response buildUserIdNotFoundResponse(){
+    	// TODO
+		// move error defined messages to a file
+		Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+		return Response.status(422).entity(errors).build();
     }
 }
