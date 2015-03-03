@@ -28,7 +28,7 @@ public class PetService {
 		pet.setId(id);
 
 		try {
-			this.petCrud.update(id, pet);
+			this.petCrud.update(pet);
 		} catch (StaleStateException e) {
 			throw new ObjectNotFoundException(id, pet.getClass().getName());
 		}

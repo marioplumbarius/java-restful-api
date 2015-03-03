@@ -32,7 +32,7 @@ public class UserService {
 		user.setId(id);
 
 		try {
-			this.userCrud.update(id, user);
+			this.userCrud.update(user);
 		} catch (StaleStateException e) {
 			throw new ObjectNotFoundException(id, user.getClass().getName());
 		}

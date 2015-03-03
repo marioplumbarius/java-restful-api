@@ -58,13 +58,13 @@ public class CrudRepository<T, ID extends Serializable> {
 		this.sessionManager.closeSessionWithTransaction();
 	}
 
-	public void update(ID id, T entity) {
+	public void update(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().update(entity);
 		this.sessionManager.closeSessionWithTransaction();
 	}
 
-	public void delete(ID id, T entity) {
+	public void delete(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().delete(entity);
 		this.sessionManager.closeSessionWithTransaction();
