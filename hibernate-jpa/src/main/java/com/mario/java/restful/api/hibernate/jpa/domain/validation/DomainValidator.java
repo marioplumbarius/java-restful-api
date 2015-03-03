@@ -15,8 +15,7 @@ public class DomainValidator {
 	private Map<String, String> errors;
 
 	public DomainValidator() {
-		this(Validation.buildDefaultValidatorFactory()
-				.getValidator());
+		this(Validation.buildDefaultValidatorFactory().getValidator());
 	}
 
 	public DomainValidator(Validator validator){
@@ -48,9 +47,7 @@ public class DomainValidator {
 		return validate;
 	}
 
-	private <T> void buildErrors(
-			Set<ConstraintViolation<T>> constraintViolations) {
-
+	private <T> void buildErrors(Set<ConstraintViolation<T>> constraintViolations) {
 		this.errors.clear();
 
 		for (ConstraintViolation<T> constraintViolation : constraintViolations) {
@@ -59,5 +56,12 @@ public class DomainValidator {
 
 			this.errors.put(key, value);
 		}
+	}
+
+	public static Map<String, String> buildError(String key, String value){
+		Map<String, String> errors = new HashMap<String, String>();
+		errors.put(key, value);
+
+		return errors;
 	}
 }
