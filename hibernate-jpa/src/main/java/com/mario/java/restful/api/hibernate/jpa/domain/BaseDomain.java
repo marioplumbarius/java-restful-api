@@ -28,7 +28,7 @@ public abstract class BaseDomain extends DatedDomain {
 	}
 
 	@JsonIgnore
-	public Map<String, String> getErrors(){
+	public Map<String, Object> getErrors(){
 		return this.validator.getErrors();
 	}
 }

@@ -105,9 +105,11 @@ public class DomainValidatorTest {
 				});
 
 				it("buils an object with the errors found", () -> {
-					Map<String, String> errors = this.domainValidatorWithoutInjection.getErrors();
+					Map<String, Object> errors = this.domainValidatorWithoutInjection.getErrors();
 					String errorMessage = "size must be between 1 and 20";
-					expect(errors.get("name")).toEqual(errorMessage);
+					@SuppressWarnings("unchecked")
+					Map<String, String> errorFound = (Map<String, String>) errors.get("errors");
+					expect(errorFound.get("name")).toEqual(errorMessage);
 				});
 
 				it("returns false", () -> {

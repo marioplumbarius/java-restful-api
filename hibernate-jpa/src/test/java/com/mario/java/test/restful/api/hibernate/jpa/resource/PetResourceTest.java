@@ -126,7 +126,7 @@ public class PetResourceTest {
 				});
 
         		it("returns 'user not found' error", () -> {
-        			Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+        			Map<String, Object> errors = DomainValidator.buildError("userId", "not found");
         			expect(this.response.getEntity()).toEqual(errors);
 				});
 			});
@@ -282,7 +282,7 @@ public class PetResourceTest {
 					});
 
                 	it("returns 'user not found' error", () -> {
-                		Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+                		Map<String, Object> errors = DomainValidator.buildError("userId", "not found");
                 		expect(this.response.getEntity()).toBeNotNull();
                 		expect(this.response.getEntity()).toEqual(errors);
 					});

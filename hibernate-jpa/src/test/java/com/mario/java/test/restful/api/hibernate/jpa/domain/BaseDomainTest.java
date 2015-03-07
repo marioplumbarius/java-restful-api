@@ -39,7 +39,9 @@ public class BaseDomainTest {
 	@InjectMocks
 	private BaseDomainMock baseDomainMock = new BaseDomainMock(this.domainValidator);
 
-	private Map<String, String> errors, errorResponse;
+	private Map<String, Object> errors, errorResponse;
+
+	private Map<String, String> errorList;
 
 	private boolean response;
 
@@ -48,12 +50,15 @@ public class BaseDomainTest {
 		beforeEach(() -> {
 			MockitoAnnotations.initMocks(this);
 
-			this.errors = new HashMap<String, String>();
-			this.errors.put("any", "error");
+			this.errors = new HashMap<String, Object>();
+			this.errorList = new HashMap<String, String>();
+			this.errorList.put("name", "invalid");
+			this.errors.put("errors", this.errorList);
 		});
 
 		afterEach(() -> {
 			this.errors = null;
+			this.errorList = null;
 			this.errorResponse = null;
 		});
 

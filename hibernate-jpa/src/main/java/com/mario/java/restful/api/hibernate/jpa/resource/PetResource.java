@@ -157,7 +157,7 @@ public class PetResource {
     private Response buildUserIdNotFoundResponse(){
     	// TODO
 		// move error defined messages to a file
-		Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+		Map<String, Object> errors = DomainValidator.buildError("userId", "not found");
 		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
     }
 }

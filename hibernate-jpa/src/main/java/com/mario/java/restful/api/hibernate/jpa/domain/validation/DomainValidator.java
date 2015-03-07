@@ -12,7 +12,7 @@ public class DomainValidator {
 
 	private final Validator validator;
 
-	private Map<String, String> errors;
+	private Map<String, Object> errors;
 
 	public DomainValidator() {
 		this(Validation.buildDefaultValidatorFactory().getValidator());
@@ -20,14 +20,14 @@ public class DomainValidator {
 
 	public DomainValidator(Validator validator){
 		this.validator = validator;
-		this.errors = new HashMap<String, String>();
+		this.errors = new HashMap<String, Object>();
 	}
 
 	public Validator getValidator() {
 		return this.validator;
 	}
 
-	public Map<String, String> getErrors() {
+	public Map<String, Object> getErrors() {
 		return this.errors;
 	}
 
@@ -50,17 +50,23 @@ public class DomainValidator {
 	private <T> void buildErrors(Set<ConstraintViolation<T>> constraintViolations) {
 		this.errors.clear();
 
+		Map<String, String> errorList = new HashMap<String, String>();
+
 		for (ConstraintViolation<T> constraintViolation : constraintViolations) {
 			String key = constraintViolation.getPropertyPath().toString();
 			String value = constraintViolation.getMessage();
 
-			this.errors.put(key, value);
+			errorList.put(key, value);
 		}
+
+		this.errors.put("errors", errorList);
 	}
 
-	public static Map<String, String> buildError(String key, String value){
-		Map<String, String> errors = new HashMap<String, String>();
-		errors.put(key, value);
+	public static Map<String, Object> buildError(String key, String value){
+		Map<String, Object> errors = new HashMap<String, Object>();
+		Map<String, String> error = new HashMap<String, String>();
+		error.put(key, value);
+		errors.put("errors", error);
 
 		return errors;
 	}
