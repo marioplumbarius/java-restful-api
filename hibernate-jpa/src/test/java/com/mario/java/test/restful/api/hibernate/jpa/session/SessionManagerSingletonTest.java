@@ -1,4 +1,4 @@
-package com.mario.java.test.restful.api.hibernate.jpa.util;
+package com.mario.java.test.restful.api.hibernate.jpa.session;
 
 import static com.mscharhag.oleaster.matcher.Matchers.expect;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;
@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.mario.java.restful.api.hibernate.jpa.util.SessionManagerSingleton;
+import com.mario.java.restful.api.hibernate.jpa.session.SessionManagerSingleton;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @Ignore

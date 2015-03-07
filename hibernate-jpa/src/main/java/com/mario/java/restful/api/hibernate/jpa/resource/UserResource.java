@@ -17,8 +17,8 @@ import javax.ws.rs.core.Response.Status;
 import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 
 @Path("/users")
 @Consumes("application/json")

@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.util;
+package com.mario.java.restful.api.hibernate.jpa.session;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

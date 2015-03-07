@@ -21,8 +21,8 @@ import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
+import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;

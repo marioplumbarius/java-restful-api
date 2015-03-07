@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.util;
+package com.mario.java.restful.api.hibernate.jpa.resource.response;
 
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
