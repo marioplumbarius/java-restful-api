@@ -44,7 +44,31 @@ public class UserResourceTest {
 	private List<UserDomain> users;
 	private Long id;
 	private Response response;
-	private String name = "anything";
+
+	private void behavesLikeUserNotFound(){
+		it("returns an empty body", () -> {
+			expect(this.response.getEntity()).toEqual(null);
+		});
+
+		it("returns a 404 http status", () -> {
+			expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
+		});
+	}
+
+	private void behavesLikeUserInvalid(){
+		it("does not return the user URI", () -> {
+			expect(this.response.getLocation()).toBeNull();
+		});
+
+		it("returns 422 http status code", () -> {
+			expect(this.response.getStatus()).toEqual(422);
+		});
+
+		it("returns validation errors", () -> {
+			Mockito.verify(this.invalidUser).getErrors();
+			expect(this.response.getEntity()).toBeNotNull();
+		});
+	}
 
 	{
 		beforeEach(() -> {
@@ -77,13 +101,7 @@ public class UserResourceTest {
 					this.response = this.resource.find(this.id);
 				});
 
-				it("returns an empty body", () -> {
-					expect(this.response.getEntity()).toEqual(null);
-				});
-
-				it("returns a 404 http status", () -> {
-					expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-				});
+				this.behavesLikeUserNotFound();
 
 			});
 
@@ -179,34 +197,25 @@ public class UserResourceTest {
 					Mockito.verify(this.service, Mockito.never()).persist(this.validUser);
 				});
 
-				it("does not return the user URI", () -> {
-					expect(this.response.getLocation()).toBeNull();
-				});
-
-				it("returns 422 http status code", () -> {
-					expect(this.response.getStatus()).toEqual(422);
-				});
-
-				it("returns validation errors", () -> {
-					Mockito.verify(this.invalidUser).getErrors();
-					expect(this.response.getEntity()).toBeNotNull();
-				});
+				this.behavesLikeUserInvalid();
 			});
 		});
 
 		describe("#update", () -> {
 
 			beforeEach(() -> {
-				Mockito.when(this.validUser.isValid()).thenReturn(true);
-				Mockito.when(this.invalidUser.isValid()).thenReturn(false);
+				this.resource.create(this.validUser);
 			});
 
 			it("verifies if the user is valid", () -> {
-				this.resource.create(this.validUser);
 				Mockito.verify(this.validUser).isValid();
 			});
 
 			describe("when the user is valid", () -> {
+				beforeEach(() -> {
+					Mockito.when(this.validUser.isValid()).thenReturn(true);
+				});
+
 				describe("when the user exists", () -> {
 					beforeEach(() -> {
 						this.response = this.resource.update(this.id, this.validUser);
@@ -231,13 +240,7 @@ public class UserResourceTest {
 						this.response = this.resource.update(this.id, this.validUser);
 					});
 
-					it("returns 404 http status code", () -> {
-						expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-					});
-
-					it("returns an empty response body", () -> {
-						expect(this.response.getEntity()).toBeNull();
-					});
+					this.behavesLikeUserNotFound();
 				});
 			});
 
@@ -251,18 +254,7 @@ public class UserResourceTest {
 					Mockito.verify(this.service, Mockito.never()).persist(this.validUser);
 				});
 
-				it("does not return the user URI", () -> {
-					expect(this.response.getLocation()).toBeNull();
-				});
-
-				it("returns 422 http status code", () -> {
-					expect(this.response.getStatus()).toEqual(422);
-				});
-
-				it("returns validation errors", () -> {
-					Mockito.verify(this.invalidUser).getErrors();
-					expect(this.response.getEntity()).toBeNotNull();
-				});
+				this.behavesLikeUserInvalid();
 			});
 		});
 
@@ -292,13 +284,7 @@ public class UserResourceTest {
 					this.response = this.resource.delete(this.id);
 				});
 
-				it("returns 404 http status code", () -> {
-					expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-				});
-
-				it("returns an empty response body", () -> {
-					expect(this.response.getEntity()).toBeNull();
-				});
+				this.behavesLikeUserNotFound();
 			});
 		});
 	}
