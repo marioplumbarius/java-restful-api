@@ -18,6 +18,7 @@ import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 
 @Path("/users")
 @Consumes("application/json")
@@ -66,7 +67,7 @@ public class UserResource {
             URI uri = URI.create("/users/" + user.getId());
             res = Response.created(uri).build();
         } else {
-            res = Response.status(422).entity(user.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
         }
 
         return res;
@@ -80,7 +81,7 @@ public class UserResource {
         if (user.isValid()) {
         	res = this.updateHelper(id, user);
         } else {
-            res = Response.status(422).entity(user.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
         }
 
         return res;

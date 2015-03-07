@@ -22,6 +22,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 
 @Path("/pets")
 @Consumes("application/json")
@@ -70,7 +71,7 @@ public class PetResource {
         if (pet.isValid()) {
         	res = this.createHelper(pet);
         } else {
-            res = Response.status(422).entity(pet.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(pet.getErrors()).build();
         }
 
         return res;
@@ -84,7 +85,7 @@ public class PetResource {
         if(pet.isValid()){
             res = this.updateHelper(id, pet);
         } else {
-            res = Response.status(422).entity(pet.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(pet.getErrors()).build();
         }
 
         return res;
@@ -157,6 +158,6 @@ public class PetResource {
     	// TODO
 		// move error defined messages to a file
 		Map<String, String> errors = DomainValidator.buildError("userId", "not found");
-		return Response.status(422).entity(errors).build();
+		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
     }
 }

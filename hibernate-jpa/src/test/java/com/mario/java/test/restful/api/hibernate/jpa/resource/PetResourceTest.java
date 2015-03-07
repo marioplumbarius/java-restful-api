@@ -26,6 +26,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidato
 import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -120,8 +121,8 @@ public class PetResourceTest {
 					this.response = this.resource.update(this.id, this.validPet);
 				});
 
-        		it("returns 422 http status code", () -> {
-        			expect(this.response.getStatus()).toEqual(422);;
+        		it("returns HttpStatus.UNPROCESSABLE_ENTITY http status code", () -> {
+        			expect(this.response.getStatus()).toEqual(HttpStatus.UNPROCESSABLE_ENTITY.getStatusCode());
 				});
 
         		it("returns 'user not found' error", () -> {
@@ -138,8 +139,8 @@ public class PetResourceTest {
                 this.response = this.resource.create(this.invalidPet);
             });
 
-            it("returns 422 http status code", () -> {
-                expect(this.response.getStatus()).toEqual(422);
+            it("returns HttpStatus.UNPROCESSABLE_ENTITY http status code", () -> {
+                expect(this.response.getStatus()).toEqual(HttpStatus.UNPROCESSABLE_ENTITY.getStatusCode());
             });
 
             it("returns validation errors", () -> {
@@ -276,8 +277,8 @@ public class PetResourceTest {
 						this.response = this.resource.create(this.validPet);
 					});
 
-                	it("returns 422 http status code", () -> {
-                		expect(this.response.getStatus()).toEqual(422);
+                	it("returns HttpStatus.UNPROCESSABLE_ENTITY http status code", () -> {
+                		expect(this.response.getStatus()).toEqual(HttpStatus.UNPROCESSABLE_ENTITY.getStatusCode());
 					});
 
                 	it("returns 'user not found' error", () -> {
@@ -294,8 +295,8 @@ public class PetResourceTest {
                 	this.response = this.resource.create(this.invalidPet);
                 });
 
-                it("returns 422 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(422);
+                it("returns HttpStatus.UNPROCESSABLE_ENTITY http status code", () -> {
+                    expect(this.response.getStatus()).toEqual(HttpStatus.UNPROCESSABLE_ENTITY.getStatusCode());
                 });
 
                 it("returns validation errors", () -> {

@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.util.HttpStatus;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -61,7 +62,7 @@ public class UserResourceTest {
 		});
 
 		it("returns 422 http status code", () -> {
-			expect(this.response.getStatus()).toEqual(422);
+			expect(this.response.getStatus()).toEqual(HttpStatus.UNPROCESSABLE_ENTITY.getStatusCode());
 		});
 
 		it("returns validation errors", () -> {
