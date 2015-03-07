@@ -7,7 +7,6 @@ import static com.mscharhag.oleaster.runner.StaticRunnerSupport.describe;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.it;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,14 +16,16 @@ import javax.ws.rs.core.Response.Status;
 import org.hibernate.ObjectNotFoundException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -36,7 +37,10 @@ public class PetResourceTest {
     private PetResource resource;
 
     @Mock
-    private PetService service;
+    private PetService petService;
+
+    @Mock
+    private UserService userService;
 
     @Mock
     private PetResource resourceMock;
@@ -45,7 +49,10 @@ public class PetResourceTest {
     private PetDomain validPet = PetFactory.createValidPet();
 
     @Mock
-    private PetDomain invalidUser = PetFactory.createInvalidPet();
+    private PetDomain invalidPet = PetFactory.createInvalidPet();
+
+    @Mock
+    private UserDomain user;
 
     @Mock
     private PetDomain currentPet;
@@ -53,7 +60,94 @@ public class PetResourceTest {
     private List<PetDomain> pets;
     private Long id;
     private Response response;
-    private String name = "anything";
+
+    private void behavesLikePetNotFound(){
+    	it("returns an empty body", () -> {
+            expect(this.response.getEntity()).toEqual(null);
+        });
+
+        it("returns a 404 http status", () -> {
+            expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
+        });
+    }
+
+    private void behavesLikeUpdate(){
+    	it("verifies if the pet is valid", () -> {
+            Mockito.verify(this.validPet).isValid();
+        });
+
+        describe("when the pet is valid", () -> {
+        	beforeEach(() -> {
+		         Mockito.when(this.validPet.isValid()).thenReturn(true);
+			});
+
+        	describe("when the user exist", () -> {
+        		beforeEach(() -> {
+					Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(this.user);
+				});
+        		describe("when the pet exists", () -> {
+                    beforeEach(() -> {
+                        this.response = this.resource.update(this.id, this.validPet);
+                    });
+
+                    it("updates the pet", () -> {
+                        Mockito.verify(this.petService).update(this.id, this.validPet);
+                    });
+
+                    it("returns 204 http status code", () -> {
+                        expect(this.response.getStatus()).toEqual(Status.NO_CONTENT.getStatusCode());
+                    });
+
+                    it("returns an empty response body", () -> {
+                        expect(this.response.getEntity()).toBeNull();
+                    });
+                });
+
+                describe("when the pet does not exist", () -> {
+                    beforeEach(() -> {
+                        Mockito.doThrow(new ObjectNotFoundException(this.id, this.validPet.getClass().getName())).when(this.petService).update(this.id, this.validPet);
+                        this.response = this.resource.update(this.id, this.validPet);
+                    });
+
+                    this.behavesLikePetNotFound();
+                });
+			});
+
+        	describe("when the user does not exist", () -> {
+        		beforeEach(() -> {
+					Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(null);
+
+					this.response = this.resource.update(this.id, this.validPet);
+				});
+
+        		it("returns 422 http status code", () -> {
+        			expect(this.response.getStatus()).toEqual(422);;
+				});
+
+        		it("returns 'user not found' error", () -> {
+        			Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+        			expect(this.response.getEntity()).toEqual(errors);
+				});
+			});
+
+        });
+
+        describe("when the pet is invalid", () -> {
+            beforeEach(() -> {
+                Mockito.when(this.invalidPet.isValid()).thenReturn(false);
+                this.response = this.resource.create(this.invalidPet);
+            });
+
+            it("returns 422 http status code", () -> {
+                expect(this.response.getStatus()).toEqual(422);
+            });
+
+            it("returns validation errors", () -> {
+                Mockito.verify(this.invalidPet).getErrors();
+                expect(this.response.getEntity()).toBeNotNull();
+            });
+        });
+    }
 
     {
         beforeEach(() -> {
@@ -72,34 +166,27 @@ public class PetResourceTest {
         describe("#find", () -> {
 
             beforeEach(() -> {
-                Mockito.when(this.service.find(this.id)).thenReturn(null);
+                Mockito.when(this.petService.find(this.id)).thenReturn(null);
             });
 
             it("searches for pets by id", () -> {
                 this.resource.find(this.id);
-                Mockito.verify(this.service).find(this.id);
+                Mockito.verify(this.petService).find(this.id);
             });
 
             describe("when the pet is not found", () -> {
 
                 beforeEach(() -> {
-                    Mockito.when(this.service.find(this.id)).thenReturn(null);
+                    Mockito.when(this.petService.find(this.id)).thenReturn(null);
                     this.response = this.resource.find(this.id);
                 });
 
-                it("returns an empty body", () -> {
-                    expect(this.response.getEntity()).toEqual(null);
-                });
-
-                it("returns a 404 http status", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-                });
-
+                this.behavesLikePetNotFound();
             });
 
             describe("when the pet is found", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.service.find(this.id)).thenReturn(this.validPet);
+                    Mockito.when(this.petService.find(this.id)).thenReturn(this.validPet);
                     this.response = this.resource.find(this.id);
                 });
 
@@ -115,133 +202,106 @@ public class PetResourceTest {
         });
 
         describe("#findAll", () -> {
+        	beforeEach(() -> {
+                Mockito.when(this.petService.findAll(null)).thenReturn(null);
+                this.resource.findAll();
+            });
 
-            describe("when the pet provide the 'name' query param", () -> {
+            it("searches for all pets", () -> {
+                Mockito.verify(this.petService).findAll();
+            });
 
+            describe("when no pets are found", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
-                    this.resource.findAll(this.name);
+                    Mockito.when(this.petService.findAll()).thenReturn(null);
                 });
 
-                it("filters the search by name", () -> {
-                    Map<String, String> criterias = new HashMap<String, String>();
-                    criterias.put("name", this.name);
-                    Mockito.verify(this.service).findAll(criterias);
-                });
-
-                describe("when there aren't records matching the criteria", () -> {
-                    beforeEach(() -> {
-                        Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
-                    });
-
-                    it("returns an empty list", () -> {
-                        List<PetDomain> returnedUsers = this.resource.findAll(this.name);
-                        expect(returnedUsers).toBeNull();
-                    });
-                });
-
-                describe("when there are records matching the criteria", () -> {
-                    beforeEach(() -> {
-                        this.pets.add(this.validPet);
-                        Mockito.when(this.service.findAll(Matchers.any())).thenReturn(this.pets);
-                    });
-
-                    it("returns the list of pets found", () -> {
-                        List<PetDomain> returnedUsers = this.resource.findAll(this.name);
-                        expect(returnedUsers.get(0)).toEqual(this.pets.get(0));
-                        expect(returnedUsers.size()).toEqual(this.pets.size());
-                    });
+                it("returns an empty list", () -> {
+                    List<PetDomain> returnedUsers = this.resource.findAll();
+                    expect(returnedUsers).toBeNull();
                 });
             });
 
-            describe("when the pet does not search by name", () -> {
+            describe("when there are pets found", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.service.findAll(null)).thenReturn(null);
-                    this.resource.findAll(null);
+                    this.pets.add(this.validPet);
+                    Mockito.when(this.petService.findAll()).thenReturn(this.pets);
                 });
 
-                it("does not filter the search by name", () -> {
-                    Mockito.verify(this.service).findAll();
-                });
-
-                describe("when no pets are found", () -> {
-                    beforeEach(() -> {
-                        Mockito.when(this.service.findAll()).thenReturn(null);
-                    });
-
-                    it("returns an empty list", () -> {
-                        List<PetDomain> returnedUsers = this.resource.findAll(null);
-                        expect(returnedUsers).toBeNull();
-                    });
-                });
-
-                describe("when there are pets found", () -> {
-                    beforeEach(() -> {
-                        this.pets.add(this.validPet);
-                        Mockito.when(this.service.findAll()).thenReturn(this.pets);
-                    });
-
-                    it("returns the list of pets found", () -> {
-                        List<PetDomain> returnedUsers = this.resource.findAll(null);
-                        expect(returnedUsers.get(0)).toEqual(this.pets.get(0));
-                        expect(returnedUsers.size()).toEqual(this.pets.size());
-                    });
+                it("returns the list of pets found", () -> {
+                    List<PetDomain> returnedUsers = this.resource.findAll();
+                    expect(returnedUsers.get(0)).toEqual(this.pets.get(0));
+                    expect(returnedUsers.size()).toEqual(this.pets.size());
                 });
             });
-
         });
 
         describe("#create", () -> {
 
             beforeEach(() -> {
-                Mockito.when(this.validPet.isValid()).thenReturn(true);
-                Mockito.when(this.invalidUser.isValid()).thenReturn(false);
+                this.resource.create(this.validPet);
             });
 
             it("verifies if the pet is valid", () -> {
-                this.resource.create(this.validPet);
                 Mockito.verify(this.validPet).isValid();
             });
 
             describe("when the pet is valid", () -> {
-                beforeEach(() -> {
-                    this.response = this.resource.create(this.validPet);
-                });
+            	beforeEach(() -> {
+					Mockito.when(this.validPet.isValid()).thenReturn(true);
+				});
 
-                it("persists the pet", () -> {
-                    Mockito.verify(this.service).persist(this.validPet);
-                });
+                describe("when the pet's user exists", () -> {
+                	beforeEach(() -> {
+                		Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(this.user);
 
-                it("returns 201 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.CREATED.getStatusCode());
-                });
+                		this.response = this.resource.create(this.validPet);
+					});
 
-                it("returns the pet URI", () -> {
-                    expect(this.response.getLocation().toString()).toEqual(PetFactory.URI.replace("{id}", this.validPet.getId().toString()));
-                });
+                    it("persists the pet", () -> {
+                        Mockito.verify(this.petService).persist(this.validPet);
+                    });
+
+                    it("returns 201 http status code", () -> {
+                        expect(this.response.getStatus()).toEqual(Status.CREATED.getStatusCode());
+                    });
+
+                    it("returns the pet URI", () -> {
+                        expect(this.response.getLocation().toString()).toEqual(PetFactory.URI.replace("{id}", this.validPet.getId().toString()));
+                    });
+				});
+
+                describe("when the pet's user does not exist", () -> {
+                	beforeEach(() -> {
+						this.response = this.resource.create(this.validPet);
+					});
+
+                	it("returns 422 http status code", () -> {
+                		expect(this.response.getStatus()).toEqual(422);
+					});
+
+                	it("returns 'user not found' error", () -> {
+                		Map<String, String> errors = DomainValidator.buildError("userId", "not found");
+                		expect(this.response.getEntity()).toBeNotNull();
+                		expect(this.response.getEntity()).toEqual(errors);
+					});
+				});
             });
 
             describe("when the pet is invalid", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.validPet.isValid()).thenReturn(false);
-                    this.response = this.resource.create(this.invalidUser);
-                });
-
-                it("does not persist the pet", () -> {
-                    Mockito.verify(this.service, Mockito.never()).persist(this.validPet);
-                });
-
-                it("does not return the pet URI", () -> {
-                    expect(this.response.getLocation()).toBeNull();
+                	Mockito.when(this.invalidPet.isValid()).thenReturn(false);
+                	this.response = this.resource.create(this.invalidPet);
                 });
 
                 it("returns 422 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.BAD_REQUEST.getStatusCode());
+                    expect(this.response.getStatus()).toEqual(422);
                 });
 
                 it("returns validation errors", () -> {
-                    Mockito.verify(this.invalidUser).getErrors();
+                    this.invalidPet.isValid();
                     expect(this.response.getEntity()).toBeNotNull();
+                    expect(this.response.getEntity()).toEqual(this.invalidPet.getErrors());
                 });
             });
         });
@@ -249,73 +309,10 @@ public class PetResourceTest {
         describe("#update", () -> {
 
             beforeEach(() -> {
-                Mockito.when(this.validPet.isValid()).thenReturn(true);
-                Mockito.when(this.invalidUser.isValid()).thenReturn(false);
+                this.resource.update(this.id, this.validPet);
             });
 
-            it("verifies if the pet is valid", () -> {
-                this.resource.create(this.validPet);
-                Mockito.verify(this.validPet).isValid();
-            });
-
-            describe("when the pet is valid", () -> {
-                describe("when the pet exists", () -> {
-                    beforeEach(() -> {
-                        this.response = this.resource.update(this.id, this.validPet);
-                    });
-
-                    it("updates the pet", () -> {
-                        Mockito.verify(this.service).update(this.id, this.validPet);
-                    });
-
-                    it("returns 204 http status code", () -> {
-                        expect(this.response.getStatus()).toEqual(Status.NO_CONTENT.getStatusCode());
-                    });
-
-                    it("returns an empty response body", () -> {
-                        expect(this.response.getEntity()).toBeNull();
-                    });
-                });
-
-                describe("when the pet does not exist", () -> {
-                    beforeEach(() -> {
-                        Mockito.doThrow(new ObjectNotFoundException(this.id, this.validPet.getClass().getName())).when(this.service).update(this.id, this.validPet);
-                        this.response = this.resource.update(this.id, this.validPet);
-                    });
-
-                    it("returns 404 http status code", () -> {
-                        expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-                    });
-
-                    it("returns an empty response body", () -> {
-                        expect(this.response.getEntity()).toBeNull();
-                    });
-                });
-            });
-
-            describe("when the pet is invalid", () -> {
-                beforeEach(() -> {
-                    Mockito.when(this.validPet.isValid()).thenReturn(false);
-                    this.response = this.resource.create(this.invalidUser);
-                });
-
-                it("does not persist the pet", () -> {
-                    Mockito.verify(this.service, Mockito.never()).persist(this.validPet);
-                });
-
-                it("does not return the pet URI", () -> {
-                    expect(this.response.getLocation()).toBeNull();
-                });
-
-                it("returns 422 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.BAD_REQUEST.getStatusCode());
-                });
-
-                it("returns validation errors", () -> {
-                    Mockito.verify(this.invalidUser).getErrors();
-                    expect(this.response.getEntity()).toBeNotNull();
-                });
-            });
+            this.behavesLikeUpdate();
         });
 
         describe("#delete", () -> {
@@ -326,7 +323,7 @@ public class PetResourceTest {
                 });
 
                 it("deletes the pet", () -> {
-                    Mockito.verify(this.service).delete(this.id);
+                    Mockito.verify(this.petService).delete(this.id);
                 });
 
                 it("returns 204 http status code", () -> {
@@ -340,17 +337,11 @@ public class PetResourceTest {
 
             describe("when the pet does not exist", () -> {
                 beforeEach(() -> {
-                    Mockito.doThrow(new ObjectNotFoundException(this.id, null)).when(this.service).delete(this.id);
+                    Mockito.doThrow(new ObjectNotFoundException(this.id, null)).when(this.petService).delete(this.id);
                     this.response = this.resource.delete(this.id);
                 });
 
-                it("returns 404 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-                });
-
-                it("returns an empty response body", () -> {
-                    expect(this.response.getEntity()).toBeNull();
-                });
+                this.behavesLikePetNotFound();
             });
         });
 
@@ -360,12 +351,13 @@ public class PetResourceTest {
             });
 
             it("fetches the pet from database", () -> {
-                Mockito.verify(this.service).find(this.id);
+                Mockito.verify(this.petService).find(this.id);
             });
 
             describe("when the pet exists", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.service.find(this.id)).thenReturn(this.currentPet);
+                    Mockito.when(this.petService.find(this.id)).thenReturn(this.currentPet);
+
                     this.response = this.resource.patch(this.id, this.validPet);
                 });
 
@@ -373,32 +365,17 @@ public class PetResourceTest {
                     Mockito.verify(this.validPet).patch(this.currentPet);
                 });
 
-                it("updates the pet", () -> {
-                    // TODO
-                    // how to test the following operation?
-
-                    // Mockito.when(this.resourceMock.patch(this.id,
-                    // this.validPet)).thenCallRealMethod();
-                    // this.response = this.resourceMock.patch(this.id,
-                    // this.validPet);
-                    // Mockito.verify(this.resourceMock).update(this.id,
-                    // this.validPet);
-                });
+                this.behavesLikeUpdate();
             });
 
             describe("when the pet does not exist", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.service.find(this.id)).thenReturn(null);
+                    Mockito.when(this.petService.find(this.id)).thenReturn(null);
+
                     this.response = this.resource.patch(this.id, this.validPet);
                 });
 
-                it("returns 404 http status code", () -> {
-                    expect(this.response.getStatus()).toEqual(Status.NOT_FOUND.getStatusCode());
-                });
-
-                it("returns an empty response body", () -> {
-                    expect(this.response.getEntity()).toBeNull();
-                });
+                this.behavesLikePetNotFound();
             });
         });
     }

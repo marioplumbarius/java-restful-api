@@ -15,7 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.StaleStateException;
+import org.hibernate.criterion.Criterion;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
@@ -47,7 +47,7 @@ public class CrudRepositoryTest {
 	@Mock
 	private Criteria criteria;
 
-	private Map<String, String> criterias;
+	private Map<String, Object> criterias;
 
 	@Mock
 	private UserDomain entity;
@@ -65,13 +65,15 @@ public class CrudRepositoryTest {
 			this.entities = new ArrayList<UserDomain>();
 			this.entities.add(this.entity);
 
-			this.criterias = new HashMap<String, String>();
+			this.criterias = new HashMap<String, Object>();
 			this.criterias.put("key", "value");
 
 			this.id = IdFactory.createValidId();
 
 			Mockito.when(this.sessionManager.getSession()).thenReturn(this.session);
 			Mockito.when(this.session.createQuery("from UserDomain")).thenReturn(this.query);
+			Mockito.when(this.session.createCriteria(UserDomain.class)).thenReturn(this.criteria);
+			Mockito.when(this.criteria.add(Matchers.any(Criterion.class))).thenReturn(this.criteria);
 		});
 
 		afterEach(()->{
@@ -236,70 +238,37 @@ public class CrudRepositoryTest {
 
 		describe("#update", () -> {
 			beforeEach(() -> {
-				this.crudRepository.update(this.id, this.entity);
+				this.crudRepository.update(this.entity);
 			});
 
 			it("open a transactional session", () -> {
 				Mockito.verify(this.sessionManager).openSessionWithTransaction();
 			});
 
-			describe("when the entity exists on database", () -> {
-				it("updates the entity", () -> {
-					Mockito.verify(this.session).update(this.entity);
-				});
-
-				it("closes the transactional session", () -> {
-					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
-				});
+			it("updates the entity", () -> {
+				Mockito.verify(this.session).update(this.entity);
 			});
 
-			describe("when the entity does not exist on database", () -> {
-				beforeEach(() -> {
-					Mockito.doThrow(new StaleStateException(null)).when(this.session).update(this.entity);
-				});
-				it("throws an 'object not found' exception", () -> {
-					try {
-						this.crudRepository.update(this.id, this.entity);
-						expect(true).toBeFalse();
-					} catch (ObjectNotFoundException e) {
-						expect(e.getMessage()).toContain("No row with the given identifier exists:");
-					}
-				});
+			it("closes the transactional session", () -> {
+				Mockito.verify(this.sessionManager).closeSessionWithTransaction();
 			});
 		});
 
 		describe("#delete", () -> {
 			beforeEach(() -> {
-				this.crudRepository.delete(this.id, this.entity);
+				this.crudRepository.delete(this.entity);
 			});
 
 			it("open a transactional session", () -> {
 				Mockito.verify(this.sessionManager).openSessionWithTransaction();
 			});
 
-			describe("when the entity exists on database", () -> {
-				it("deletes the entity", () -> {
-					Mockito.verify(this.session).delete(this.entity);
-				});
-
-				it("closes the transactional session", () -> {
-					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
-				});
+			it("deletes the entity", () -> {
+				Mockito.verify(this.session).delete(this.entity);
 			});
 
-			describe("when the entity does not exist on database", () -> {
-				beforeEach(() -> {
-					Mockito.doThrow(new IllegalArgumentException()).when(this.session).delete(this.entity);
-				});
-
-				it("throws an 'object not found' exception", () -> {
-					try {
-						this.crudRepository.delete(this.id, this.entity);
-						expect(true).toBeFalse();
-					} catch (ObjectNotFoundException e) {
-						expect(e.getMessage()).toContain("No row with the given identifier exists:");
-					}
-				});
+			it("closes the transactional session", () -> {
+				Mockito.verify(this.sessionManager).closeSessionWithTransaction();
 			});
 		});
 
@@ -316,10 +285,18 @@ public class CrudRepositoryTest {
 			});
 
 			describe("when there're entities found", () -> {
+				it("opens the session with transaction", () -> {
+					Mockito.verify(this.sessionManager).openSessionWithTransaction();
+				});
+
 				it("deletes all entities", () -> {
 					for(UserDomain entity : this.entities){
 						Mockito.verify(this.session).delete(entity);
 					}
+				});
+
+				it("closes session with transaction", () -> {
+					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
 				});
 			});
 
@@ -328,15 +305,97 @@ public class CrudRepositoryTest {
 					Mockito.when(this.query.list()).thenReturn(null);
 				});
 
-				it("throws an 'object not found' exception", () -> {
+				it("throws an ObjectNotFoundException", () -> {
 					try {
 						this.crudRepository.deleteAll();
-						expect(true).toBeFalse();
+						expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists:");
 					}
 				});
 
+			});
+		});
+
+		describe("#deleteAll(Map<String, Object>)", () -> {
+			beforeEach(() -> {
+				Mockito.when(this.criteria.list()).thenReturn(this.entities);
+
+				this.crudRepository.deleteAll(this.criterias);
+			});
+
+			it("finds all entities", () -> {
+				Mockito.verify(this.session).createCriteria(UserDomain.class);
+				Mockito.verify(this.criteria).add(Matchers.any(Criterion.class));
+				Mockito.verify(this.criteria).list();
+			});
+
+			describe("when there're entities found", () -> {
+				it("opens the session with transaction", () -> {
+					Mockito.verify(this.sessionManager).openSessionWithTransaction();
+				});
+
+				it("deletes all entities", () -> {
+					for(UserDomain entity : this.entities){
+						Mockito.verify(this.session).delete(entity);
+					}
+				});
+
+				it("closes session with transaction", () -> {
+					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
+				});
+			});
+
+			describe("when there aren't entities found", () -> {
+				beforeEach(() -> {
+					Mockito.when(this.criteria.list()).thenReturn(null);
+				});
+
+				it("throws an ObjectNotFoundException", () -> {
+					try {
+						this.crudRepository.deleteAll(this.criterias);
+						expect("ObjectNotFoundException").toBeNotNull();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists:");
+					}
+				});
+			});
+		});
+
+		describe("#deleteAll(List<T>)", () -> {
+			beforeEach(() -> {
+				this.crudRepository.deleteAll(this.entities);
+			});
+
+			describe("when the entities is not null", () -> {
+				it("opens the session with transaction", () -> {
+					Mockito.verify(this.sessionManager).openSessionWithTransaction();
+				});
+
+				it("deletes all entities", () -> {
+					for(UserDomain entity : this.entities){
+						Mockito.verify(this.session).delete(entity);
+					}
+				});
+
+				it("closes session with transaction", () -> {
+					Mockito.verify(this.sessionManager).closeSessionWithTransaction();
+				});
+			});
+
+			describe("when the entities is null", () -> {
+				beforeEach(() -> {
+					this.entities = null;
+				});
+
+				it("throws an ObjectNotFoundException", () -> {
+					try {
+						this.crudRepository.deleteAll(this.criterias);
+						expect("ObjectNotFoundException").toBeNotNull();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists:");
+					}
+				});
 			});
 		});
 	}

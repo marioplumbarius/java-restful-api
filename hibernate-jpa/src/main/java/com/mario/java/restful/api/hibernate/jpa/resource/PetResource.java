@@ -1,7 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.resource;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -59,16 +57,8 @@ public class PetResource {
     }
 
     @GET
-    public List<PetDomain> findAll(@QueryParam("name") String name) {
-        List<PetDomain> pets = null;
-
-        if (name != null) {
-            Map<String, Object> criterias = new HashMap<String, Object>();
-            criterias.put("name", name);
-            pets = this.petService.findAll(criterias);
-        } else {
-            pets = this.petService.findAll();
-        }
+    public List<PetDomain> findAll() {
+        List<PetDomain> pets = this.petService.findAll();
 
         return pets;
     }

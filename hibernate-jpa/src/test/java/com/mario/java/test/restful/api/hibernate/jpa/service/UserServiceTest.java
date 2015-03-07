@@ -45,7 +45,7 @@ public class UserServiceTest {
 	private String value;
 	private UserDomain validUser;
 	private List<UserDomain> users;
-	private Map<String, String> criterias;
+	private Map<String, Object> criterias;
 
 	{
 
@@ -58,7 +58,7 @@ public class UserServiceTest {
 			this.id = IdFactory.createValidId();
 			this.key = "anyKey";
 			this.value = "anyValue";
-			this.criterias = new HashMap<String, String>();
+			this.criterias = new HashMap<String, Object>();
 			this.criterias.put(this.key, this.value);
 		});
 
@@ -93,7 +93,7 @@ public class UserServiceTest {
 			});
 
 			it("updates the user", ()->{
-				Mockito.verify(this.userCrud).update(this.id, this.user);
+				Mockito.verify(this.userCrud).update(this.user);
 			});
 		});
 
@@ -215,7 +215,7 @@ public class UserServiceTest {
 			});
 
 			it("deletes the user", ()->{
-				Mockito.verify(this.userCrud).delete(this.id, this.validUser);
+				Mockito.verify(this.userCrud).delete(this.validUser);
 			});
 		});
 

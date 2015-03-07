@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.StaleStateException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -43,7 +46,7 @@ public class PetServiceTest {
     private String value;
     private PetDomain validPet;
     private List<PetDomain> pets;
-    private Map<String, String> criterias;
+    private Map<String, Object> criterias;
 
     {
 
@@ -56,7 +59,7 @@ public class PetServiceTest {
             this.id = IdFactory.createValidId();
             this.key = "anyKey";
             this.value = "anyValue";
-            this.criterias = new HashMap<String, String>();
+            this.criterias = new HashMap<String, Object>();
             this.criterias.put(this.key, this.value);
         });
 
@@ -90,9 +93,26 @@ public class PetServiceTest {
                 Mockito.verify(this.pet).setId(this.id);
             });
 
-            it("updates the pet", () -> {
-                Mockito.verify(this.petCrud).update(this.id, this.pet);
-            });
+            describe("when the pet exists", () -> {
+            	it("updates the pet", () -> {
+                    Mockito.verify(this.petCrud).update(this.pet);
+                });
+			});
+
+            describe("when the pet does not exist", () -> {
+            	beforeEach(() -> {
+					Mockito.doThrow(new StaleStateException(null)).when(this.petCrud).update(this.pet);
+				});
+
+            	it("throws an ObjectNotFoundException", () -> {
+            		try {
+            			this.petService.update(this.id, this.pet);
+            			expect("ObjectNotFoundException").toBeNotNull();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exist");
+					}
+				});
+			});
         });
 
         describe("#find", () -> {
@@ -203,18 +223,30 @@ public class PetServiceTest {
         });
 
         describe("#delete", () -> {
-            beforeEach(() -> {
-                Mockito.when(this.petCrud.find(this.id)).thenReturn(this.validPet);
-                this.petService.delete(this.id);
-            });
+            describe("when the pet exists", () -> {
+            	beforeEach(() -> {
+                    this.petService.delete(this.id);
+                });
 
-            it("finds the pet by id", () -> {
-                Mockito.verify(this.petCrud).find(this.id);
-            });
+            	it("deletes it", () -> {
+                    Mockito.verify(this.petCrud).delete(Matchers.any(PetDomain.class));
+            	});
+			});
 
-            it("deletes the pet", () -> {
-                Mockito.verify(this.petCrud).delete(this.id, this.validPet);
-            });
+            describe("when the pet does not exist", () -> {
+            	beforeEach(() -> {
+                    Mockito.when(this.petCrud.find(this.id)).thenThrow(new StaleStateException(null));
+                });
+
+            	it("throws an ObjectNotFoundException", () -> {
+            		try {
+            			this.petService.delete(this.id);
+            			expect("ObjectNotFoundException").toBeNotNull();
+					} catch (ObjectNotFoundException e) {
+						expect(e.getMessage()).toContain("No row with the given identifier exists: " + PetDomain.class.getName() + "#" + this.id);
+					}
+				});
+			});
         });
 
         describe("#deleteAll", () -> {

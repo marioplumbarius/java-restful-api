@@ -7,9 +7,7 @@ import static com.mscharhag.oleaster.runner.StaticRunnerSupport.describe;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.it;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -17,7 +15,6 @@ import javax.ws.rs.core.Response.Status;
 import org.hibernate.ObjectNotFoundException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -108,80 +105,38 @@ public class UserResourceTest {
 		});
 
 		describe("#findAll", () -> {
+			beforeEach(() -> {
+				Mockito.when(this.service.findAll()).thenReturn(null);
+				this.resource.findAll();
+			});
 
-			describe("when the user provide the 'name' query param", () -> {
+			it("searches for all users", () -> {
+				Mockito.verify(this.service).findAll();
+			});
 
+			describe("when no users are found", () -> {
 				beforeEach(() -> {
-					Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
-					this.resource.findAll(this.name);
+					Mockito.when(this.service.findAll()).thenReturn(null);
 				});
 
-				it("filters the search by name", () -> {
-					Map<String, String> criterias = new HashMap<String, String>();
-					criterias.put("name", this.name);
-					Mockito.verify(this.service).findAll(criterias);
-				});
-
-				describe("when there aren't records matching the criteria", () -> {
-					beforeEach(() -> {
-						Mockito.when(this.service.findAll(Matchers.any())).thenReturn(null);
-					});
-
-					it("returns an empty list", () -> {
-						List<UserDomain> returnedUsers = this.resource.findAll(this.name);
-						expect(returnedUsers).toBeNull();
-					});
-				});
-
-				describe("when there are records matching the criteria", () -> {
-					beforeEach(() -> {
-						this.users.add(this.validUser);
-						Mockito.when(this.service.findAll(Matchers.any())).thenReturn(this.users);
-					});
-
-					it("returns the list of users found", () -> {
-						List<UserDomain> returnedUsers = this.resource.findAll(this.name);
-						expect(returnedUsers.get(0)).toEqual(this.users.get(0));
-						expect(returnedUsers.size()).toEqual(this.users.size());
-					});
+				it("returns an empty list", () -> {
+					List<UserDomain> returnedUsers = this.resource.findAll();
+					expect(returnedUsers).toBeNull();
 				});
 			});
 
-			describe("when the user does not search by name", () -> {
+			describe("when there are users found", () -> {
 				beforeEach(() -> {
-					Mockito.when(this.service.findAll(null)).thenReturn(null);
-					this.resource.findAll(null);
+					this.users.add(this.validUser);
+					Mockito.when(this.service.findAll()).thenReturn(this.users);
 				});
 
-				it("does not filter the search by name", () -> {
-					Mockito.verify(this.service).findAll();
-				});
-
-				describe("when no users are found", () -> {
-					beforeEach(() -> {
-						Mockito.when(this.service.findAll()).thenReturn(null);
-					});
-
-					it("returns an empty list", () -> {
-						List<UserDomain> returnedUsers = this.resource.findAll(null);
-						expect(returnedUsers).toBeNull();
-					});
-				});
-
-				describe("when there are users found", () -> {
-					beforeEach(() -> {
-						this.users.add(this.validUser);
-						Mockito.when(this.service.findAll()).thenReturn(this.users);
-					});
-
-					it("returns the list of users found", () -> {
-						List<UserDomain> returnedUsers = this.resource.findAll(null);
-						expect(returnedUsers.get(0)).toEqual(this.users.get(0));
-						expect(returnedUsers.size()).toEqual(this.users.size());
-					});
+				it("returns the list of users found", () -> {
+					List<UserDomain> returnedUsers = this.resource.findAll();
+					expect(returnedUsers.get(0)).toEqual(this.users.get(0));
+					expect(returnedUsers.size()).toEqual(this.users.size());
 				});
 			});
-
 		});
 
 		describe("#create", () -> {
@@ -229,7 +184,7 @@ public class UserResourceTest {
 				});
 
 				it("returns 422 http status code", () -> {
-					expect(this.response.getStatus()).toEqual(Status.BAD_REQUEST.getStatusCode());
+					expect(this.response.getStatus()).toEqual(422);
 				});
 
 				it("returns validation errors", () -> {
@@ -301,7 +256,7 @@ public class UserResourceTest {
 				});
 
 				it("returns 422 http status code", () -> {
-					expect(this.response.getStatus()).toEqual(Status.BAD_REQUEST.getStatusCode());
+					expect(this.response.getStatus()).toEqual(422);
 				});
 
 				it("returns validation errors", () -> {
