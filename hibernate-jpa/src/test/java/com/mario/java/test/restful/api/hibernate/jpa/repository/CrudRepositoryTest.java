@@ -24,8 +24,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.manager.SessionManagerSingleton;
 import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
-import com.mario.java.restful.api.hibernate.jpa.session.SessionManagerSingleton;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 

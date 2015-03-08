@@ -7,7 +7,7 @@ import java.util.Map;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.criterion.Restrictions;
 
-import com.mario.java.restful.api.hibernate.jpa.session.SessionManagerSingleton;
+import com.mario.java.restful.api.hibernate.jpa.domain.manager.SessionManagerSingleton;
 
 public class CrudRepository<T, ID extends Serializable> {
 

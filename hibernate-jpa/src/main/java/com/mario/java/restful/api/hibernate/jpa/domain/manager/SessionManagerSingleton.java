@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.session;
+package com.mario.java.restful.api.hibernate.jpa.domain.manager;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,7 +13,7 @@ public class SessionManagerSingleton {
     private static SessionManagerSingleton instance = null;
 
     protected SessionManagerSingleton() {
-    	this(SessionManagerSingleton.getSessionFactory());
+    	this(SessionManagerSingleton.buildSessionFactory());
     }
 
     protected SessionManagerSingleton(SessionFactory sessionFactory) {
@@ -25,44 +25,44 @@ public class SessionManagerSingleton {
     		SessionManagerSingleton.instance = new SessionManagerSingleton();
     	}
 
-    	return instance;
+    	return SessionManagerSingleton.instance;
+    }
+
+    public static SessionManagerSingleton getInstance(SessionFactory sessionFactory){
+    	if(SessionManagerSingleton.instance == null){
+    		SessionManagerSingleton.instance = new SessionManagerSingleton(sessionFactory);
+    	}
+
+    	return SessionManagerSingleton.instance;
     }
 
     public static void setInstance(SessionManagerSingleton instance){
     	SessionManagerSingleton.instance = instance;
     }
 
-    public static SessionManagerSingleton getInstance(SessionFactory sessionFactory){
-    	if(instance == null){
-    		instance = new SessionManagerSingleton(sessionFactory);
-    	}
-
-    	return instance;
+    public void openSession() {
+    	this.session = this.sessionFactory.getCurrentSession();
     }
 
     public Session getSession(){
     	return this.session;
     }
 
-    public void openSession() {
-        this.session = this.sessionFactory.openSession();
-    }
-
     public void closeSession() {
-        this.session.close();
+        this.sessionFactory.close();
     }
 
     public void openSessionWithTransaction() {
-        this.session = this.sessionFactory.openSession();
+        this.session = this.sessionFactory.getCurrentSession();
         this.transaction = this.session.beginTransaction();
     }
 
     public void closeSessionWithTransaction() {
         this.transaction.commit();
-        this.session.close();
+        this.sessionFactory.close();
     }
 
-    private static SessionFactory getSessionFactory() {
+    private static SessionFactory buildSessionFactory() {
         Configuration configuration = new Configuration().configure();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         SessionFactory sessionFactory = configuration.buildSessionFactory(builder.build());
