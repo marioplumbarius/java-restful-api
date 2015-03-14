@@ -18,6 +18,11 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
+/**
+ * Domain class which represents a pet on database.
+ * @author marioluan
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "pets")
@@ -45,57 +50,99 @@ public class PetDomain extends BaseDomain implements Serializable {
     @Transient
     private Long userId;
 
+    /**
+     * Default constructor, creates an empty instance.
+     */
     public PetDomain(){}
 
+    /**
+     * @param name the name to set
+     * @param age the age to set
+     */
     public PetDomain(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    public PetDomain(String name, int age, DomainValidator validator){
-        super(validator);
+    /**
+     * @param name the name to set
+     * @param age the age to set
+     * @param domainValidator the domainValidator to set
+     */
+    public PetDomain(String name, int age, DomainValidator domainValidator){
+        super(domainValidator);
         this.name = name;
         this.age = age;
     }
 
+    /**
+     * @return the id
+     */
     public Long getId() {
         return this.id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * @return the name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * @param name the name to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @return the age
+     */
     public int getAge() {
         return this.age;
     }
 
+    /**
+     * @param age the age to set
+     */
     public void setAge(int age) {
         this.age = age;
     }
 
+    /**
+     * @param user the user to set
+     */
     private void setUser(UserDomain user) {
         this.user = user;
     }
 
+    /**
+     * @return the user
+     */
     private UserDomain getUser() {
         return this.user;
     }
 
+    /**
+     * @return the userId
+     */
     public Long getUserId(){
         UserDomain user = this.getUser();
         if(user != null) return user.getId();
         else return null;
     }
 
+    /**
+     * @param userId the userId to set
+     */
     public void setUserId(Long userId){
         UserDomain user = new UserDomain();
         user.setId(userId);
@@ -103,17 +150,22 @@ public class PetDomain extends BaseDomain implements Serializable {
         this.userId = userId;
     }
 
-    public void patch(PetDomain anotherPet) {
+    /**
+     * Fill all null/missing attributes from the current {@link PetDomain} petDomain instance with attributes from another {@link PetDomain} petDomain instance.
+     *
+     * @param petDomain the petDomain to take the attributes from
+     */
+    public void patch(PetDomain petDomain) {
         if (this.getName() == null) {
-            this.setName(anotherPet.getName());
+            this.setName(petDomain.getName());
         }
 
         if (this.getAge() < 1) {
-            this.setAge(anotherPet.getAge());
+            this.setAge(petDomain.getAge());
         }
 
         if (this.getUserId() == null) {
-            this.setUserId(anotherPet.getUserId());
+            this.setUserId(petDomain.getUserId());
         }
     }
 }
