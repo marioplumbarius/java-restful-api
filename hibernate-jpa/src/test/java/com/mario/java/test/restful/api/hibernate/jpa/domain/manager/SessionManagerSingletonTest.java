@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -29,16 +30,15 @@ public class SessionManagerSingletonTest {
 	@Mock
 	private Transaction transaction;
 
+	@InjectMocks
 	private SessionManagerSingleton sessionManagerSingleton;
 
 	{
 		beforeEach(() -> {
 			MockitoAnnotations.initMocks(this);
 
-			Mockito.when(this.sessionFactory.getCurrentSession()).thenReturn(this.session);
 			Mockito.when(this.session.beginTransaction()).thenReturn(this.transaction);
-
-			this.sessionManagerSingleton = SessionManagerSingleton.getInstance(this.sessionFactory);
+			Mockito.when(this.sessionFactory.openSession()).thenReturn(this.session);
 		});
 
 		describe("#getSession", () -> {
@@ -70,7 +70,10 @@ public class SessionManagerSingletonTest {
 			});
 
 			it("opens the session", () -> {
-				Mockito.verify(this.sessionFactory).getCurrentSession();
+				Mockito.verify(this.sessionFactory).openSession();
+			});
+
+			it("assigns the @session", () -> {
 				expect(this.sessionManagerSingleton.getSession()).equals(this.session);
 			});
 		});
@@ -82,7 +85,7 @@ public class SessionManagerSingletonTest {
 			});
 
 			it("closes the session", () -> {
-				Mockito.verify(this.sessionFactory).close();
+				Mockito.verify(this.session).close();
 			});
 		});
 
@@ -91,11 +94,11 @@ public class SessionManagerSingletonTest {
 				this.sessionManagerSingleton.openSessionWithTransaction();
 			});
 
-			it("opens a transactional session", () -> {
-				Mockito.verify(this.sessionFactory).getCurrentSession();
+			it("opens a session", () -> {
+				Mockito.verify(this.sessionFactory).openSession();
 			});
 
-			it("begins the transaction", () -> {
+			it("begins a transaction", () -> {
 				Mockito.verify(this.session).beginTransaction();
 			});
 		});
@@ -110,8 +113,8 @@ public class SessionManagerSingletonTest {
 				Mockito.verify(this.transaction).commit();
 			});
 
-			it("closes the transactional session", () -> {
-				Mockito.verify(this.sessionFactory).close();
+			it("closes the session", () -> {
+				Mockito.verify(this.session).close();
 			});
 		});
 	}

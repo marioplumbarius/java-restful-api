@@ -41,7 +41,7 @@ public class SessionManagerSingleton {
     }
 
     public void openSession() {
-    	this.session = this.sessionFactory.getCurrentSession();
+    	this.session = this.sessionFactory.openSession();
     }
 
     public Session getSession(){
@@ -49,20 +49,20 @@ public class SessionManagerSingleton {
     }
 
     public void closeSession() {
-        this.sessionFactory.close();
+        this.session.close();
     }
 
     public void openSessionWithTransaction() {
-        this.session = this.sessionFactory.getCurrentSession();
+        this.openSession();
         this.transaction = this.session.beginTransaction();
     }
 
     public void closeSessionWithTransaction() {
         this.transaction.commit();
-        this.sessionFactory.close();
+        this.closeSession();
     }
 
-    private static SessionFactory buildSessionFactory() {
+	private static SessionFactory buildSessionFactory() {
         Configuration configuration = new Configuration().configure();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         SessionFactory sessionFactory = configuration.buildSessionFactory(builder.build());
