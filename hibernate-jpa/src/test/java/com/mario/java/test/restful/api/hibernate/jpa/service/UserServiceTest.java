@@ -22,7 +22,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -37,10 +37,10 @@ public class UserServiceTest {
 	private PetDomain pet;
 
 	@Mock
-	private CrudRepository<UserDomain, Long> userCrud;
+	private AbstractRepositoryHibernateImpl<UserDomain, Long> userCrud;
 
 	@Mock
-	private CrudRepository<PetDomain, Long> petCrud;
+	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
 	@InjectMocks
 	private UserService userService = new UserService(this.userCrud, this.petCrud);

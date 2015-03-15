@@ -7,16 +7,16 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.StaleStateException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
 
 public class PetService {
-	private CrudRepository<PetDomain, Long> petCrud;
+	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
 	public PetService() {
-		this(new CrudRepository<PetDomain, Long>("PetDomain", PetDomain.class));
+		this(new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
 	}
 
-	public PetService(CrudRepository<PetDomain, Long> petCrud){
+	public PetService(AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud){
 		this.petCrud = petCrud;
 	}
 

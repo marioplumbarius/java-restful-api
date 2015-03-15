@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
@@ -34,7 +34,7 @@ public class PetServiceTest {
     private PetDomain pet;
 
     @Mock
-    private CrudRepository<PetDomain, Long> petCrud;
+    private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
     @InjectMocks
     private PetService petService;

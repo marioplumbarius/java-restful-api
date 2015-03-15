@@ -9,17 +9,17 @@ import org.hibernate.StaleStateException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
 
 public class UserService {
-	private CrudRepository<UserDomain, Long> userCrud;
-	private CrudRepository<PetDomain, Long> petCrud;
+	private AbstractRepositoryHibernateImpl<UserDomain, Long> userCrud;
+	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
 	public UserService() {
-		this(new CrudRepository<UserDomain, Long>("UserDomain", UserDomain.class),new CrudRepository<PetDomain, Long>("PetDomain", PetDomain.class));
+		this(new AbstractRepositoryHibernateImpl<UserDomain, Long>("UserDomain", UserDomain.class),new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
 	}
 
-	public UserService(CrudRepository<UserDomain, Long> userCrud, CrudRepository<PetDomain, Long> petCrud){
+	public UserService(AbstractRepositoryHibernateImpl<UserDomain, Long> userCrud, AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud){
 		this.userCrud = userCrud;
 		this.petCrud = petCrud;
 	}

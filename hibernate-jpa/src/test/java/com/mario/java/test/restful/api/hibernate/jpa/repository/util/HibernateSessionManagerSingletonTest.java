@@ -1,4 +1,4 @@
-package com.mario.java.test.restful.api.hibernate.jpa.domain.manager;
+package com.mario.java.test.restful.api.hibernate.jpa.repository.util;
 
 import static com.mscharhag.oleaster.matcher.Matchers.expect;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;
@@ -15,11 +15,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.manager.SessionManagerSingleton;
+import com.mario.java.restful.api.hibernate.jpa.repository.util.HibernateSessionManagerSingleton;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @RunWith(OleasterRunner.class)
-public class SessionManagerSingletonTest {
+public class HibernateSessionManagerSingletonTest {
 
 	@Mock
 	private SessionFactory sessionFactory;
@@ -31,7 +31,7 @@ public class SessionManagerSingletonTest {
 	private Transaction transaction;
 
 	@InjectMocks
-	private SessionManagerSingleton sessionManagerSingleton;
+	private HibernateSessionManagerSingleton hibernateSessionManagerSingleton;
 
 	{
 		beforeEach(() -> {
@@ -44,21 +44,21 @@ public class SessionManagerSingletonTest {
 		describe("#getSession", () -> {
 			describe("when the session hasn't been assigned yet", () -> {
 				it("returns null", () -> {
-					expect(this.sessionManagerSingleton.getSession()).toBeNull();
+					expect(this.hibernateSessionManagerSingleton.getSession()).toBeNull();
 				});
 			});
 
 			describe("when the session has already been assigned", () -> {
 				beforeEach(() -> {
-					this.sessionManagerSingleton.openSession();
+					this.hibernateSessionManagerSingleton.openSession();
 				});
 
 				afterEach(() -> {
-					this.sessionManagerSingleton.closeSession();
+					this.hibernateSessionManagerSingleton.closeSession();
 				});
 
 				it("returns the session", () -> {
-					expect(this.sessionManagerSingleton.getSession()).equals(this.session);
+					expect(this.hibernateSessionManagerSingleton.getSession()).equals(this.session);
 				});
 			});
 		});
@@ -66,7 +66,7 @@ public class SessionManagerSingletonTest {
 		describe("#openSession", () -> {
 
 			beforeEach(() -> {
-				this.sessionManagerSingleton.openSession();
+				this.hibernateSessionManagerSingleton.openSession();
 			});
 
 			it("opens the session", () -> {
@@ -74,14 +74,14 @@ public class SessionManagerSingletonTest {
 			});
 
 			it("assigns the @session", () -> {
-				expect(this.sessionManagerSingleton.getSession()).equals(this.session);
+				expect(this.hibernateSessionManagerSingleton.getSession()).equals(this.session);
 			});
 		});
 
 		describe("#closeSession", () -> {
 			beforeEach(() -> {
-				this.sessionManagerSingleton.openSession();
-				this.sessionManagerSingleton.closeSession();
+				this.hibernateSessionManagerSingleton.openSession();
+				this.hibernateSessionManagerSingleton.closeSession();
 			});
 
 			it("closes the session", () -> {
@@ -91,7 +91,7 @@ public class SessionManagerSingletonTest {
 
 		describe("#openSessionWithTransaction", () -> {
 			beforeEach(() -> {
-				this.sessionManagerSingleton.openSessionWithTransaction();
+				this.hibernateSessionManagerSingleton.openSessionWithTransaction();
 			});
 
 			it("opens a session", () -> {
@@ -105,8 +105,8 @@ public class SessionManagerSingletonTest {
 
 		describe("#closeSessionWithTransaction", () -> {
 			beforeEach(() -> {
-				this.sessionManagerSingleton.openSessionWithTransaction();
-				this.sessionManagerSingleton.closeSessionWithTransaction();
+				this.hibernateSessionManagerSingleton.openSessionWithTransaction();
+				this.hibernateSessionManagerSingleton.closeSessionWithTransaction();
 			});
 
 			it("commits the transaction", () -> {

@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain.manager;
+package com.mario.java.restful.api.hibernate.jpa.repository.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -6,38 +6,38 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-public class SessionManagerSingleton {
+public class HibernateSessionManagerSingleton {
 	private SessionFactory sessionFactory;
 	private Session session;
     private Transaction transaction;
-    private static SessionManagerSingleton instance = null;
+    private static HibernateSessionManagerSingleton instance = null;
 
-    protected SessionManagerSingleton() {
-    	this(SessionManagerSingleton.buildSessionFactory());
+    protected HibernateSessionManagerSingleton() {
+    	this(HibernateSessionManagerSingleton.buildSessionFactory());
     }
 
-    protected SessionManagerSingleton(SessionFactory sessionFactory) {
+    protected HibernateSessionManagerSingleton(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public static SessionManagerSingleton getInstance(){
-    	if(SessionManagerSingleton.instance == null){
-    		SessionManagerSingleton.instance = new SessionManagerSingleton();
+    public static HibernateSessionManagerSingleton getInstance(){
+    	if(HibernateSessionManagerSingleton.instance == null){
+    		HibernateSessionManagerSingleton.instance = new HibernateSessionManagerSingleton();
     	}
 
-    	return SessionManagerSingleton.instance;
+    	return HibernateSessionManagerSingleton.instance;
     }
 
-    public static SessionManagerSingleton getInstance(SessionFactory sessionFactory){
-    	if(SessionManagerSingleton.instance == null){
-    		SessionManagerSingleton.instance = new SessionManagerSingleton(sessionFactory);
+    public static HibernateSessionManagerSingleton getInstance(SessionFactory sessionFactory){
+    	if(HibernateSessionManagerSingleton.instance == null){
+    		HibernateSessionManagerSingleton.instance = new HibernateSessionManagerSingleton(sessionFactory);
     	}
 
-    	return SessionManagerSingleton.instance;
+    	return HibernateSessionManagerSingleton.instance;
     }
 
-    public static void setInstance(SessionManagerSingleton instance){
-    	SessionManagerSingleton.instance = instance;
+    public static void setInstance(HibernateSessionManagerSingleton instance){
+    	HibernateSessionManagerSingleton.instance = instance;
     }
 
     public void openSession() {

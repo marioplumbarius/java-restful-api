@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.repository;
+package com.mario.java.restful.api.hibernate.jpa.repository.impl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,24 +7,26 @@ import java.util.Map;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.criterion.Restrictions;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.manager.SessionManagerSingleton;
+import com.mario.java.restful.api.hibernate.jpa.repository.AbstractRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.util.HibernateSessionManagerSingleton;
 
-public class CrudRepository<T, ID extends Serializable> {
+public class AbstractRepositoryHibernateImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
 
 	private String domainName;
 	private Class<T> domainClass;
-	private SessionManagerSingleton sessionManager;
+	private HibernateSessionManagerSingleton sessionManager;
 
-	public CrudRepository(String domainName, Class<T> domainClass) {
-		this(SessionManagerSingleton.getInstance(), domainName, domainClass);
+	public AbstractRepositoryHibernateImpl(String domainName, Class<T> domainClass) {
+		this(HibernateSessionManagerSingleton.getInstance(), domainName, domainClass);
 	}
 
-	public CrudRepository(SessionManagerSingleton sessionManager, String domainName, Class<T> domainClass){
+	public AbstractRepositoryHibernateImpl(HibernateSessionManagerSingleton sessionManager, String domainName, Class<T> domainClass){
 		this.sessionManager = sessionManager;
 		this.domainName = domainName;
 		this.domainClass = domainClass;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
 		this.sessionManager.openSession();
@@ -33,6 +35,7 @@ public class CrudRepository<T, ID extends Serializable> {
 		return entities;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(Map<String, Object> criterias){
 		List<T> entities = null;
@@ -44,6 +47,7 @@ public class CrudRepository<T, ID extends Serializable> {
 		return entities;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public T find(ID id){
 		this.sessionManager.openSession();
@@ -52,34 +56,40 @@ public class CrudRepository<T, ID extends Serializable> {
 		return entity;
 	}
 
+	@Override
 	public void persist(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().save(entity);
 		this.sessionManager.closeSessionWithTransaction();
 	}
 
+	@Override
 	public void update(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().update(entity);
 		this.sessionManager.closeSessionWithTransaction();
 	}
 
+	@Override
 	public void delete(T entity) {
 		this.sessionManager.openSessionWithTransaction();
 		this.sessionManager.getSession().delete(entity);
 		this.sessionManager.closeSessionWithTransaction();
 	}
 
+	@Override
 	public void deleteAll() {
 		List<T> entities = this.findAll();
 		this.deleteAll(entities);
 	}
 
+	@Override
 	public void deleteAll(Map<String, Object> criterias){
 		List<T> entities = this.findAll(criterias);
 		this.deleteAll(entities);
 	}
 
+	@Override
 	public void deleteAll(List<T> entities){
 		if(entities != null){
 			this.deleteAllPrivate(entities);

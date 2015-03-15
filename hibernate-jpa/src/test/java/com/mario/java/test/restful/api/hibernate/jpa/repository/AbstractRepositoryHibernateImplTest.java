@@ -24,19 +24,19 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.domain.manager.SessionManagerSingleton;
-import com.mario.java.restful.api.hibernate.jpa.repository.CrudRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
+import com.mario.java.restful.api.hibernate.jpa.repository.util.HibernateSessionManagerSingleton;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @RunWith(OleasterRunner.class)
-public class CrudRepositoryTest {
+public class AbstractRepositoryHibernateImplTest {
 
 	@Mock
-	private SessionManagerSingleton sessionManager;
+	private HibernateSessionManagerSingleton sessionManager;
 
 	@InjectMocks
-	private CrudRepository<UserDomain, Long> crudRepository = new CrudRepository<UserDomain, Long>(this.sessionManager, "UserDomain", UserDomain.class);
+	private AbstractRepositoryHibernateImpl<UserDomain, Long> abstractRepositoryHibernateImpl = new AbstractRepositoryHibernateImpl<UserDomain, Long>(this.sessionManager, "UserDomain", UserDomain.class);
 
 	@Mock
 	private Session session;
@@ -90,7 +90,7 @@ public class CrudRepositoryTest {
 					Mockito.when(this.session.createCriteria(UserDomain.class)).thenReturn(this.criteria);
 					Mockito.when(this.criteria.add(Matchers.any())).thenReturn(this.criteria);
 					Mockito.when(this.criteria.list()).thenReturn(this.entities);
-					this.crudRepository.findAll(this.criterias);
+					this.abstractRepositoryHibernateImpl.findAll(this.criterias);
 				});
 
 				it("opens a session", ()->{
@@ -111,7 +111,7 @@ public class CrudRepositoryTest {
 				describe("when there're entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.criteria.list()).thenReturn(this.entities);
-						this.listResponse = this.crudRepository.findAll(this.criterias);
+						this.listResponse = this.abstractRepositoryHibernateImpl.findAll(this.criterias);
 					});
 
 					it("returns the entities found", ()->{
@@ -122,7 +122,7 @@ public class CrudRepositoryTest {
 				describe("when there aren't entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.criteria.list()).thenReturn(null);
-						this.listResponse = this.crudRepository.findAll(this.criterias);
+						this.listResponse = this.abstractRepositoryHibernateImpl.findAll(this.criterias);
 					});
 
 					it("returns null", ()->{
@@ -134,7 +134,7 @@ public class CrudRepositoryTest {
 			describe("without criterias", ()->{
 				beforeEach(()->{
 					Mockito.when(this.query.list()).thenReturn(null);
-					this.crudRepository.findAll();
+					this.abstractRepositoryHibernateImpl.findAll();
 				});
 
 				it("opens a session", ()->{
@@ -154,7 +154,7 @@ public class CrudRepositoryTest {
 				describe("when there're entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.query.list()).thenReturn(this.entities);
-						this.listResponse = this.crudRepository.findAll();
+						this.listResponse = this.abstractRepositoryHibernateImpl.findAll();
 					});
 
 					it("returns the entities found", ()->{
@@ -165,7 +165,7 @@ public class CrudRepositoryTest {
 				describe("when there aren't entities found", ()->{
 					beforeEach(()->{
 						Mockito.when(this.query.list()).thenReturn(null);
-						this.listResponse = this.crudRepository.findAll();
+						this.listResponse = this.abstractRepositoryHibernateImpl.findAll();
 					});
 
 					it("returns null", ()->{
@@ -178,7 +178,7 @@ public class CrudRepositoryTest {
 		describe("#find", ()->{
 			beforeEach(()->{
 				Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(this.entity);
-				this.crudRepository.find(this.id);
+				this.abstractRepositoryHibernateImpl.find(this.id);
 			});
 
 			it("opens a session", ()->{
@@ -197,7 +197,7 @@ public class CrudRepositoryTest {
 			describe("when the entity is found", ()->{
 				beforeEach(()->{
 					Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(this.entity);
-					this.singleResponse = this.crudRepository.find(this.id);
+					this.singleResponse = this.abstractRepositoryHibernateImpl.find(this.id);
 				});
 
 				it("returns the entity found", ()->{
@@ -208,7 +208,7 @@ public class CrudRepositoryTest {
 			describe("when the entity is not found", ()->{
 				beforeEach(()->{
 					Mockito.when(this.session.get(UserDomain.class, this.id)).thenReturn(null);
-					this.singleResponse = this.crudRepository.find(this.id);
+					this.singleResponse = this.abstractRepositoryHibernateImpl.find(this.id);
 				});
 
 				it("returns null", ()->{
@@ -220,7 +220,7 @@ public class CrudRepositoryTest {
 
 		describe("#persist", () -> {
 			beforeEach(() -> {
-				this.crudRepository.persist(this.entity);
+				this.abstractRepositoryHibernateImpl.persist(this.entity);
 			});
 
 			it("open a transactional session", () -> {
@@ -238,7 +238,7 @@ public class CrudRepositoryTest {
 
 		describe("#update", () -> {
 			beforeEach(() -> {
-				this.crudRepository.update(this.entity);
+				this.abstractRepositoryHibernateImpl.update(this.entity);
 			});
 
 			it("open a transactional session", () -> {
@@ -256,7 +256,7 @@ public class CrudRepositoryTest {
 
 		describe("#delete", () -> {
 			beforeEach(() -> {
-				this.crudRepository.delete(this.entity);
+				this.abstractRepositoryHibernateImpl.delete(this.entity);
 			});
 
 			it("open a transactional session", () -> {
@@ -276,7 +276,7 @@ public class CrudRepositoryTest {
 			beforeEach(() -> {
 				Mockito.when(this.query.list()).thenReturn(this.entities);
 
-				this.crudRepository.deleteAll();
+				this.abstractRepositoryHibernateImpl.deleteAll();
 			});
 
 			it("finds all entities", () -> {
@@ -307,7 +307,7 @@ public class CrudRepositoryTest {
 
 				it("throws an ObjectNotFoundException", () -> {
 					try {
-						this.crudRepository.deleteAll();
+						this.abstractRepositoryHibernateImpl.deleteAll();
 						expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists:");
@@ -321,7 +321,7 @@ public class CrudRepositoryTest {
 			beforeEach(() -> {
 				Mockito.when(this.criteria.list()).thenReturn(this.entities);
 
-				this.crudRepository.deleteAll(this.criterias);
+				this.abstractRepositoryHibernateImpl.deleteAll(this.criterias);
 			});
 
 			it("finds all entities", () -> {
@@ -353,7 +353,7 @@ public class CrudRepositoryTest {
 
 				it("throws an ObjectNotFoundException", () -> {
 					try {
-						this.crudRepository.deleteAll(this.criterias);
+						this.abstractRepositoryHibernateImpl.deleteAll(this.criterias);
 						expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists:");
@@ -364,7 +364,7 @@ public class CrudRepositoryTest {
 
 		describe("#deleteAll(List<T>)", () -> {
 			beforeEach(() -> {
-				this.crudRepository.deleteAll(this.entities);
+				this.abstractRepositoryHibernateImpl.deleteAll(this.entities);
 			});
 
 			describe("when the entities is not null", () -> {
@@ -390,7 +390,7 @@ public class CrudRepositoryTest {
 
 				it("throws an ObjectNotFoundException", () -> {
 					try {
-						this.crudRepository.deleteAll(this.criterias);
+						this.abstractRepositoryHibernateImpl.deleteAll(this.criterias);
 						expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists:");
