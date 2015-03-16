@@ -16,12 +16,22 @@
 		<property name="format_sql">true</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>
 
-		<!-- JDBC connection pool (use the built-in) -->
-		<property name="hibernate.connection.pool_size">1</property>
 		<property name="hibernate.current_session_context_class">thread</property>
 
 		<!-- model classes to load -->
 		<mapping class="com.mario.java.restful.api.hibernate.jpa.domain.UserDomain" />
 		<mapping class="com.mario.java.restful.api.hibernate.jpa.domain.PetDomain" />
+		
+		<!-- c3p0 connection pool -->
+		<!-- Minimum number of JDBC connections in the pool. Hibernate default: 1 -->
+		<property name="hibernate.c3p0.min_size">5</property>
+		<!--  Maximum number of JDBC connections in the pool. Hibernate default: 100 -->
+		<property name="hibernate.c3p0.max_size">20</property>
+		<!-- When an idle connection is removed from the pool (in second). Hibernate default: 0, never expire. -->
+		<property name="hibernate.c3p0.timeout">300</property>
+		<!-- Number of prepared statements will be cached. Increase performance. Hibernate default: 0 , caching is disable. -->
+		<!-- idle time in seconds before a connection is automatically validated. Hibernate default: 0 -->
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
 	</session-factory>
 </hibernate-configuration>
