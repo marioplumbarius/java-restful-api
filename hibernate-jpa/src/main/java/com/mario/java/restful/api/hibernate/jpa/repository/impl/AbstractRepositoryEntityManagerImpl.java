@@ -52,16 +52,27 @@ public class AbstractRepositoryEntityManagerImpl<T, ID extends Serializable> imp
 
 	@Override
 	public void persist(T entity) throws Exception {
-
-		// TODO Auto-generated method stub
+		try {
+			this.entityManager.getTransaction().begin();
+			this.entityManager.persist(entity);
+			this.entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			this.entityManager.getTransaction().rollback();
+			throw e;
+		}
 
 	}
 
 	@Override
 	public void update(T entity) throws Exception {
-
-		// TODO Auto-generated method stub
-
+		try {
+			this.entityManager.getTransaction().begin();
+			this.entityManager.merge(entity);
+			this.entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			this.entityManager.getTransaction().rollback();
+			throw e;
+		}
 	}
 
 	@Override
