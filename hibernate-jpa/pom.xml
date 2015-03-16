@@ -132,22 +132,9 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty-maven-plugin.version}</version>
         <configuration>
-          <scanTargetPatterns>
-            <!-- scans src/main/resources[**/*.xml, **/*.properties] -->
-            <scanTargetPattern>
-              <directory>src/main/resources</directory>
-              <includes>
-                <include>**/*.xml</include>
-                <include>**/*.properties</include>
-              </includes>
-            </scanTargetPattern>
-          </scanTargetPatterns>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
           <webApp>
             <contextPath>${context-path}</contextPath>
           </webApp>
-          <stopPort>8080</stopPort>
-          <stopKey>STOP</stopKey>
         </configuration>
       </plugin>
 
