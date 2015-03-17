@@ -17,9 +17,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.hibernate.ObjectNotFoundException;
 
-import com.mario.java.restful.api.hibernate.jpa.annotations.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
