@@ -21,4 +21,12 @@ public class ObjectNofFoundException extends Exception {
 	public ObjectNofFoundException(Serializable identifier, String entityName){
 		super("No " + entityName + " with the given identifier " + identifier + " was found on the persistence layer.");
 	}
+
+	/**
+	 * Constructs an ObjectNotFoundException using the given information.
+	 * @param entityName the name of the entity
+	 */
+	public ObjectNofFoundException(String entityName){
+		super("No " + entityName + " was found on the persistence layer.");
+	}
 }
