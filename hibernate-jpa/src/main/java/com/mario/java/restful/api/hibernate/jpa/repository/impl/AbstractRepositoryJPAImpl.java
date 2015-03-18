@@ -11,18 +11,18 @@ import com.mario.java.restful.api.hibernate.jpa.repository.AbstractRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.ObjectNofFoundException;
 import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSingleton;
 
-public class AbstractRepositoryEntityManagerImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
+public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
 
 	private String entityName;
 	private Class<T> entityClass;
 	private EntityManager entityManager;
 	private String baseQuery;
 
-	public AbstractRepositoryEntityManagerImpl(String entityName, Class<T> entityClass) {
+	public AbstractRepositoryJPAImpl(String entityName, Class<T> entityClass) {
 		this(entityName, entityClass, EntityManagerSingleton.getInstance().getEntityManager());
 	}
 
-	public AbstractRepositoryEntityManagerImpl(String entityName, Class<T> entityClass, EntityManager entityManager) {
+	public AbstractRepositoryJPAImpl(String entityName, Class<T> entityClass, EntityManager entityManager) {
 		this.entityName = entityName;
 		this.entityClass = entityClass;
 		this.entityManager = entityManager;
