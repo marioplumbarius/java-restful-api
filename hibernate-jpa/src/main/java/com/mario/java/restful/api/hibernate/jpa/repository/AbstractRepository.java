@@ -23,14 +23,14 @@ public interface AbstractRepository<T, ID extends Serializable> {
 	public List<T> findAll();
 
 	/**
-	 * Finds all {@link T} entities matching the {@link Map<String, Object>} restrictions
+	 * Finds all {@link Map<K, K>} entities matching the restrictions
 	 * @param restrictions the restrictions to be applied to the search
 	 * @return the entities found or null
 	 */
-	public List<T> findAll(Map<String, Object> restrictions);
+	public <K, V> List<T> findAll(Map<K, V> restrictions);
 
 	/**
-	 * Finds an {@link T} entity by its {@link Serializable} id
+	 * Finds an {@link T} entity by its {@link ID} id
 	 * @param id the id of the entity
 	 * @return the entity found or null
 	 */
@@ -71,9 +71,9 @@ public interface AbstractRepository<T, ID extends Serializable> {
 	public void deleteAll(List<T> entities) throws Exception;
 
 	/**
-	 * Deletes all entities matching the restrictions
+	 * Deletes all {@link Map<K, V>} entities matching the restrictions
 	 * @param restrictions the restrictions to be applied to the search
-	 * @throws Exception when the entities could not be deleted
+	 * @throws Exception when it couldn't delete the entities matching the restrictions
 	 */
-	public void deleteAll(Map<String, Object> restrictions) throws Exception;
+	public <K, V> void deleteAll(Map<K, V> restrictions) throws Exception;
 }

@@ -36,12 +36,12 @@ public class AbstractRepositoryHibernateImpl<T, ID extends Serializable> impleme
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(Map<String, Object> criterias){
+	@SuppressWarnings({ "unchecked", "hiding" })
+	public <String, Object> List<T> findAll(Map<String, Object> criterias){
 		List<T> entities = null;
 
 		this.sessionManager.openSession();
-		entities = this.sessionManager.getSession().createCriteria(this.domainClass).add(Restrictions.allEq(criterias)).list();
+		entities = this.sessionManager.getSession().createCriteria(this.domainClass).add(Restrictions.allEq((Map<java.lang.String, Object>) criterias)).list();
 		this.sessionManager.closeSession();
 
 		return entities;
@@ -83,8 +83,9 @@ public class AbstractRepositoryHibernateImpl<T, ID extends Serializable> impleme
 		this.deleteAll(entities);
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
-	public void deleteAll(Map<String, Object> criterias){
+	public <String, Object> void deleteAll(Map<String, Object> criterias){
 		List<T> entities = this.findAll(criterias);
 		this.deleteAll(entities);
 	}
