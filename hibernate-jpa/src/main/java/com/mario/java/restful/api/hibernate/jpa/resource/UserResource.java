@@ -1,9 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.resource;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,30 +11,23 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.hibernate.ObjectNotFoundException;
-
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.UserRepositoryJPAImpl;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
 @Path("/users")
 @Consumes("application/json")
 @Produces("application/json")
 public class UserResource {
 
-    private UserServiceImpl service;
+    private UserService userService;
 
-    public UserResource() {
-        this(new UserServiceImpl());
-    }
-
-    public UserResource(UserServiceImpl service) {
-        this.service = service;
+    public UserResource(UserService service) {
+        this.userService = service;
     }
 
     @GET
@@ -44,7 +35,7 @@ public class UserResource {
     public Response find(@PathParam("id") Long id) {
         Response res = null;
 
-        UserDomain user = this.service.find(id);
+        UserDomain user = this.userService.find(id);
 
         if (user == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -57,7 +48,7 @@ public class UserResource {
 
     @GET
     public List<UserDomain> findAll() {
-        List<UserDomain> users = this.service.findAll();
+        List<UserDomain> users = this.userService.findAll();
 
         return users;
     }
@@ -67,9 +58,7 @@ public class UserResource {
         Response res = null;
 
         if (user.isValid()) {
-            this.service.persist(user);
-            URI uri = URI.create("/users/" + user.getId());
-            res = Response.created(uri).build();
+            this.createHelper(user);
         } else {
             res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
         }
@@ -97,10 +86,13 @@ public class UserResource {
         Response res = null;
 
         try {
-            this.service.delete(id);
+            this.userService.delete(id);
             res = Response.noContent().build();
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNofFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	res = Response.serverError().build();
         }
 
         return res;
@@ -110,11 +102,29 @@ public class UserResource {
     	Response res;
 
     	try {
-            this.service.update(id, user);
+            this.userService.update(id, user);
             res = Response.noContent().build();
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNofFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+			res = Response.serverError().build();
+		}
+
+    	return res;
+    }
+
+    private Response createHelper(UserDomain userDomain){
+    	Response res;
+
+    	try {
+			this.userService.persist(userDomain);
+			URI uri = URI.create("/users/" + userDomain.getId());
+            res = Response.created(uri).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			res = Response.serverError().build();
+		}
 
     	return res;
     }
