@@ -22,13 +22,13 @@ import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
-import com.mario.java.restful.api.hibernate.jpa.service.PetService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @RunWith(OleasterRunner.class)
-public class PetServiceTest {
+public class PetServiceImplTest {
 
     @Mock
     private PetDomain pet;
@@ -37,7 +37,7 @@ public class PetServiceTest {
     private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
     @InjectMocks
-    private PetService petService;
+    private PetServiceImpl petServiceImpl;
 
     private Long id;
     private PetDomain returnedPet;
@@ -76,7 +76,7 @@ public class PetServiceTest {
 
         describe("#persist", () -> {
             beforeEach(() -> {
-                this.petService.persist(this.validPet);
+                this.petServiceImpl.persist(this.validPet);
             });
 
             it("persists the pets", () -> {
@@ -86,7 +86,7 @@ public class PetServiceTest {
 
         describe("#update", () -> {
             beforeEach(() -> {
-                this.petService.update(this.id, this.pet);
+                this.petServiceImpl.update(this.id, this.pet);
             });
 
             it("sets the id of the pet", () -> {
@@ -106,7 +106,7 @@ public class PetServiceTest {
 
             	it("throws an ObjectNotFoundException", () -> {
             		try {
-            			this.petService.update(this.id, this.pet);
+            			this.petServiceImpl.update(this.id, this.pet);
             			expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exist");
@@ -121,14 +121,14 @@ public class PetServiceTest {
             });
 
             it("searches for the pet by id", () -> {
-                this.petService.find(this.id);
+                this.petServiceImpl.find(this.id);
                 Mockito.verify(this.petCrud).find(this.id);
             });
 
             describe("when the pet exists", () -> {
                 beforeEach(() -> {
                     Mockito.when(this.petCrud.find(this.id)).thenReturn(this.validPet);
-                    this.returnedPet = this.petService.find(this.id);
+                    this.returnedPet = this.petServiceImpl.find(this.id);
                 });
 
                 it("returned the pet found", () -> {
@@ -140,7 +140,7 @@ public class PetServiceTest {
             describe("when the pet does not exist", () -> {
                 beforeEach(() -> {
                     Mockito.when(this.petCrud.find(this.id)).thenReturn(null);
-                    this.returnedPet = this.petService.find(this.id);
+                    this.returnedPet = this.petServiceImpl.find(this.id);
                 });
 
                 it("return null", () -> {
@@ -154,7 +154,7 @@ public class PetServiceTest {
             describe("when the search is made without criterias", () -> {
                 beforeEach(() -> {
                     Mockito.when(this.petCrud.findAll()).thenReturn(null);
-                    this.petService.findAll();
+                    this.petServiceImpl.findAll();
                 });
 
                 it("searches for all pets", () -> {
@@ -164,7 +164,7 @@ public class PetServiceTest {
                 describe("when there are pets on database", () -> {
                     beforeEach(() -> {
                         Mockito.when(this.petCrud.findAll()).thenReturn(this.pets);
-                        this.returnedPets = this.petService.findAll();
+                        this.returnedPets = this.petServiceImpl.findAll();
                     });
 
                     it("returns all pets", () -> {
@@ -177,7 +177,7 @@ public class PetServiceTest {
                 describe("when there aren't pets on database", () -> {
                     beforeEach(() -> {
                         Mockito.when(this.petCrud.findAll()).thenReturn(null);
-                        this.returnedPets = this.petService.findAll();
+                        this.returnedPets = this.petServiceImpl.findAll();
                     });
 
                     it("returns all pets", () -> {
@@ -189,7 +189,7 @@ public class PetServiceTest {
             describe("when the search is made with criterias", () -> {
                 beforeEach(() -> {
                     Mockito.when(this.petCrud.findAll(this.criterias)).thenReturn(null);
-                    this.petService.findAll(this.criterias);
+                    this.petServiceImpl.findAll(this.criterias);
                 });
 
                 it("searches for all pets filtered by some criterias", () -> {
@@ -199,7 +199,7 @@ public class PetServiceTest {
                 describe("when there are pets on database", () -> {
                     beforeEach(() -> {
                         Mockito.when(this.petCrud.findAll(this.criterias)).thenReturn(this.pets);
-                        this.returnedPets = this.petService.findAll(this.criterias);
+                        this.returnedPets = this.petServiceImpl.findAll(this.criterias);
                     });
 
                     it("returns all pets", () -> {
@@ -212,7 +212,7 @@ public class PetServiceTest {
                 describe("when there aren't pets on database", () -> {
                     beforeEach(() -> {
                         Mockito.when(this.petCrud.findAll(this.criterias)).thenReturn(null);
-                        this.returnedPets = this.petService.findAll(this.criterias);
+                        this.returnedPets = this.petServiceImpl.findAll(this.criterias);
                     });
 
                     it("returns all pets", () -> {
@@ -225,7 +225,7 @@ public class PetServiceTest {
         describe("#delete", () -> {
             describe("when the pet exists", () -> {
             	beforeEach(() -> {
-                    this.petService.delete(this.id);
+                    this.petServiceImpl.delete(this.id);
                 });
 
             	it("deletes it", () -> {
@@ -240,7 +240,7 @@ public class PetServiceTest {
 
             	it("throws an ObjectNotFoundException", () -> {
             		try {
-            			this.petService.delete(this.id);
+            			this.petServiceImpl.delete(this.id);
             			expect("ObjectNotFoundException").toBeNotNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists: " + PetDomain.class.getName() + "#" + this.id);
@@ -251,7 +251,7 @@ public class PetServiceTest {
 
         describe("#deleteAll", () -> {
             beforeEach(() -> {
-                this.petService.deleteAll();
+                this.petServiceImpl.deleteAll();
             });
 
             it("deletes all pets from database", () -> {

@@ -25,7 +25,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.PetService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
@@ -38,7 +38,7 @@ public class PetResourceTest {
     private PetResource resource;
 
     @Mock
-    private PetService petService;
+    private PetServiceImpl petServiceImpl;
 
     @Mock
     private UserServiceImpl userServiceImpl;
@@ -92,7 +92,7 @@ public class PetResourceTest {
                     });
 
                     it("updates the pet", () -> {
-                        Mockito.verify(this.petService).update(this.id, this.validPet);
+                        Mockito.verify(this.petServiceImpl).update(this.id, this.validPet);
                     });
 
                     it("returns 204 http status code", () -> {
@@ -106,7 +106,7 @@ public class PetResourceTest {
 
                 describe("when the pet does not exist", () -> {
                     beforeEach(() -> {
-                        Mockito.doThrow(new ObjectNotFoundException(this.id, this.validPet.getClass().getName())).when(this.petService).update(this.id, this.validPet);
+                        Mockito.doThrow(new ObjectNotFoundException(this.id, this.validPet.getClass().getName())).when(this.petServiceImpl).update(this.id, this.validPet);
                         this.response = this.resource.update(this.id, this.validPet);
                     });
 
@@ -167,18 +167,18 @@ public class PetResourceTest {
         describe("#find", () -> {
 
             beforeEach(() -> {
-                Mockito.when(this.petService.find(this.id)).thenReturn(null);
+                Mockito.when(this.petServiceImpl.find(this.id)).thenReturn(null);
             });
 
             it("searches for pets by id", () -> {
                 this.resource.find(this.id);
-                Mockito.verify(this.petService).find(this.id);
+                Mockito.verify(this.petServiceImpl).find(this.id);
             });
 
             describe("when the pet is not found", () -> {
 
                 beforeEach(() -> {
-                    Mockito.when(this.petService.find(this.id)).thenReturn(null);
+                    Mockito.when(this.petServiceImpl.find(this.id)).thenReturn(null);
                     this.response = this.resource.find(this.id);
                 });
 
@@ -187,7 +187,7 @@ public class PetResourceTest {
 
             describe("when the pet is found", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.petService.find(this.id)).thenReturn(this.validPet);
+                    Mockito.when(this.petServiceImpl.find(this.id)).thenReturn(this.validPet);
                     this.response = this.resource.find(this.id);
                 });
 
@@ -204,17 +204,17 @@ public class PetResourceTest {
 
         describe("#findAll", () -> {
         	beforeEach(() -> {
-                Mockito.when(this.petService.findAll(null)).thenReturn(null);
+                Mockito.when(this.petServiceImpl.findAll(null)).thenReturn(null);
                 this.resource.findAll();
             });
 
             it("searches for all pets", () -> {
-                Mockito.verify(this.petService).findAll();
+                Mockito.verify(this.petServiceImpl).findAll();
             });
 
             describe("when no pets are found", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.petService.findAll()).thenReturn(null);
+                    Mockito.when(this.petServiceImpl.findAll()).thenReturn(null);
                 });
 
                 it("returns an empty list", () -> {
@@ -226,7 +226,7 @@ public class PetResourceTest {
             describe("when there are pets found", () -> {
                 beforeEach(() -> {
                     this.pets.add(this.validPet);
-                    Mockito.when(this.petService.findAll()).thenReturn(this.pets);
+                    Mockito.when(this.petServiceImpl.findAll()).thenReturn(this.pets);
                 });
 
                 it("returns the list of pets found", () -> {
@@ -260,7 +260,7 @@ public class PetResourceTest {
 					});
 
                     it("persists the pet", () -> {
-                        Mockito.verify(this.petService).persist(this.validPet);
+                        Mockito.verify(this.petServiceImpl).persist(this.validPet);
                     });
 
                     it("returns 201 http status code", () -> {
@@ -324,7 +324,7 @@ public class PetResourceTest {
                 });
 
                 it("deletes the pet", () -> {
-                    Mockito.verify(this.petService).delete(this.id);
+                    Mockito.verify(this.petServiceImpl).delete(this.id);
                 });
 
                 it("returns 204 http status code", () -> {
@@ -338,7 +338,7 @@ public class PetResourceTest {
 
             describe("when the pet does not exist", () -> {
                 beforeEach(() -> {
-                    Mockito.doThrow(new ObjectNotFoundException(this.id, null)).when(this.petService).delete(this.id);
+                    Mockito.doThrow(new ObjectNotFoundException(this.id, null)).when(this.petServiceImpl).delete(this.id);
                     this.response = this.resource.delete(this.id);
                 });
 
@@ -352,12 +352,12 @@ public class PetResourceTest {
             });
 
             it("fetches the pet from database", () -> {
-                Mockito.verify(this.petService).find(this.id);
+                Mockito.verify(this.petServiceImpl).find(this.id);
             });
 
             describe("when the pet exists", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.petService.find(this.id)).thenReturn(this.currentPet);
+                    Mockito.when(this.petServiceImpl.find(this.id)).thenReturn(this.currentPet);
 
                     this.response = this.resource.patch(this.id, this.validPet);
                 });
@@ -371,7 +371,7 @@ public class PetResourceTest {
 
             describe("when the pet does not exist", () -> {
                 beforeEach(() -> {
-                    Mockito.when(this.petService.find(this.id)).thenReturn(null);
+                    Mockito.when(this.petServiceImpl.find(this.id)).thenReturn(null);
 
                     this.response = this.resource.patch(this.id, this.validPet);
                 });

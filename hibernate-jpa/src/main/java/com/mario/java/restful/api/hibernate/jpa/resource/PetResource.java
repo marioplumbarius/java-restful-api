@@ -21,7 +21,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.PetService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 
 @Path("/pets")
@@ -29,15 +29,15 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 @Produces("application/json")
 public class PetResource {
 
-    private PetService petService;
+    private PetServiceImpl petServiceImpl;
     private UserServiceImpl userServiceImpl;
 
     public PetResource() {
-        this(new PetService(), new UserServiceImpl());
+        this(new PetServiceImpl(), new UserServiceImpl());
     }
 
-    public PetResource(PetService petService, UserServiceImpl userServiceImpl) {
-        this.petService = petService;
+    public PetResource(PetServiceImpl petServiceImpl, UserServiceImpl userServiceImpl) {
+        this.petServiceImpl = petServiceImpl;
         this.userServiceImpl = userServiceImpl;
     }
 
@@ -46,7 +46,7 @@ public class PetResource {
     public Response find(@PathParam("id") Long id) {
         Response res = null;
 
-        PetDomain pet = this.petService.find(id);
+        PetDomain pet = this.petServiceImpl.find(id);
 
         if (pet == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -59,7 +59,7 @@ public class PetResource {
 
     @GET
     public List<PetDomain> findAll() {
-        List<PetDomain> pets = this.petService.findAll();
+        List<PetDomain> pets = this.petServiceImpl.findAll();
 
         return pets;
     }
@@ -96,7 +96,7 @@ public class PetResource {
     public Response patch(@PathParam("id") Long id, PetDomain pet) {
         Response res = null;
 
-        PetDomain currentPet = this.petService.find(id);
+        PetDomain currentPet = this.petServiceImpl.find(id);
 
         if (currentPet != null) {
             pet.patch(currentPet);
@@ -114,7 +114,7 @@ public class PetResource {
         Response res = null;
 
         try {
-            this.petService.delete(id);
+            this.petServiceImpl.delete(id);
             res = Response.noContent().build();
         } catch (ObjectNotFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -127,7 +127,7 @@ public class PetResource {
     	Response res;
 
     	if(this.userServiceImpl.find(pet.getUserId()) != null){
-    		this.petService.persist(pet);
+    		this.petServiceImpl.persist(pet);
             URI uri = URI.create("/pets/" + pet.getId());
             res = Response.created(uri).build();
     	} else {
@@ -142,7 +142,7 @@ public class PetResource {
 
     	if(this.userServiceImpl.find(pet.getUserId()) != null){
     		try {
-                this.petService.update(id, pet);
+                this.petServiceImpl.update(id, pet);
                 res = Response.noContent().build();
             } catch (ObjectNotFoundException e) {
                 res = Response.status(Status.NOT_FOUND).build();

@@ -3,65 +3,55 @@ package com.mario.java.restful.api.hibernate.jpa.service;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.StaleStateException;
-
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
 
-public class PetService {
-	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
+public interface PetService {
 
-	public PetService() {
-		this(new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
-	}
+	/**
+	 * Persists the {@link PetDomain} petDomain.
+	 * @param petDomain the petDomain to be persisted
+	 * @throws Exception when it couldn't persist the petDomain
+	 */
+	public void persist(PetDomain petDomain) throws Exception;
 
-	public PetService(AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud){
-		this.petCrud = petCrud;
-	}
+	/**
+	 * Updates the {@link PetDomain} petDomain.
+	 * @param id the {@link Long} id of the petDomain
+	 * @param petDomain the petDomain to be updated
+	 * @throws Exception when it couldn't update the petDomain
+	 */
+	public void update(Long id, PetDomain petDomain) throws Exception;
 
-	public void persist(PetDomain pet) {
-		this.petCrud.persist(pet);
-	}
+	/**
+	 * Deletes the {@link PetDomain} petDomain.
+	 * @param id the {@link Long} id of the petDomain
+	 * @throws Exception when it couldn't delete the petDomain
+	 */
+	public void delete(Long id) throws Exception;
 
-	public void update(Long id, PetDomain pet) {
-		pet.setId(id);
+	/**
+	 * Deletes all {@link PetDomain} petDomain.
+	 * @throws Exception when it couldn't delete the list of petDomain
+	 */
+	public void deleteAll() throws Exception;
 
-		try {
-			this.petCrud.update(pet);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, pet.getClass().getName());
-		}
-	}
+	/**
+	 * Finds the {@link PetDomain} petDomain.
+	 * @param id the {@link Long} id of the petDomain
+	 * @return the petDomain found or null
+	 */
+	public PetDomain find(Long id);
 
-	public PetDomain find(Long id) {
-		PetDomain pet = this.petCrud.find(id);
+	/**
+	 * Finds all {@link PetDomain} petDomain.
+	 * @return the list of petDomain found or null
+	 */
+	public List<PetDomain> findAll();
 
-		return pet;
-	}
-
-	public List<PetDomain> findAll() {
-		List<PetDomain> pets = this.petCrud.findAll();
-		return pets;
-	}
-
-	public List<PetDomain> findAll(Map<String, Object> criterias){
-		List<PetDomain> pets = this.petCrud.findAll(criterias);
-		return pets;
-	}
-
-	public void delete(Long id) {
-		PetDomain pet = new PetDomain();
-		pet.setId(id);
-
-		try {
-			this.petCrud.delete(pet);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, PetDomain.class.getName());
-		}
-	}
-
-	public void deleteAll() {
-		this.petCrud.deleteAll();
-	}
+	/**
+	 * Finds all {@link PetDomain} petDomain matching the {@link Map<String, Object>} restrictions.
+	 * @param restrictions the list of restrictions to be applied to the search
+	 * @return the list of petDomain matching the restrictions or null
+	 */
+	public List<PetDomain> findAll(Map<String, Object> restrictions);
 }
