@@ -1,4 +1,4 @@
-package com.mario.java.test.restful.api.hibernate.jpa.service;
+package com.mario.java.test.restful.api.hibernate.jpa.service.impl;
 
 import static com.mscharhag.oleaster.matcher.Matchers.expect;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;
@@ -23,12 +23,12 @@ import org.mockito.MockitoAnnotations;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
 @RunWith(OleasterRunner.class)
-public class UserServiceTest {
+public class UserServiceImplTest {
 
 	@Mock
 	private UserDomain user;
@@ -43,7 +43,7 @@ public class UserServiceTest {
 	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
 
 	@InjectMocks
-	private UserService userService = new UserService(this.userCrud, this.petCrud);
+	private UserServiceImpl userServiceImpl = new UserServiceImpl(this.userCrud, this.petCrud);
 
 	private Long id;
 	private UserDomain returnedUser;
@@ -63,7 +63,7 @@ public class UserServiceTest {
 			beforeEach(() -> {
 				Mockito.when(this.petCrud.findAll(this.criterias)).thenReturn(this.pets);
 
-				this.userService.delete(this.id);
+				this.userServiceImpl.delete(this.id);
 			});
 
 			it("deletes all pets", () -> {
@@ -73,7 +73,7 @@ public class UserServiceTest {
 
 		describe("when the user doesnt has pets", () -> {
 			beforeEach(() -> {
-				this.userService.delete(this.id);
+				this.userServiceImpl.delete(this.id);
 			});
 
 			it("does not delete the pets", () -> {
@@ -110,7 +110,7 @@ public class UserServiceTest {
 
 		describe("#persist", ()->{
 			beforeEach(()->{
-				this.userService.persist(this.user);
+				this.userServiceImpl.persist(this.user);
 			});
 
 			it("persists the users", ()->{
@@ -120,7 +120,7 @@ public class UserServiceTest {
 
 		describe("#update", ()->{
 			beforeEach(()->{
-				this.userService.update(this.id, this.user);
+				this.userServiceImpl.update(this.id, this.user);
 			});
 
 			it("sets the id of the user", ()->{
@@ -129,7 +129,7 @@ public class UserServiceTest {
 
 			describe("when the user exists", () -> {
 				beforeEach(()->{
-					this.userService.update(this.id, this.user);
+					this.userServiceImpl.update(this.id, this.user);
 				});
 
 				it("updates the user", ()->{
@@ -144,7 +144,7 @@ public class UserServiceTest {
 
 				it("throws ObjectNotFoundException", ()->{
 					try {
-						this.userService.update(this.id, this.user);
+						this.userServiceImpl.update(this.id, this.user);
 						expect("ObjectNotFoundException").toBeNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists");
@@ -159,14 +159,14 @@ public class UserServiceTest {
 			});
 
 			it("searches for the user by id", ()->{
-				this.userService.find(this.id);
+				this.userServiceImpl.find(this.id);
 				Mockito.verify(this.userCrud).find(this.id);
 			});
 
 			describe("when the user exists", ()->{
 				beforeEach(()->{
 					Mockito.when(this.userCrud.find(this.id)).thenReturn(this.user);
-					this.returnedUser = this.userService.find(this.id);
+					this.returnedUser = this.userServiceImpl.find(this.id);
 				});
 
 				it("returned the user found", ()->{
@@ -178,7 +178,7 @@ public class UserServiceTest {
 			describe("when the user does not exist", ()->{
 				beforeEach(()->{
 					Mockito.when(this.userCrud.find(this.id)).thenReturn(null);
-					this.returnedUser = this.userService.find(this.id);
+					this.returnedUser = this.userServiceImpl.find(this.id);
 				});
 
 				it("returns null", ()->{
@@ -192,7 +192,7 @@ public class UserServiceTest {
 			describe("when the search is made without criterias", ()->{
 				beforeEach(()->{
 					Mockito.when(this.userCrud.findAll()).thenReturn(null);
-					this.userService.findAll();
+					this.userServiceImpl.findAll();
 				});
 
 				it("searches for all users", ()->{
@@ -202,7 +202,7 @@ public class UserServiceTest {
 				describe("when there are users on database", ()->{
 					beforeEach(()->{
 						Mockito.when(this.userCrud.findAll()).thenReturn(this.users);
-						this.returnedUsers = this.userService.findAll();
+						this.returnedUsers = this.userServiceImpl.findAll();
 					});
 
 					it("returns all users", ()->{
@@ -215,7 +215,7 @@ public class UserServiceTest {
 				describe("when there aren't users on database", ()->{
 					beforeEach(()->{
 						Mockito.when(this.userCrud.findAll()).thenReturn(null);
-						this.returnedUsers = this.userService.findAll();
+						this.returnedUsers = this.userServiceImpl.findAll();
 					});
 
 					it("returns all users", ()->{
@@ -228,7 +228,7 @@ public class UserServiceTest {
 				beforeEach(()->{
 					this.criterias.put(this.key, this.value);
 					Mockito.when(this.userCrud.findAll(this.criterias)).thenReturn(null);
-					this.userService.findAll(this.criterias);
+					this.userServiceImpl.findAll(this.criterias);
 				});
 
 				it("searches for all users filtered by some criterias", ()->{
@@ -238,7 +238,7 @@ public class UserServiceTest {
 				describe("when there are users on database", ()->{
 					beforeEach(()->{
 						Mockito.when(this.userCrud.findAll(this.criterias)).thenReturn(this.users);
-						this.returnedUsers = this.userService.findAll(this.criterias);
+						this.returnedUsers = this.userServiceImpl.findAll(this.criterias);
 					});
 
 					it("returns all users", ()->{
@@ -251,7 +251,7 @@ public class UserServiceTest {
 				describe("when there aren't users on database", ()->{
 					beforeEach(()->{
 						Mockito.when(this.userCrud.findAll(this.criterias)).thenReturn(null);
-						this.returnedUsers = this.userService.findAll(this.criterias);
+						this.returnedUsers = this.userServiceImpl.findAll(this.criterias);
 					});
 
 					it("returns all users", ()->{
@@ -263,7 +263,7 @@ public class UserServiceTest {
 
 		describe("#delete", ()->{
 			beforeEach(()->{
-				this.userService.delete(this.id);
+				this.userServiceImpl.delete(this.id);
 				this.criterias.put("user.id", this.id);
 			});
 
@@ -282,7 +282,7 @@ public class UserServiceTest {
 
 				it("throws ObjectNotFoundException", ()->{
 					try {
-						this.userService.delete(this.id);
+						this.userServiceImpl.delete(this.id);
 						expect("ObjectNotFoundException").toBeNull();
 					} catch (ObjectNotFoundException e) {
 						expect(e.getMessage()).toContain("No row with the given identifier exists");
@@ -293,7 +293,7 @@ public class UserServiceTest {
 
 		describe("#deleteAll", ()->{
 			beforeEach(()->{
-				this.userService.deleteAll();
+				this.userServiceImpl.deleteAll();
 			});
 
 			it("deletes all users", ()->{

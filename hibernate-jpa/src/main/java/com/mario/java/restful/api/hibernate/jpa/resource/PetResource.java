@@ -22,7 +22,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidato
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 
 @Path("/pets")
 @Consumes("application/json")
@@ -30,15 +30,15 @@ import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 public class PetResource {
 
     private PetService petService;
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     public PetResource() {
-        this(new PetService(), new UserService());
+        this(new PetService(), new UserServiceImpl());
     }
 
-    public PetResource(PetService petService, UserService userService) {
+    public PetResource(PetService petService, UserServiceImpl userServiceImpl) {
         this.petService = petService;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     @GET
@@ -126,7 +126,7 @@ public class PetResource {
     private Response createHelper(PetDomain pet){
     	Response res;
 
-    	if(this.userService.find(pet.getUserId()) != null){
+    	if(this.userServiceImpl.find(pet.getUserId()) != null){
     		this.petService.persist(pet);
             URI uri = URI.create("/pets/" + pet.getId());
             res = Response.created(uri).build();
@@ -140,7 +140,7 @@ public class PetResource {
     private Response updateHelper(Long id, PetDomain pet){
     	Response res;
 
-    	if(this.userService.find(pet.getUserId()) != null){
+    	if(this.userServiceImpl.find(pet.getUserId()) != null){
     		try {
                 this.petService.update(id, pet);
                 res = Response.noContent().build();

@@ -1,83 +1,56 @@
 package com.mario.java.restful.api.hibernate.jpa.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.StaleStateException;
-
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
+import com.mario.java.restful.api.hibernate.jpa.repository.ObjectNofFoundException;
 
-public class UserService {
-	private AbstractRepositoryHibernateImpl<UserDomain, Long> userCrud;
-	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
+public interface UserService {
 
-	public UserService() {
-		this(new AbstractRepositoryHibernateImpl<UserDomain, Long>("UserDomain", UserDomain.class),new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
-	}
+	/**
+	 * Persists the {@link UserDomain} userDomain
+	 * @param userDomain the userDomain to be persisted
+	 */
+	public void persist(UserDomain userDomain);
 
-	public UserService(AbstractRepositoryHibernateImpl<UserDomain, Long> userCrud, AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud){
-		this.userCrud = userCrud;
-		this.petCrud = petCrud;
-	}
+	/**
+	 * Updates the {@link UserDomain} userDomain
+	 * @param id the {@link Long} id of the userDomain
+	 * @param userDomain the userDomain to be updated
+	 * @throws ObjectNofFoundException when it couldn't find the userDomain to be updated
+	 */
+	public void update(Long id, UserDomain userDomain) throws ObjectNofFoundException;
 
-	public void persist(UserDomain user) {
-		this.userCrud.persist(user);
-	}
+	/**
+	 * Deletes the {@link UserDomain} userDomain
+	 * @param id the {@link Long} id of the userDomain
+	 * @throws ObjectNofFoundException when it couldn't find the userDomain to be deleted
+	 */
+	public void delete(Long id) throws ObjectNofFoundException;
 
-	public void update(Long id, UserDomain user) {
-		user.setId(id);
+	/**
+	 * Deletes all {@link UserDomain} userDomain
+	 */
+	public void deleteAll();
 
-		try {
-			this.userCrud.update(user);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, user.getClass().getName());
-		}
+	/**
+	 * Finds the {@link UserDomain} userDomain
+	 * @param id the {@link Long} id of the userDomain
+	 * @return the userDomain found or null
+	 */
+	public UserDomain find(Long id);
 
-	}
+	/**
+	 * Finds all {@link UserDomain} userDomain
+	 * @return the list of userDomain found or null
+	 */
+	public List<UserDomain> findAll();
 
-	public UserDomain find(Long id) {
-		UserDomain user = this.userCrud.find(id);
-
-		return user;
-	}
-
-	public List<UserDomain> findAll() {
-		List<UserDomain> users = this.userCrud.findAll();
-		return users;
-	}
-
-	public List<UserDomain> findAll(Map<String, Object> criterias){
-		List<UserDomain> users = this.userCrud.findAll(criterias);
-		return users;
-	}
-
-	public void delete(Long id) {
-		UserDomain user = new UserDomain();
-		user.setId(id);
-
-		this.deletePets(id);
-
-		try {
-			this.userCrud.delete(user);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, user.getClass().getName());
-		}
-	}
-
-	public void deleteAll() {
-		this.petCrud.deleteAll();
-		this.userCrud.deleteAll();
-	}
-
-	private void deletePets(Object id){
-		Map<String, Object> criterias = new HashMap<String, Object>();
-		criterias.put("user.id", id);
-		List<PetDomain> pets = this.petCrud.findAll(criterias);
-
-		if(pets != null) this.petCrud.deleteAll(pets);
-	}
+	/**
+	 * Finds all {@link UserDomain} userDomain matching the {@link Map<String, Object>} restrictions
+	 * @param restrictions the list of restrictions to be applied to the search
+	 * @return the list of userDomain matching the restrictions or null
+	 */
+	public List<UserDomain> findAll(Map<String, Object> restrictions);
 }

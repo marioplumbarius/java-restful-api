@@ -1,4 +1,4 @@
-package com.mario.java.test.restful.api.hibernate.jpa.service;
+package com.mario.java.test.restful.api.hibernate.jpa.service.impl;
 
 import static com.mscharhag.oleaster.matcher.Matchers.expect;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.afterEach;

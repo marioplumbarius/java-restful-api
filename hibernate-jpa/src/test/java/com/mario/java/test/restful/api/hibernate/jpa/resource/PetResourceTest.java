@@ -26,7 +26,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidato
 import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -41,7 +41,7 @@ public class PetResourceTest {
     private PetService petService;
 
     @Mock
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Mock
     private PetResource resourceMock;
@@ -84,7 +84,7 @@ public class PetResourceTest {
 
         	describe("when the user exist", () -> {
         		beforeEach(() -> {
-					Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(this.user);
+					Mockito.when(this.userServiceImpl.find(this.validPet.getUserId())).thenReturn(this.user);
 				});
         		describe("when the pet exists", () -> {
                     beforeEach(() -> {
@@ -116,7 +116,7 @@ public class PetResourceTest {
 
         	describe("when the user does not exist", () -> {
         		beforeEach(() -> {
-					Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(null);
+					Mockito.when(this.userServiceImpl.find(this.validPet.getUserId())).thenReturn(null);
 
 					this.response = this.resource.update(this.id, this.validPet);
 				});
@@ -254,7 +254,7 @@ public class PetResourceTest {
 
                 describe("when the pet's user exists", () -> {
                 	beforeEach(() -> {
-                		Mockito.when(this.userService.find(this.validPet.getUserId())).thenReturn(this.user);
+                		Mockito.when(this.userServiceImpl.find(this.validPet.getUserId())).thenReturn(this.user);
 
                 		this.response = this.resource.create(this.validPet);
 					});

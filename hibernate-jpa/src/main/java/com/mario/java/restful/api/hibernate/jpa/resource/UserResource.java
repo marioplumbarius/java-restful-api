@@ -1,7 +1,9 @@
 package com.mario.java.restful.api.hibernate.jpa.resource;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -11,27 +13,29 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.UserRepositoryJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 
 @Path("/users")
 @Consumes("application/json")
 @Produces("application/json")
 public class UserResource {
 
-    private UserService service;
+    private UserServiceImpl service;
 
     public UserResource() {
-        this(new UserService());
+        this(new UserServiceImpl());
     }
 
-    public UserResource(UserService service) {
+    public UserResource(UserServiceImpl service) {
         this.service = service;
     }
 
