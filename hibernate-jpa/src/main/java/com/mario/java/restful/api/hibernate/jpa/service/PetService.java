@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
 
 public interface PetService {
 
@@ -19,21 +20,24 @@ public interface PetService {
 	 * @param id the {@link Long} id of the petDomain
 	 * @param petDomain the petDomain to be updated
 	 * @throws Exception when it couldn't update the petDomain
+	 * @throws ObjectNofFoundException when the petDomain to be updated does not exist
 	 */
-	public void update(Long id, PetDomain petDomain) throws Exception;
+	public void update(Long id, PetDomain petDomain) throws Exception, ObjectNofFoundException;
 
 	/**
 	 * Deletes the {@link PetDomain} petDomain.
 	 * @param id the {@link Long} id of the petDomain
 	 * @throws Exception when it couldn't delete the petDomain
+	 * @throws ObjectNofFoundException when the petDomain to be deleted does not exist
 	 */
-	public void delete(Long id) throws Exception;
+	public void delete(Long id) throws Exception, ObjectNofFoundException;
 
 	/**
 	 * Deletes all {@link PetDomain} petDomain.
 	 * @throws Exception when it couldn't delete the list of petDomain
+	 * @throws ObjectNofFoundException when there aren't petDomain to be deleted
 	 */
-	public void deleteAll() throws Exception;
+	public void deleteAll() throws Exception, ObjectNofFoundException;
 
 	/**
 	 * Finds the {@link PetDomain} petDomain.
