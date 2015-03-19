@@ -13,25 +13,22 @@ import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSin
 
 public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
 
-	private String entityName;
 	private Class<T> entityClass;
-	private EntityManager entityManager;
-	private String baseQuery;
+	protected EntityManager entityManager;
 
-	public AbstractRepositoryJPAImpl(String entityName, Class<T> entityClass) {
-		this(entityName, entityClass, EntityManagerSingleton.getInstance().getEntityManager());
+	public AbstractRepositoryJPAImpl(Class<T> entityClass) {
+		this(entityClass, EntityManagerSingleton.getInstance().getEntityManager());
 	}
 
-	public AbstractRepositoryJPAImpl(String entityName, Class<T> entityClass, EntityManager entityManager) {
-		this.entityName = entityName;
+	public AbstractRepositoryJPAImpl(Class<T> entityClass, EntityManager entityManager) {
 		this.entityClass = entityClass;
 		this.entityManager = entityManager;
-		this.baseQuery = "SELECT t FROM " + this.entityName + " t";
 	}
 
 	@Override
 	public List<T> findAll(){
-		TypedQuery<T> typedQuery = this.entityManager.createQuery(this.baseQuery, this.entityClass);
+		String sqlQuery = "SELECT t FROM " + this.entityClass.getSimpleName() + " t";
+		TypedQuery<T> typedQuery = this.entityManager.createQuery(sqlQuery, this.entityClass);
 		List<T> entities = typedQuery.getResultList();
 
 		return entities;
@@ -89,7 +86,7 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 		if(entities != null){
 			this.deleteAllHelper(entities);
 		} else {
-			throw new ObjectNofFoundException(this.entityName);
+			throw new ObjectNofFoundException(this.entityClass.getSimpleName());
 		}
 	}
 
@@ -108,15 +105,12 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 
 	@Override
 	public List<T> findAll(Map<String, Object> restrictions) {
-
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void deleteAll(Map<String, Object> restrictions) throws Exception {
-
 		// TODO Auto-generated method stub
-
 	}
 }
