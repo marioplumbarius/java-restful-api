@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.mario.java.restful.api.hibernate.jpa.repository;
+package com.mario.java.restful.api.hibernate.jpa.repository.exception;
 
 import java.io.Serializable;
 
