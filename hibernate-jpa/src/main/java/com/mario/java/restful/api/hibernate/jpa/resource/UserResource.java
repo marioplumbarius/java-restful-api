@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,7 +20,6 @@ import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 
 @Path("/users")
 @Consumes("application/json")
@@ -29,11 +29,11 @@ public class UserResource {
 
 	private UserService userService;
 
-    public UserResource(){
-    	this(new UserServiceImpl());
-    }
+	public UserResource(){
+	}
 
-    public UserResource(UserService service) {
+    @Inject
+	public UserResource(UserService service) {
         this.userService = service;
     }
 
