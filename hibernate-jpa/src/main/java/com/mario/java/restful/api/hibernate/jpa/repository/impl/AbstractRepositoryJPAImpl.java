@@ -13,25 +13,15 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.mario.java.restful.api.hibernate.jpa.repository.AbstractRepository;
 
-public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
+public abstract class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
 
-	private Class<T> entityClass;
-	protected EntityManager entityManager;
-
-	/**
-	 * Default constructor which creates a new instance.
-	 * @param entityClass the entityClass of the instance
-	 * @param entityManager the entityManager of the instance
-	 */
-	public AbstractRepositoryJPAImpl(Class<T> entityClass, EntityManager entityManager) {
-		this.entityClass = entityClass;
-		this.entityManager = entityManager;
-	}
+	public abstract Class<T> getEntityClass();
+	public abstract EntityManager getEntityManager();
 
 	@Override
 	public List<T> findAll(){
-		String sqlQuery = "SELECT t FROM " + this.entityClass.getSimpleName() + " t";
-		TypedQuery<T> typedQuery = this.entityManager.createQuery(sqlQuery, this.entityClass);
+		String sqlQuery = "SELECT t FROM " + this.getEntityClass().getSimpleName() + " t";
+		TypedQuery<T> typedQuery = this.getEntityManager().createQuery(sqlQuery, this.getEntityClass());
 		List<T> entities = typedQuery.getResultList();
 
 		return entities;
@@ -39,17 +29,17 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 
 	@Override
 	public T find(ID id) {
-		return this.entityManager.find(this.entityClass, id);
+		return this.getEntityManager().find(this.getEntityClass(), id);
 	}
 
 	@Override
 	public void persist(T entity) throws Exception {
 		try {
-			this.entityManager.getTransaction().begin();
-			this.entityManager.persist(entity);
-			this.entityManager.getTransaction().commit();
+			this.getEntityManager().getTransaction().begin();
+			this.getEntityManager().persist(entity);
+			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
-			this.entityManager.getTransaction().rollback();
+			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
 	}
@@ -57,11 +47,11 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 	@Override
 	public void update(T entity) throws Exception {
 		try {
-			this.entityManager.getTransaction().begin();
-			this.entityManager.merge(entity);
-			this.entityManager.getTransaction().commit();
+			this.getEntityManager().getTransaction().begin();
+			this.getEntityManager().merge(entity);
+			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
-			this.entityManager.getTransaction().rollback();
+			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
 	}
@@ -69,11 +59,11 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 	@Override
 	public void delete(T entity) throws Exception {
 		try {
-			this.entityManager.getTransaction().begin();
-			this.entityManager.remove(entity);
-			this.entityManager.getTransaction().commit();
+			this.getEntityManager().getTransaction().begin();
+			this.getEntityManager().remove(entity);
+			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
-			this.entityManager.getTransaction().rollback();
+			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
 	}
@@ -90,13 +80,13 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 	@Override
 	public void deleteAll(List<T> entities) throws Exception {
 		try {
-			this.entityManager.getTransaction().begin();
+			this.getEntityManager().getTransaction().begin();
 			for (T entity : entities) {
-				this.entityManager.remove(entity);
+				this.getEntityManager().remove(entity);
 			}
-			this.entityManager.getTransaction().commit();
+			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
-			this.entityManager.getTransaction().rollback();
+			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
 	}
@@ -105,7 +95,7 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 	@SuppressWarnings({ "unchecked", "hiding" })
 	public <SingularAttribute, Object> List<T> findAll(Map<SingularAttribute, Object> restrictions) {
 		CriteriaQuery<T> criteriaQuery = this.buildCriteriaQueryWithRestrictions((Map<javax.persistence.metamodel.SingularAttribute<T, java.lang.Object>, java.lang.Object>) restrictions);
-		TypedQuery<T> typedQuery = this.entityManager.createQuery(criteriaQuery);
+		TypedQuery<T> typedQuery = this.getEntityManager().createQuery(criteriaQuery);
 		List<T> entities = typedQuery.getResultList();
 
 		return entities;
@@ -125,9 +115,9 @@ public class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements Ab
 	 * @return the criteriaQuery matching the restrictions
 	 */
 	private CriteriaQuery<T> buildCriteriaQueryWithRestrictions(Map<SingularAttribute<T, Object>, Object> restrictions) {
-		CriteriaBuilder criteriaBuilder = this.entityManager.getCriteriaBuilder();
-		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.entityClass);
-		Root<T> entity = criteriaQuery.from(this.entityClass);
+		CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getEntityClass());
+		Root<T> entity = criteriaQuery.from(this.getEntityClass());
 
 		for(Map.Entry<SingularAttribute<T, Object>, Object> restriction : restrictions.entrySet()){
 			criteriaQuery.select(entity).where(criteriaBuilder.equal(entity.get(restriction.getKey()), restriction.getValue()));
