@@ -36,9 +36,13 @@ public class UserServiceNewImpl implements UserService {
 
 	@Override
 	public void update(Long id, UserDomain userDomain) throws Exception, ObjectNofFoundException {
-		userDomain.setId(id);
 
-		this.userRepository.update(userDomain);
+		if(this.find(id) != null){
+			userDomain.setId(id);
+			this.userRepository.update(userDomain);
+		} else {
+			throw new ObjectNofFoundException(id, UserDomain.class.getSimpleName());
+		}
 	}
 
 	@Override
