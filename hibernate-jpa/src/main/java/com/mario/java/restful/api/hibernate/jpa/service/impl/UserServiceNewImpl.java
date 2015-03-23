@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
@@ -88,7 +89,7 @@ public class UserServiceNewImpl implements UserService {
 
 	private void deletePets(UserDomain userDomain) throws Exception {
 		Map<javax.persistence.metamodel.SingularAttribute<PetDomain, UserDomain>, Object> restrictions = new HashMap<javax.persistence.metamodel.SingularAttribute<PetDomain,UserDomain>, Object>();
-		//restrictions.put(PetDomain_.user, userDomain);
+		restrictions.put(PetDomain_.user, userDomain);
 		List<PetDomain> pets = this.petRepository.findAll(restrictions);
 
 		if(pets != null) this.petRepository.deleteAll(pets);

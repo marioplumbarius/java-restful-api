@@ -78,7 +78,7 @@
 			<version>${oleaster.version}</version>
 			<scope>test</scope>
 		</dependency>
-	
+
 		<!-- resteasy -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -91,13 +91,13 @@
 			<artifactId>resteasy-jackson2-provider</artifactId>
 			<version>${resteasy-jackson2-provider.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-servlet-initializer</artifactId>
 			<version>${resteasy-servlet-initializer.version}</version>
 		</dependency>
-		
+
 		<!-- hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -144,9 +144,13 @@
 		</dependency>
 
 		<!-- JPA's metamodel generator -->
-		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-jpamodelgen</artifactId> 
-			<version>${hibernate-jpamodelgen.version}</version> <scope>compile</scope> 
-			<optional>true</optional> </dependency> -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${hibernate-jpamodelgen.version}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
 
 		<!-- CDI - context & dependency injection -->
 		<dependency>
@@ -176,11 +180,8 @@
 			<version>${jandex.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		
-		<!--
-			needed to use CDI and RestEasy together
-				more info: http://docs.jboss.org/resteasy/docs/2.0.0.GA/userguide/html/CDI.html
-		-->
+
+		<!-- needed to use CDI and RestEasy together more info: http://docs.jboss.org/resteasy/docs/2.0.0.GA/userguide/html/CDI.html -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-cdi</artifactId>
