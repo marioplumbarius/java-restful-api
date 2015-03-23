@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.resource;
+package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
@@ -27,21 +28,22 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 @Path("/pets")
 @Consumes("application/json")
 @Produces("application/json")
-public class PetResource {
+public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
 
     private PetServiceImpl petServiceImpl;
     private UserServiceImpl userServiceImpl;
 
-    public PetResource() {
+    public PetResourceRestEasyImpl() {
         this(new PetServiceImpl(), new UserServiceImpl());
     }
 
-    public PetResource(PetServiceImpl petServiceImpl, UserServiceImpl userServiceImpl) {
+    public PetResourceRestEasyImpl(PetServiceImpl petServiceImpl, UserServiceImpl userServiceImpl) {
         this.petServiceImpl = petServiceImpl;
         this.userServiceImpl = userServiceImpl;
     }
 
-    @GET
+    @Override
+	@GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
         Response res = null;
@@ -57,14 +59,16 @@ public class PetResource {
         return res;
     }
 
-    @GET
+    @Override
+	@GET
     public List<PetDomain> findAll() {
         List<PetDomain> pets = this.petServiceImpl.findAll();
 
         return pets;
     }
 
-    @POST
+    @Override
+	@POST
     public Response create(PetDomain pet) {
         Response res = null;
 
@@ -77,7 +81,8 @@ public class PetResource {
         return res;
     }
 
-    @PUT
+    @Override
+	@PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, PetDomain pet) {
         Response res = null;
@@ -91,7 +96,8 @@ public class PetResource {
         return res;
     }
 
-    @PATCH
+    @Override
+	@PATCH
     @Path("{id}")
     public Response patch(@PathParam("id") Long id, PetDomain pet) {
         Response res = null;
@@ -108,7 +114,8 @@ public class PetResource {
         return res;
     }
 
-    @DELETE
+    @Override
+	@DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
         Response res = null;

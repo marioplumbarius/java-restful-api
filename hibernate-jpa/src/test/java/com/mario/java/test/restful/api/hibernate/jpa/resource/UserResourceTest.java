@@ -20,7 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.resource.UserResource;
+import com.mario.java.restful.api.hibernate.jpa.resource.impl.UserResourceRestEasyImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
@@ -31,7 +31,7 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 public class UserResourceTest {
 
 	@InjectMocks
-	private UserResource resource;
+	private UserResourceRestEasyImpl resource;
 
 	@Mock
 	private UserServiceImpl service;

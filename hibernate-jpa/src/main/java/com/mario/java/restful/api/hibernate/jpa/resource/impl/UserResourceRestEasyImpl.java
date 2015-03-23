@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.resource;
+package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
 import java.util.List;
@@ -18,26 +18,29 @@ import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
+import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
 @Path("/users")
+@RequestScoped
 @Consumes("application/json")
 @Produces("application/json")
-@RequestScoped
-public class UserResource {
+public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
 
 	private UserService userService;
 
-	public UserResource(){
+	public UserResourceRestEasyImpl(){
 	}
 
     @Inject
-	public UserResource(UserService service) {
+	public UserResourceRestEasyImpl(UserService service) {
         this.userService = service;
     }
 
-    @GET
+    @Override
+	@GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
         Response res = null;
@@ -53,14 +56,16 @@ public class UserResource {
         return res;
     }
 
-    @GET
+    @Override
+	@GET
     public List<UserDomain> findAll() {
         List<UserDomain> users = this.userService.findAll();
 
         return users;
     }
 
-    @POST
+    @Override
+	@POST
     public Response create(UserDomain user) {
         Response res = null;
 
@@ -73,7 +78,8 @@ public class UserResource {
         return res;
     }
 
-    @PUT
+    @Override
+	@PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, UserDomain user) {
         Response res = null;
@@ -87,7 +93,8 @@ public class UserResource {
         return res;
     }
 
-    @DELETE
+    @Override
+	@DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
         Response res = null;
@@ -104,6 +111,14 @@ public class UserResource {
 
         return res;
     }
+
+    @Override
+	@PATCH
+	@Path("{id}")
+	public Response patch(@PathParam("id") Long id, UserDomain user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     private Response updateHelper(Long id, UserDomain user){
     	Response res;

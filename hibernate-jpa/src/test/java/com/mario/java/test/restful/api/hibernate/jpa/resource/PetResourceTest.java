@@ -23,7 +23,7 @@ import org.mockito.MockitoAnnotations;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
-import com.mario.java.restful.api.hibernate.jpa.resource.PetResource;
+import com.mario.java.restful.api.hibernate.jpa.resource.impl.PetResourceRestEasyImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
@@ -35,7 +35,7 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 public class PetResourceTest {
 
     @InjectMocks
-    private PetResource resource;
+    private PetResourceRestEasyImpl resource;
 
     @Mock
     private PetServiceImpl petServiceImpl;
@@ -44,7 +44,7 @@ public class PetResourceTest {
     private UserServiceImpl userServiceImpl;
 
     @Mock
-    private PetResource resourceMock;
+    private PetResourceRestEasyImpl resourceMock;
 
     @Mock
     private PetDomain validPet = PetFactory.createValidPet();
