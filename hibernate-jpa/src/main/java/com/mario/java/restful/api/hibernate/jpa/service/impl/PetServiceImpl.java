@@ -3,73 +3,80 @@ package com.mario.java.restful.api.hibernate.jpa.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+
 import org.hibernate.ObjectNotFoundException;
-import org.hibernate.StaleStateException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
-import com.mario.java.restful.api.hibernate.jpa.service.PetService;
+import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.service.Service;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
 
-public class PetServiceImpl implements PetService {
-	private AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud;
+@Model
+@PetService
+public class PetServiceImpl implements Service<PetDomain, Long> {
+
+	private PetRepository petRepository;
 
 	public PetServiceImpl() {
-		this(new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
 	}
 
-	public PetServiceImpl(AbstractRepositoryHibernateImpl<PetDomain, Long> petCrud){
-		this.petCrud = petCrud;
-	}
-
-	@Override
-	public void persist(PetDomain pet) {
-		this.petCrud.persist(pet);
+	@Inject
+	public PetServiceImpl(PetRepository petRepository){
+		this.petRepository = petRepository;
 	}
 
 	@Override
-	public void update(Long id, PetDomain pet) {
-		pet.setId(id);
+	public void persist(PetDomain pet) throws Exception {
+		this.petRepository.persist(pet);
+	}
 
-		try {
-			this.petCrud.update(pet);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, pet.getClass().getName());
+	@Override
+	public void update(Long id, PetDomain pet) throws Exception, ObjectNotFoundException {
+
+		if(this.find(id) != null){
+			pet.setId(id);
+			this.petRepository.update(pet);
+		} else {
+			throw new ObjectNofFoundException(id, PetDomain.class.getSimpleName());
 		}
 	}
 
 	@Override
+	public void delete(Long id) throws Exception, ObjectNofFoundException {
+		PetDomain pet = this.find(id);
+
+		if(pet != null){
+			this.petRepository.delete(pet);
+		} else {
+			throw new ObjectNofFoundException(id, PetDomain.class.getSimpleName());
+		}
+	}
+
+	@Override
+	public void deleteAll() throws Exception, ObjectNofFoundException {
+		this.petRepository.deleteAll();
+	}
+
+	@Override
 	public PetDomain find(Long id) {
-		PetDomain pet = this.petCrud.find(id);
+		PetDomain pet = this.petRepository.find(id);
 
 		return pet;
 	}
 
 	@Override
 	public List<PetDomain> findAll() {
-		List<PetDomain> pets = this.petCrud.findAll();
+		List<PetDomain> pets = this.petRepository.findAll();
 		return pets;
 	}
 
 	@Override
-	public List<PetDomain> findAll(Map<String, Object> criterias){
-		List<PetDomain> pets = this.petCrud.findAll(criterias);
-		return pets;
-	}
+	public <K, V> List<PetDomain> findAll(Map<K, V> restrictions) {
 
-	@Override
-	public void delete(Long id) {
-		PetDomain pet = new PetDomain();
-		pet.setId(id);
-
-		try {
-			this.petCrud.delete(pet);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, PetDomain.class.getName());
-		}
-	}
-
-	@Override
-	public void deleteAll() {
-		this.petCrud.deleteAll();
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
