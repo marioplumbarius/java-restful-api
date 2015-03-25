@@ -12,7 +12,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
-import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 
@@ -38,30 +38,30 @@ public class UserServiceImpl implements Service<UserDomain, Long> {
 	}
 
 	@Override
-	public void update(Long id, UserDomain userDomain) throws Exception, ObjectNofFoundException {
+	public void update(Long id, UserDomain userDomain) throws Exception, ObjectNotFoundException {
 
 		if(this.find(id) != null){
 			userDomain.setId(id);
 			this.userRepository.update(userDomain);
 		} else {
-			throw new ObjectNofFoundException(id, UserDomain.class.getSimpleName());
+			throw new ObjectNotFoundException(id, UserDomain.class.getSimpleName());
 		}
 	}
 
 	@Override
-	public void delete(Long id) throws Exception, ObjectNofFoundException {
+	public void delete(Long id) throws Exception, ObjectNotFoundException {
 		UserDomain userDomain = this.find(id);
 
 		if(userDomain != null){
 			this.deletePets(userDomain);
 			this.userRepository.delete(userDomain);
 		} else {
-			throw new ObjectNofFoundException(id, UserDomain.class.getSimpleName());
+			throw new ObjectNotFoundException(id, UserDomain.class.getSimpleName());
 		}
 	}
 
 	@Override
-	public void deleteAll() throws Exception, ObjectNofFoundException {
+	public void deleteAll() throws Exception, ObjectNotFoundException {
 		this.userRepository.deleteAll();
 		this.petRepository.deleteAll();
 	}

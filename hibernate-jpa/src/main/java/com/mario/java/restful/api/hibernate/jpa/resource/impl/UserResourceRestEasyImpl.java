@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
@@ -103,7 +103,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
         try {
             this.service.delete(id);
             res = Response.noContent().build();
-        } catch (ObjectNofFoundException e) {
+        } catch (ObjectNotFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
         } catch (Exception e) {
         	e.printStackTrace();
@@ -127,7 +127,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
     	try {
             this.service.update(id, user);
             res = Response.noContent().build();
-        } catch (ObjectNofFoundException e) {
+        } catch (ObjectNotFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
 		} catch (Exception e) {
 			e.printStackTrace();

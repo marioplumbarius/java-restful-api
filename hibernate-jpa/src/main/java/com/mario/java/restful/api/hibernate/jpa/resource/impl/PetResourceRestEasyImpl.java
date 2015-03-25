@@ -17,12 +17,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.hibernate.ObjectNotFoundException;
-
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
-import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
@@ -129,7 +127,7 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
         try {
             this.petService.delete(id);
             res = Response.noContent().build();
-        } catch (ObjectNofFoundException e) {
+        } catch (ObjectNotFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
         } catch (Exception e) {
         	e.printStackTrace();

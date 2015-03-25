@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
-import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 
 /**
  * Service layer which makes operations regarding the state of the managed entity.
@@ -28,24 +28,24 @@ public interface Service<T extends BaseDomain, ID extends Serializable> {
 	 * @param id the {@link ID} id of the entity
 	 * @param entity the entity to be updated
 	 * @throws Exception when it couldn't update the entity
-	 * @throws ObjectNofFoundException when the entity to be updated does not exist
+	 * @throws ObjectNotFoundException when the entity to be updated does not exist
 	 */
-	public void update(ID id, T entity) throws Exception, ObjectNofFoundException;
+	public void update(ID id, T entity) throws Exception, ObjectNotFoundException;
 
 	/**
 	 * Deletes the {@link T} entity
 	 * @param id the {@link ID} id of the entity
 	 * @throws Exception when it couldn't delete the entity
-	 * @throws ObjectNofFoundException when the entity to be deleted does not exist
+	 * @throws ObjectNotFoundException when the entity to be deleted does not exist
 	 */
-	public void delete(ID id) throws Exception, ObjectNofFoundException;
+	public void delete(ID id) throws Exception, ObjectNotFoundException;
 
 	/**
 	 * Deletes all {@link T} entity
 	 * @throws Exception when it couldn't delete all entity
-	 * @throws ObjectNofFoundException when there aren't entity to be deleted
+	 * @throws ObjectNotFoundException when there aren't entity to be deleted
 	 */
-	public void deleteAll() throws Exception, ObjectNofFoundException;
+	public void deleteAll() throws Exception, ObjectNotFoundException;
 
 	/**
 	 * Finds the {@link T} entity
