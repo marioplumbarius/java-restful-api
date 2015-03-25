@@ -4,96 +4,89 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.StaleStateException;
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.AbstractRepositoryHibernateImpl;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.Service;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 
-public class UserServiceImpl implements UserService {
-	private AbstractRepositoryHibernateImpl<UserDomain, Long> abstractRepositoryHibernateImplUser;
-	private AbstractRepositoryHibernateImpl<PetDomain, Long> abstractRepositoryHibernateImplPet;
+@Model
+@UserService
+public class UserServiceImpl implements Service<UserDomain, Long> {
 
-	public UserServiceImpl() {
-		this(new AbstractRepositoryHibernateImpl<UserDomain, Long>("UserDomain", UserDomain.class),new AbstractRepositoryHibernateImpl<PetDomain, Long>("PetDomain", PetDomain.class));
+	private UserRepository userRepository;
+	private PetRepository petRepository;
+
+	public UserServiceImpl(){
 	}
 
-	public UserServiceImpl(AbstractRepositoryHibernateImpl<UserDomain, Long> abstractRepositoryHibernateImplUser, AbstractRepositoryHibernateImpl<PetDomain, Long> abstractRepositoryHibernateImplPet){
-		this.abstractRepositoryHibernateImplUser = abstractRepositoryHibernateImplUser;
-		this.abstractRepositoryHibernateImplPet = abstractRepositoryHibernateImplPet;
+	@Inject
+	public UserServiceImpl(UserRepository userRepository, PetRepository petRepository){
+		this.userRepository = userRepository;
+		this.petRepository = petRepository;
 	}
 
 	@Override
-	public void persist(UserDomain user) {
-		this.abstractRepositoryHibernateImplUser.persist(user);
+	public void persist(UserDomain userDomain) throws Exception {
+		this.userRepository.persist(userDomain);
 	}
 
 	@Override
-	public void update(Long id, UserDomain user) {
-		user.setId(id);
+	public void update(Long id, UserDomain userDomain) throws Exception, ObjectNofFoundException {
 
-		try {
-			this.abstractRepositoryHibernateImplUser.update(user);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, user.getClass().getName());
+		if(this.find(id) != null){
+			userDomain.setId(id);
+			this.userRepository.update(userDomain);
+		} else {
+			throw new ObjectNofFoundException(id, UserDomain.class.getSimpleName());
 		}
+	}
 
+	@Override
+	public void delete(Long id) throws Exception, ObjectNofFoundException {
+		UserDomain userDomain = this.find(id);
+
+		if(userDomain != null){
+			this.deletePets(userDomain);
+			this.userRepository.delete(userDomain);
+		} else {
+			throw new ObjectNofFoundException(id, UserDomain.class.getSimpleName());
+		}
+	}
+
+	@Override
+	public void deleteAll() throws Exception, ObjectNofFoundException {
+		this.userRepository.deleteAll();
+		this.petRepository.deleteAll();
 	}
 
 	@Override
 	public UserDomain find(Long id) {
-		UserDomain user = this.abstractRepositoryHibernateImplUser.find(id);
-
-		return user;
+		return this.userRepository.find(id);
 	}
 
 	@Override
 	public List<UserDomain> findAll() {
-		List<UserDomain> users = this.abstractRepositoryHibernateImplUser.findAll();
-		return users;
+		return this.userRepository.findAll();
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
-	public <String, Object> List<UserDomain> findAll(Map<String, Object> restrictions){
-		List<UserDomain> users = this.abstractRepositoryHibernateImplUser.findAll(restrictions);
-		return users;
+	public <SingularAttribute, Object> List<UserDomain> findAll(Map<SingularAttribute, Object> restrictions) {
+		return this.userRepository.findAll(restrictions);
 	}
 
-	@Override
-	public void delete(Long id) {
-		UserDomain user = new UserDomain();
-		user.setId(id);
+	private void deletePets(UserDomain userDomain) throws Exception {
+		Map<javax.persistence.metamodel.SingularAttribute<PetDomain, UserDomain>, Object> restrictions = new HashMap<javax.persistence.metamodel.SingularAttribute<PetDomain,UserDomain>, Object>();
+		restrictions.put(PetDomain_.user, userDomain);
+		List<PetDomain> pets = this.petRepository.findAll(restrictions);
 
-		this.deletePets(id);
-
-		try {
-			this.abstractRepositoryHibernateImplUser.delete(user);
-		} catch (StaleStateException e) {
-			throw new ObjectNotFoundException(id, user.getClass().getName());
-		}
-	}
-
-	@Override
-	public void deleteAll() {
-		this.abstractRepositoryHibernateImplPet.deleteAll();
-		this.abstractRepositoryHibernateImplUser.deleteAll();
-	}
-
-	@SuppressWarnings("hiding")
-	@Override
-	public <String, Object> void deleteAll(Map<String, Object> restrictions) throws Exception, ObjectNofFoundException {
-		this.deleteAll(restrictions);
-	}
-
-	private void deletePets(Object id){
-		Map<String, Object> criterias = new HashMap<String, Object>();
-		criterias.put("user.id", id);
-		List<PetDomain> pets = this.abstractRepositoryHibernateImplPet.findAll(criterias);
-
-		if(pets != null) this.abstractRepositoryHibernateImplPet.deleteAll(pets);
+		if(pets != null) this.petRepository.deleteAll(pets);
 	}
 }
