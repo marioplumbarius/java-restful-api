@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,28 +20,32 @@ import javax.ws.rs.core.Response.Status;
 import org.hibernate.ObjectNotFoundException;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.PetServiceImpl;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.UserServiceImpl;
+import com.mario.java.restful.api.hibernate.jpa.service.Service;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 
 @Path("/pets")
 @Consumes("application/json")
 @Produces("application/json")
+@RequestScoped
 public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
 
-    private PetServiceImpl petServiceImpl;
-    private UserServiceImpl userServiceImpl;
+    private Service<PetDomain, Long> petService;
+    private Service<UserDomain, Long> userService;
 
     public PetResourceRestEasyImpl() {
-        this(new PetServiceImpl(), new UserServiceImpl());
     }
 
-    public PetResourceRestEasyImpl(PetServiceImpl petServiceImpl, UserServiceImpl userServiceImpl) {
-        this.petServiceImpl = petServiceImpl;
-        this.userServiceImpl = userServiceImpl;
+    @Inject
+    public PetResourceRestEasyImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService) {
+        this.petService = petService;
+        this.userService = userService;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
     public Response find(@PathParam("id") Long id) {
         Response res = null;
 
-        PetDomain pet = this.petServiceImpl.find(id);
+        PetDomain pet = this.petService.find(id);
 
         if (pet == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -62,7 +68,7 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
     @Override
 	@GET
     public List<PetDomain> findAll() {
-        List<PetDomain> pets = this.petServiceImpl.findAll();
+        List<PetDomain> pets = this.petService.findAll();
 
         return pets;
     }
@@ -102,7 +108,7 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
     public Response patch(@PathParam("id") Long id, PetDomain pet) {
         Response res = null;
 
-        PetDomain currentPet = this.petServiceImpl.find(id);
+        PetDomain currentPet = this.petService.find(id);
 
         if (currentPet != null) {
             pet.patch(currentPet);
@@ -121,11 +127,14 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
         Response res = null;
 
         try {
-            this.petServiceImpl.delete(id);
+            this.petService.delete(id);
             res = Response.noContent().build();
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNofFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
-        }
+        } catch (Exception e) {
+        	e.printStackTrace();
+			res = Response.serverError().build();
+		}
 
         return res;
     }
@@ -133,10 +142,15 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
     private Response createHelper(PetDomain pet){
     	Response res;
 
-    	if(this.userServiceImpl.find(pet.getUserId()) != null){
-    		this.petServiceImpl.persist(pet);
-            URI uri = URI.create("/pets/" + pet.getId());
-            res = Response.created(uri).build();
+    	if(this.userService.find(pet.getUserId()) != null){
+    		try {
+				this.petService.persist(pet);
+				URI uri = URI.create("/pets/" + pet.getId());
+	            res = Response.created(uri).build();
+			} catch (Exception e) {
+				e.printStackTrace();
+				res = Response.serverError().build();
+			}
     	} else {
     		res = this.buildUserIdNotFoundResponse();
     	}
@@ -147,12 +161,15 @@ public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
     private Response updateHelper(Long id, PetDomain pet){
     	Response res;
 
-    	if(this.userServiceImpl.find(pet.getUserId()) != null){
+    	if(this.userService.find(pet.getUserId()) != null){
     		try {
-                this.petServiceImpl.update(id, pet);
+                this.petService.update(id, pet);
                 res = Response.noContent().build();
             } catch (ObjectNotFoundException e) {
                 res = Response.status(Status.NOT_FOUND).build();
+            } catch (Exception e) {
+            	e.printStackTrace();
+				res = Response.serverError().build();
             }
     	} else {
     		res = this.buildUserIdNotFoundResponse();

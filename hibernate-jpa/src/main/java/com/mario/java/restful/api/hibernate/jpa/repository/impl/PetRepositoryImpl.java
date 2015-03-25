@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa.AbstractRepositoryJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSingleton;
 
 @RequestScoped

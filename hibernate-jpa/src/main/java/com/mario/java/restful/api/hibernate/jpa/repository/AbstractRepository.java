@@ -69,11 +69,4 @@ public interface AbstractRepository<T, ID extends Serializable> {
 	 * @throws Exception when the entities could not be deleted
 	 */
 	public void deleteAll(List<T> entities) throws Exception;
-
-	/**
-	 * Deletes all {@link Map<K, V>} entities matching the restrictions
-	 * @param restrictions the restrictions to be applied to the search
-	 * @throws Exception when it couldn't delete the entities matching the restrictions
-	 */
-	public <K, V> void deleteAll(Map<K, V> restrictions) throws Exception;
 }

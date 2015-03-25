@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.repository.impl;
+package com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa;
 
 import java.io.Serializable;
 import java.util.List;
@@ -99,13 +99,6 @@ public abstract class AbstractRepositoryJPAImpl<T, ID extends Serializable> impl
 		List<T> entities = typedQuery.getResultList();
 
 		return entities;
-	}
-
-	@SuppressWarnings("hiding")
-	@Override
-	public <SingularAttribute, Object> void deleteAll(Map<SingularAttribute, Object> restrictions) throws Exception {
-		List<T> entities = this.findAll(restrictions);
-		this.deleteAll(entities);
 	}
 
 	// TODO - move this method to another class

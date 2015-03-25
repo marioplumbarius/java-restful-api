@@ -21,22 +21,23 @@ import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNofFo
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
-import com.mario.java.restful.api.hibernate.jpa.service.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.Service;
+import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 
 @Path("/users")
-@RequestScoped
 @Consumes("application/json")
 @Produces("application/json")
+@RequestScoped
 public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
 
-	private UserService userService;
+	private Service<UserDomain, Long> service;
 
 	public UserResourceRestEasyImpl(){
 	}
 
     @Inject
-	public UserResourceRestEasyImpl(UserService service) {
-        this.userService = service;
+	public UserResourceRestEasyImpl(@UserService Service<UserDomain, Long> service) {
+        this.service = service;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
     public Response find(@PathParam("id") Long id) {
         Response res = null;
 
-        UserDomain user = this.userService.find(id);
+        UserDomain user = this.service.find(id);
 
         if (user == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -59,7 +60,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
     @Override
 	@GET
     public List<UserDomain> findAll() {
-        List<UserDomain> users = this.userService.findAll();
+        List<UserDomain> users = this.service.findAll();
 
         return users;
     }
@@ -70,7 +71,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
         Response res = null;
 
         if (user.isValid()) {
-            this.createHelper(user);
+            res = this.createHelper(user);
         } else {
             res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
         }
@@ -100,7 +101,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
         Response res = null;
 
         try {
-            this.userService.delete(id);
+            this.service.delete(id);
             res = Response.noContent().build();
         } catch (ObjectNofFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -116,15 +117,15 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
 	@PATCH
 	@Path("{id}")
 	public Response patch(@PathParam("id") Long id, UserDomain user) {
-		// TODO Auto-generated method stub
-		return null;
+		return Response.notAcceptable(null).build();
 	}
 
+    // TODO [BUG]: when the user name is updated, the createdAt got updated too, to null
     private Response updateHelper(Long id, UserDomain user){
     	Response res;
 
     	try {
-            this.userService.update(id, user);
+            this.service.update(id, user);
             res = Response.noContent().build();
         } catch (ObjectNofFoundException e) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -140,7 +141,7 @@ public class UserResourceRestEasyImpl implements Resource<UserDomain, Long> {
     	Response res;
 
     	try {
-			this.userService.persist(userDomain);
+			this.service.persist(userDomain);
 			URI uri = URI.create("/users/" + userDomain.getId());
             res = Response.created(uri).build();
 		} catch (Exception e) {

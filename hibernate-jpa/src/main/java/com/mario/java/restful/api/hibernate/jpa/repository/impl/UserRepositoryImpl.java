@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa.AbstractRepositoryJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSingleton;
 
 @RequestScoped
