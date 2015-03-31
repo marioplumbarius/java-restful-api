@@ -32,16 +32,16 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-public class PetResourceRestEasyImpl implements Resource<PetDomain, Long> {
+public class PetResourceImpl implements Resource<PetDomain, Long> {
 
     private Service<PetDomain, Long> petService;
     private Service<UserDomain, Long> userService;
 
-    public PetResourceRestEasyImpl() {
+    public PetResourceImpl() {
     }
 
     @Inject
-    public PetResourceRestEasyImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService) {
+    public PetResourceImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService) {
         this.petService = petService;
         this.userService = userService;
     }
