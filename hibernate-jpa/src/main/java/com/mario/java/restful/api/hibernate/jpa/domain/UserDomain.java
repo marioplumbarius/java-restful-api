@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
 /**
  * Domain class which represents an user on database.
@@ -49,22 +48,6 @@ public class UserDomain extends BaseDomain implements Serializable {
 	 * @param name the name to set
 	 */
 	public UserDomain(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param domainValidator the domainValidator which will be used to validate the instance
-	 */
-	public UserDomain(DomainValidator domainValidator) {
-		super(domainValidator);
-	}
-
-	/**
-	 * @param name the name of the user
-	 * @param domainValidator the domainValidator which will be used to validate the instance
-	 */
-	public UserDomain(String name, DomainValidator domainValidator) {
-		super(domainValidator);
 		this.name = name;
 	}
 

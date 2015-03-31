@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Inject;
+import javax.enterprise.context.RequestScoped;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -16,6 +16,7 @@ import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidato
  * @author marioluan
  *
  */
+@RequestScoped
 public class DomainValidatorJPAImpl implements DomainValidator {
 
 	private Validator validator;
@@ -25,7 +26,6 @@ public class DomainValidatorJPAImpl implements DomainValidator {
 		this(Validation.buildDefaultValidatorFactory().getValidator());
 	}
 
-	@Inject
 	public DomainValidatorJPAImpl(Validator validator){
 		this.validator = validator;
 		this.errors = new HashMap<String, Object>();

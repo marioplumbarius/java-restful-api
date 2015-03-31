@@ -36,14 +36,16 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 
     private Service<PetDomain, Long> petService;
     private Service<UserDomain, Long> userService;
+    private DomainValidator domainValidator;
 
     public PetResourceImpl() {
     }
 
     @Inject
-    public PetResourceImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService) {
+    public PetResourceImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService, DomainValidator domainValidator) {
         this.petService = petService;
         this.userService = userService;
+        this.domainValidator = domainValidator;
     }
 
     @Override
@@ -76,10 +78,10 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
     public Response create(PetDomain pet) {
         Response res = null;
 
-        if (pet.isValid()) {
+        if (this.domainValidator.isValid(pet)) {
         	res = this.createHelper(pet);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(pet.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
         }
 
         return res;
@@ -91,10 +93,10 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
     public Response update(@PathParam("id") Long id, PetDomain pet) {
         Response res = null;
 
-        if(pet.isValid()){
+        if (this.domainValidator.isValid(pet)) {
             res = this.updateHelper(id, pet);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(pet.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
         }
 
         return res;

@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
@@ -31,13 +32,15 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 public class UserResourceImpl implements Resource<UserDomain, Long> {
 
 	private Service<UserDomain, Long> service;
+	private DomainValidator domainValidator;
 
 	public UserResourceImpl(){
 	}
 
     @Inject
-	public UserResourceImpl(@UserService Service<UserDomain, Long> service) {
+	public UserResourceImpl(@UserService Service<UserDomain, Long> service, DomainValidator domainValidator) {
         this.service = service;
+        this.domainValidator = domainValidator;
     }
 
     @Override
@@ -70,10 +73,10 @@ public class UserResourceImpl implements Resource<UserDomain, Long> {
     public Response create(UserDomain user) {
         Response res = null;
 
-        if (user.isValid()) {
+        if (this.domainValidator.isValid(user)) {
             res = this.createHelper(user);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
         }
 
         return res;
@@ -85,10 +88,10 @@ public class UserResourceImpl implements Resource<UserDomain, Long> {
     public Response update(@PathParam("id") Long id, UserDomain user) {
         Response res = null;
 
-        if (user.isValid()) {
+        if (this.domainValidator.isValid(user)) {
         	res = this.updateHelper(id, user);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(user.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
         }
 
         return res;

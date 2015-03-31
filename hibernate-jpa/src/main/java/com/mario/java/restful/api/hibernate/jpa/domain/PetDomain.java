@@ -16,7 +16,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 
 /**
  * Domain class which represents a pet on database.
@@ -60,17 +59,6 @@ public class PetDomain extends BaseDomain implements Serializable {
      * @param age the age to set
      */
     public PetDomain(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    /**
-     * @param name the name to set
-     * @param age the age to set
-     * @param domainValidator the domainValidator to set
-     */
-    public PetDomain(String name, int age, DomainValidator domainValidator){
-        super(domainValidator);
         this.name = name;
         this.age = age;
     }
