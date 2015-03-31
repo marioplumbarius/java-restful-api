@@ -14,7 +14,7 @@ import java.util.Map;
  * @param <T> the entity's type
  * @param <ID> the entity's primary key type
  */
-public interface AbstractRepository<T, ID extends Serializable> {
+public interface Repository<T, ID extends Serializable> {
 
 	/**
 	 * Finds all entities

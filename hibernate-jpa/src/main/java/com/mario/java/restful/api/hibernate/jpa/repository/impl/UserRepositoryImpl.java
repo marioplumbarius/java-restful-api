@@ -5,11 +5,11 @@ import javax.persistence.EntityManager;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
-import com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa.AbstractRepositoryJPAImpl;
+import com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa.RepositoryJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSingleton;
 
 @RequestScoped
-public class UserRepositoryImpl extends AbstractRepositoryJPAImpl<UserDomain, Long> implements UserRepository {
+public class UserRepositoryImpl extends RepositoryJPAImpl<UserDomain, Long> implements UserRepository {
 
 	private static final Class<UserDomain> entityClass = UserDomain.class;
 	private static final EntityManager entityManager = EntityManagerSingleton.getInstance().getEntityManager();

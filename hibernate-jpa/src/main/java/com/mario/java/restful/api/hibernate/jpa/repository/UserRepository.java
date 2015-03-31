@@ -2,6 +2,6 @@ package com.mario.java.restful.api.hibernate.jpa.repository;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 
-public interface UserRepository extends AbstractRepository<UserDomain, Long> {
+public interface UserRepository extends Repository<UserDomain, Long> {
 
 }

@@ -11,9 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.mario.java.restful.api.hibernate.jpa.repository.AbstractRepository;
+import com.mario.java.restful.api.hibernate.jpa.repository.Repository;
 
-public abstract class AbstractRepositoryJPAImpl<T, ID extends Serializable> implements AbstractRepository<T, ID> {
+public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements Repository<T, ID> {
 
 	public abstract Class<T> getEntityClass();
 	public abstract EntityManager getEntityManager();
