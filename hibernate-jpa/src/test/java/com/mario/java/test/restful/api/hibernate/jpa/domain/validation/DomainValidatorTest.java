@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
@@ -44,8 +45,8 @@ public class DomainValidatorTest {
 		beforeEach(() -> {
 			MockitoAnnotations.initMocks(this);
 
-			this.domainValidator = new DomainValidator(this.validator);
-			this.domainValidatorWithoutInjection = new DomainValidator();
+			this.domainValidator = new DomainValidatorJPAImpl(this.validator);
+			this.domainValidatorWithoutInjection = new DomainValidatorJPAImpl();
 		});
 
 		afterEach(() -> {
