@@ -2,66 +2,42 @@ package com.mario.java.restful.api.hibernate.jpa.domain.validation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class DomainValidator {
+/**
+ * Domain validator.
+ *
+ * @author marioluan
+ *
+ */
+public interface DomainValidator {
 
-	private final Validator validator;
+	/**
+	 * The {@link Validator} validator of the entity.
+	 * @return the validator
+	 */
+	public Validator getValidator();
 
-	private Map<String, Object> errors;
+	/**
+	 * Returns the current list of errors of the entity, regarding its validation status.
+	 * @return the errors from the domain
+	 */
+	public Map<String, Object> getErrors();
 
-	public DomainValidator() {
-		this(Validation.buildDefaultValidatorFactory().getValidator());
-	}
+	/**
+	 * Validates the entity.
+	 * @param entity the entity to be validated
+	 * @return whether or not the entity is valid
+	 */
+	public <T> boolean isValid(T entity);
 
-	public DomainValidator(Validator validator){
-		this.validator = validator;
-		this.errors = new HashMap<String, Object>();
-	}
-
-	public Validator getValidator() {
-		return this.validator;
-	}
-
-	public Map<String, Object> getErrors() {
-		return this.errors;
-	}
-
-	public <T> boolean isValid(T entity) {
-		boolean validate;
-
-		Set<ConstraintViolation<T>> constraintViolations = this.validator
-				.validate(entity);
-
-		if (constraintViolations.size() == 0) {
-			validate = true;
-		} else {
-			validate = false;
-			this.buildErrors(constraintViolations);
-		}
-
-		return validate;
-	}
-
-	private <T> void buildErrors(Set<ConstraintViolation<T>> constraintViolations) {
-		this.errors.clear();
-
-		Map<String, String> errorList = new HashMap<String, String>();
-
-		for (ConstraintViolation<T> constraintViolation : constraintViolations) {
-			String key = constraintViolation.getPropertyPath().toString();
-			String value = constraintViolation.getMessage();
-
-			errorList.put(key, value);
-		}
-
-		this.errors.put("errors", errorList);
-	}
-
+	/**
+	 * Builds an {@link Map<String, Object>} error, regarding the entity.
+	 * @param key the key of the error to be built
+	 * @param value the valud of the error to be built
+	 * @return an custom error object
+	 */
 	public static Map<String, Object> buildError(String key, String value){
 		Map<String, Object> errors = new HashMap<String, Object>();
 		Map<String, String> error = new HashMap<String, String>();

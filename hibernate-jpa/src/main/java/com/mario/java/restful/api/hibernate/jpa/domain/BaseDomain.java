@@ -7,6 +7,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
 
 /**
  * Abstract class which represents the base domain for all domains used by the application.<br>
@@ -21,11 +22,9 @@ public abstract class BaseDomain extends DatedDomain {
 	@Transient
 	private DomainValidator domainValidator;
 
-	/**
-	 * Default constructor which instantiates a new {@link DomainValidator} instance.
-	 */
+	// TODO - move this instantiation to a injection
 	public BaseDomain(){
-		this(new DomainValidator());
+		this(new DomainValidatorJPAImpl());
 	}
 
 	/**
