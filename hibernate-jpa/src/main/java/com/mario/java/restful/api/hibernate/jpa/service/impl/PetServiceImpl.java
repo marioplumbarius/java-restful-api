@@ -71,10 +71,10 @@ public class PetServiceImpl implements Service<PetDomain, Long> {
 		return pets;
 	}
 
-	@Override
-	public <K, V> List<PetDomain> findAll(Map<K, V> restrictions) {
 
-		// TODO Auto-generated method stub
-		return null;
+	@SuppressWarnings("hiding")
+	@Override
+	public <SingularAttribute, Object> List<PetDomain> findAll(Map<SingularAttribute, Object> restrictions) {
+		return this.petRepository.findAll(restrictions);
 	}
 }
