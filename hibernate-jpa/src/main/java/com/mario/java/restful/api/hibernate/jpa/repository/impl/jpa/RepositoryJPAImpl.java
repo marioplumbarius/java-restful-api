@@ -3,6 +3,7 @@ package com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -14,6 +15,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.mario.java.restful.api.hibernate.jpa.repository.Repository;
 
 public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements Repository<T, ID> {
+
+	private static final Logger LOGGER = Logger.getLogger(RepositoryJPAImpl.class.getSimpleName());
 
 	public abstract Class<T> getEntityClass();
 	public abstract EntityManager getEntityManager();
@@ -39,6 +42,7 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 			this.getEntityManager().persist(entity);
 			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
@@ -51,6 +55,7 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 			this.getEntityManager().merge(entity);
 			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
@@ -63,6 +68,7 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 			this.getEntityManager().remove(entity);
 			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
@@ -86,6 +92,7 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 			}
 			this.getEntityManager().getTransaction().commit();
 		} catch (Exception e) {
+			e.printStackTrace();
 			this.getEntityManager().getTransaction().rollback();
 			throw e;
 		}
