@@ -1,12 +1,15 @@
 package com.mario.java.restful.api.hibernate.jpa.domain;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Abstract class which exposes a domain with dated attributes (createdAt, updatedAt).<br>
@@ -18,11 +21,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 @MappedSuperclass
 public abstract class DatedDomain {
 
-	@CreationTimestamp
+	private static final Logger LOGGER = Logger.getLogger(DatedDomain.class.getSimpleName());
+
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(insertable=true, updatable=false)
 	private Date createdAt;
 
-	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(insertable=false, updatable=true)
 	private Date updatedAt;
 
 	/**
@@ -51,5 +57,19 @@ public abstract class DatedDomain {
 	 */
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	@PrePersist
+	private void prePersist(){
+		LOGGER.log(Level.FINE, "prePersist()");
+
+		this.createdAt = new Date();
+	}
+
+	@PreUpdate
+	private void preUpdate(){
+		LOGGER.log(Level.FINE, "preUpdate()");
+
+		this.updatedAt = new Date();
 	}
 }
