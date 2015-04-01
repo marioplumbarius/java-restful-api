@@ -32,7 +32,7 @@ public class UserDomain extends BaseDomain implements Serializable {
 	private Long id;
 
 	@NotEmpty
-	@Size(min = 1, max = 20)
+	@Size(max = 20)
 	private String name;
 
 	@OneToMany(mappedBy="user")
