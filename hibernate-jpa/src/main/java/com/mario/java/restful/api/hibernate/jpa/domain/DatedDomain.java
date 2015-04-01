@@ -1,7 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.domain;
 
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.Column;
@@ -61,14 +60,14 @@ public abstract class DatedDomain {
 
 	@PrePersist
 	private void prePersist(){
-		LOGGER.log(Level.FINE, "prePersist()");
+		LOGGER.info("prePersist()");
 
 		this.createdAt = new Date();
 	}
 
 	@PreUpdate
 	private void preUpdate(){
-		LOGGER.log(Level.FINE, "preUpdate()");
+		LOGGER.info("preUpdate()");
 
 		this.updatedAt = new Date();
 	}
