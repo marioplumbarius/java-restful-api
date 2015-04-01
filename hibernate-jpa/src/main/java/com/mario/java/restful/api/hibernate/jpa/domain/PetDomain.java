@@ -41,11 +41,11 @@ public class PetDomain extends BaseDomain implements Serializable {
     @Range(min = 1, max = 100)
     private int age;
 
+    @NotNull
     @ManyToOne(optional=false)
     @PrimaryKeyJoinColumn
     private UserDomain user;
 
-    @NotNull
     @Transient
     private Long userId;
 
