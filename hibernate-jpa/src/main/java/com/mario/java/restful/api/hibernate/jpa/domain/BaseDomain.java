@@ -11,9 +11,4 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class BaseDomain extends DatedDomain {
-
-	/**
-	 * Default constructor. Creates an empty instance.
-	 */
-	public BaseDomain(){}
 }
