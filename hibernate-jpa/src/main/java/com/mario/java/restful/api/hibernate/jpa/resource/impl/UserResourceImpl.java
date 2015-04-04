@@ -120,10 +120,20 @@ public class UserResourceImpl implements Resource<UserDomain, Long> {
 	@PATCH
 	@Path("{id}")
 	public Response patch(@PathParam("id") Long id, UserDomain user) {
-		return Response.notAcceptable(null).build();
+        Response res = null;
+
+        UserDomain currentUser = this.service.find(id);
+
+        if (currentUser != null) {
+            user.patch(currentUser);
+            res = this.update(id, user);
+        } else {
+            res = Response.status(Status.NOT_FOUND).build();
+        }
+
+        return res;
 	}
 
-    // TODO [BUG]: when the user name is updated, the createdAt got updated too, to null
     private Response updateHelper(Long id, UserDomain user){
     	Response res;
 

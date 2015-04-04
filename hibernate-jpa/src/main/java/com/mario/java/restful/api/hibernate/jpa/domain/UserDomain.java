@@ -78,4 +78,18 @@ public class UserDomain extends BaseDomain implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	/**
+     * Fill all null/missing attributes from the current {@link UserDomain} userDomain instance with attributes from another {@link UserDomain} userDomain instance.
+     *
+     * @param petDomain the petDomain to take the attributes from
+     */
+	public void patch(UserDomain userDomain) {
+
+		if(this.getName() == null){
+			this.setName(userDomain.getName());
+		}
+
+		this.setCreatedAt(userDomain.getCreatedAt());
+	}
 }

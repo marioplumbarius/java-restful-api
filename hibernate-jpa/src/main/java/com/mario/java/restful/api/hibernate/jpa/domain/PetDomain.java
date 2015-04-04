@@ -155,5 +155,7 @@ public class PetDomain extends BaseDomain implements Serializable {
         if (this.getUserId() == null) {
             this.setUserId(petDomain.getUserId());
         }
+
+        this.setCreatedAt(petDomain.getCreatedAt());
     }
 }
