@@ -16,12 +16,15 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mario.java.restful.api.hibernate.jpa.domain.serializer.PetDomainSerializer;
 
 /**
  * Domain class which represents a pet on database.
  * @author marioluan
  *
  */
+@JsonSerialize(using=PetDomainSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "pets")
