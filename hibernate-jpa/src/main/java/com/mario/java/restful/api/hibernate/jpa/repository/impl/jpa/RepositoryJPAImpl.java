@@ -1,6 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -118,10 +120,18 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 		CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getEntityClass());
 		Root<T> entity = criteriaQuery.from(this.getEntityClass());
+		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		for(Map.Entry<SingularAttribute<T, Object>, Object> restriction : restrictions.entrySet()){
-			criteriaQuery.select(entity).where(criteriaBuilder.equal(entity.get(restriction.getKey()), restriction.getValue()));
+			Predicate predicate = criteriaBuilder.equal(entity.get(restriction.getKey()), restriction.getValue());
+			predicates.add(predicate);
 		}
+
+		/**
+		 * The following code is experiencing a crash when using Hibernate's metamodel class generation.
+		 * bug report: https://hibernate.atlassian.net/browse/HHH-9259
+		 */
+		criteriaQuery.select(entity).where(criteriaBuilder.and(predicates.toArray(new Predicate[] {})));
 
 		return criteriaQuery;
 	}
