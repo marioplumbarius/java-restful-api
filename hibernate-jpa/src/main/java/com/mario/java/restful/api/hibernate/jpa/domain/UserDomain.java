@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mario.java.restful.api.hibernate.jpa.domain.serializer.UserDomainSerializer;
 
 /**
  * Domain class which represents an user on database.
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author marioluan
  *
  */
+@JsonSerialize(using=UserDomainSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "users")
