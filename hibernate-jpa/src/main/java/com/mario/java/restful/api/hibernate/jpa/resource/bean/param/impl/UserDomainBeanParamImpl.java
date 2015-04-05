@@ -4,7 +4,7 @@ import javax.ws.rs.QueryParam;
 
 import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.UserDomainBeanParam;
 
-public class UserDomainBeanParamImpl implements UserDomainBeanParam {
+public class UserDomainBeanParamImpl extends DomainBeanParamImpl implements UserDomainBeanParam {
 
 	@QueryParam("name")
 	private String name;
