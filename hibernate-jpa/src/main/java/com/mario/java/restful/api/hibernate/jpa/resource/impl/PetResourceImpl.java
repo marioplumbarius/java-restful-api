@@ -79,6 +79,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 	@GET
     public List<PetDomain> findAll() {
     	LOGGER.info("findAll()");
+
         List<PetDomain> pets = this.petService.findAll();
 
         return pets;
@@ -87,11 +88,10 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 	@Override
 	@GET
 	@Path("search")
-	public List<PetDomain> search(@BeanParam PetDomainBeanParamImpl beanParam) {
-    	LOGGER.info("findAll(petDomainFilter=:filter)".replace(":filter", beanParam.toString()));
+	public List<PetDomain> search(@BeanParam PetDomainBeanParamImpl beanParameters) {
+		LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
-    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParam);
-    	List<PetDomain> pets = this.petService.findAll(restrictions);
+		List<PetDomain> pets = this.searchHelper(beanParameters);
 
         return pets;
 	}
@@ -209,6 +209,22 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     	return res;
     }
 
+    private List<PetDomain> searchHelper(PetDomainBeanParamImpl beanParameters){
+    	List<PetDomain> pets = null;
+
+    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParameters);
+
+    	if(restrictions != null && !restrictions.isEmpty()){
+    		pets = this.petService.findAll(restrictions);
+
+    		if(pets != null && !pets.isEmpty()){
+    			this.setPetDomainPropertiesToBeDisplayed(pets, beanParameters.getPropertiesToBeDisplayed());
+        	}
+    	}
+
+    	return pets;
+    }
+
     private Response buildUserIdNotFoundResponse(){
     	// TODO
 		// move error defined messages to a file
@@ -235,5 +251,12 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     	}
 
     	return restrictions;
+    }
+
+	// TODO - find a fancy class for this method
+    private void setPetDomainPropertiesToBeDisplayed(List<PetDomain> pets, List<String> propertiesToBeDisplayed){
+    	for(PetDomain pet : pets){
+    		pet.setPropertiesToBeDisplayed(propertiesToBeDisplayed);
+    	}
     }
 }

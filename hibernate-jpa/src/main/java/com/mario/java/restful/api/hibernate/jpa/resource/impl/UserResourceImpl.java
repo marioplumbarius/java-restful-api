@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 @RequestScoped
 public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBeanParamImpl> {
 
+	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
+
 	private Service<UserDomain, Long> service;
 	private DomainValidator domainValidator;
 
@@ -53,7 +56,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	@GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
-        Response res = null;
+    	LOGGER.info("find(id=)".replace(":id", id.toString()));
+
+    	Response res = null;
 
         UserDomain user = this.service.find(id);
 
@@ -69,6 +74,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @Override
 	@GET
     public List<UserDomain> findAll() {
+    	LOGGER.info("findAll()");
+
         List<UserDomain> users = this.service.findAll();
 
         return users;
@@ -78,13 +85,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @GET
     @Path("search")
 	public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
-    	List<UserDomain> users = null;
+    	LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
-    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
-
-		if(!restrictions.isEmpty()){
-			users = this.service.findAll(restrictions);
-		}
+    	List<UserDomain> users = this.searchHelper(beanParameters);
 
 		return users;
 	}
@@ -92,7 +95,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @Override
 	@POST
     public Response create(UserDomain user) {
-        Response res = null;
+    	LOGGER.info("create(user=:user)".replace(":user", user.toString()));
+
+    	Response res = null;
 
         if (this.domainValidator.isValid(user)) {
             res = this.createHelper(user);
@@ -107,7 +112,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	@PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, UserDomain user) {
-        Response res = null;
+    	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
+
+    	Response res = null;
 
         if (this.domainValidator.isValid(user)) {
         	res = this.updateHelper(id, user);
@@ -122,7 +129,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	@DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
-        Response res = null;
+    	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
+
+    	Response res = null;
 
         try {
             this.service.delete(id);
@@ -141,7 +150,9 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	@PATCH
 	@Path("{id}")
 	public Response patch(@PathParam("id") Long id, UserDomain user) {
-        Response res = null;
+    	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
+
+    	Response res = null;
 
         UserDomain currentUser = this.service.find(id);
 
@@ -186,6 +197,22 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     	return res;
     }
 
+    private List<UserDomain> searchHelper(UserDomainBeanParamImpl beanParameters){
+    	List<UserDomain> users = null;
+
+    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
+
+		if(restrictions != null && !restrictions.isEmpty()){
+			users = this.service.findAll(restrictions);
+
+			if(users != null && !users.isEmpty()){
+				this.setUserDomainPropertiesToBeDisplayed(users, beanParameters.getPropertiesToBeDisplayed());
+			}
+		}
+
+		return users;
+    }
+
     // TODO - move this method to another [specific] class.
     private Map<SingularAttribute<UserDomain, ?>, Object> mapBeanParamToRestrictions(UserDomainBeanParamImpl beanParameters){
     	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = new HashMap<SingularAttribute<UserDomain, ?>, Object>();
@@ -195,5 +222,12 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     	}
 
     	return restrictions;
+    }
+
+    // TODO - find a fancy class for this method
+    private void setUserDomainPropertiesToBeDisplayed(List<UserDomain> users, List<String> propertiesToBeDisplayed){
+    	for(UserDomain user : users){
+    		user.setPropertiesToBeDisplayed(propertiesToBeDisplayed);
+    	}
     }
 }
