@@ -56,14 +56,14 @@ public interface Service<T extends BaseDomain, ID extends Serializable> {
 
 	/**
 	 * Finds all {@link T} entity
-	 * @return the list of entity found or null
+	 * @return the list of entities found or null
 	 */
 	public List<T> findAll();
 
 	/**
 	 * Finds all {@link T} entities matching the {@link Map<K, V>} restrictions
 	 * @param restrictions the list of restrictions to be applied to the search
-	 * @return the list of entity matching the restrictions or null
+	 * @return the list of entities matching the restrictions or null
 	 */
 	public <K, V> List<T> findAll(Map<K, V> restrictions);
 }
