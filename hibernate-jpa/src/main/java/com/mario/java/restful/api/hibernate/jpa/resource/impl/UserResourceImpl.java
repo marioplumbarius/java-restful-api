@@ -1,10 +1,14 @@
 package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,10 +21,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
+import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl.UserDomainBeanParamImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
@@ -29,7 +35,7 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-public class UserResourceImpl implements Resource<UserDomain, Long> {
+public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBeanParamImpl> {
 
 	private Service<UserDomain, Long> service;
 	private DomainValidator domainValidator;
@@ -67,6 +73,21 @@ public class UserResourceImpl implements Resource<UserDomain, Long> {
 
         return users;
     }
+
+    @Override
+    @GET
+    @Path("search")
+	public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
+    	List<UserDomain> users = null;
+
+    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
+
+		if(!restrictions.isEmpty()){
+			users = this.service.findAll(restrictions);
+		}
+
+		return users;
+	}
 
     @Override
 	@POST
@@ -163,5 +184,16 @@ public class UserResourceImpl implements Resource<UserDomain, Long> {
 		}
 
     	return res;
+    }
+
+    // TODO - move this method to another [specific] class.
+    private Map<SingularAttribute<UserDomain, ?>, Object> mapBeanParamToRestrictions(UserDomainBeanParamImpl beanParameters){
+    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = new HashMap<SingularAttribute<UserDomain, ?>, Object>();
+
+    	if(beanParameters.getName() != null){
+    		restrictions.put(UserDomain_.name, beanParameters.getName());
+    	}
+
+    	return restrictions;
     }
 }

@@ -1,11 +1,15 @@
 package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,11 +22,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
+import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl.PetDomainBeanParamImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
@@ -32,7 +38,9 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-public class PetResourceImpl implements Resource<PetDomain, Long> {
+public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanParamImpl> {
+
+	private static final Logger LOGGER = Logger.getLogger(PetResourceImpl.class.getName());
 
     private Service<PetDomain, Long> petService;
     private Service<UserDomain, Long> userService;
@@ -52,6 +60,8 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 	@GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
+    	LOGGER.info("find(id=)".replace(":id", id.toString()));
+
         Response res = null;
 
         PetDomain pet = this.petService.find(id);
@@ -68,14 +78,29 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
     @Override
 	@GET
     public List<PetDomain> findAll() {
+    	LOGGER.info("findAll()");
         List<PetDomain> pets = this.petService.findAll();
 
         return pets;
     }
 
+	@Override
+	@GET
+	@Path("search")
+	public List<PetDomain> search(@BeanParam PetDomainBeanParamImpl beanParam) {
+    	LOGGER.info("findAll(petDomainFilter=:filter)".replace(":filter", beanParam.toString()));
+
+    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParam);
+    	List<PetDomain> pets = this.petService.findAll(restrictions);
+
+        return pets;
+	}
+
     @Override
 	@POST
     public Response create(PetDomain pet) {
+    	LOGGER.info("create(pet=:pet)".replace(":pet", pet.toString()));
+
         Response res = null;
 
         if (this.domainValidator.isValid(pet)) {
@@ -91,6 +116,8 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 	@PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, PetDomain pet) {
+    	LOGGER.info("update(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
+
         Response res = null;
 
         if (this.domainValidator.isValid(pet)) {
@@ -106,7 +133,9 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 	@PATCH
     @Path("{id}")
     public Response patch(@PathParam("id") Long id, PetDomain pet) {
-        Response res = null;
+    	LOGGER.info("patch(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
+
+    	Response res = null;
 
         PetDomain currentPet = this.petService.find(id);
 
@@ -124,7 +153,9 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 	@DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
-        Response res = null;
+    	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
+
+    	Response res = null;
 
         try {
             this.petService.delete(id);
@@ -183,5 +214,26 @@ public class PetResourceImpl implements Resource<PetDomain, Long> {
 		// move error defined messages to a file
 		Map<String, Object> errors = DomainValidator.buildError("userId", "not found");
 		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
+    }
+
+	private Map<SingularAttribute<PetDomain, ?>, Object> mapDomainFilterToRestrictions(PetDomainBeanParamImpl petDomainFilter){
+    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = new HashMap<SingularAttribute<PetDomain, ?>, Object>();
+
+    	if(petDomainFilter.getName() != null && !petDomainFilter.equals("")){
+    		restrictions.put(PetDomain_.name, petDomainFilter.getName());
+    	}
+
+    	if(petDomainFilter.getAge() > 0){
+    		restrictions.put(PetDomain_.age, petDomainFilter.getAge());
+    	}
+
+    	if(petDomainFilter.getUserId() != null){
+    		UserDomain userDomain = new UserDomain();
+    		userDomain.setId(petDomainFilter.getUserId());
+
+    		restrictions.put(PetDomain_.user, userDomain);
+    	}
+
+    	return restrictions;
     }
 }
