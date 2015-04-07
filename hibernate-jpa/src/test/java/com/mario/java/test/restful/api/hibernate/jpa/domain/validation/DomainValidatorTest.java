@@ -107,7 +107,7 @@ public class DomainValidatorTest {
 
 				it("buils an object with the errors found", () -> {
 					Map<String, Object> errors = this.domainValidatorWithoutInjection.getErrors();
-					String errorMessage = "size must be between 1 and 20";
+					String errorMessage = "size must be between 0 and 20";
 					@SuppressWarnings("unchecked")
 					Map<String, String> errorFound = (Map<String, String>) errors.get("errors");
 					expect(errorFound.get("name")).toEqual(errorMessage);
