@@ -31,7 +31,10 @@ import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl.UserDom
 import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
+@Api(value = "/users", description = "operations on users")
 @Path("/users")
 @Consumes("application/json")
 @Produces("application/json")
@@ -53,7 +56,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-	@GET
+    @ApiOperation(value="finds an user by {id}", nickname = "find", response=UserDomain.class)
+    @GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
@@ -72,6 +76,7 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
+    @ApiOperation(value="finds all users", nickname = "findAll")
 	@GET
     public List<UserDomain> findAll() {
     	LOGGER.info("findAll()");
@@ -82,6 +87,7 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
+    @ApiOperation(value="finds all users, given the provided query parameters", nickname = "search")
     @GET
     @Path("search")
 	public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
@@ -93,7 +99,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	}
 
     @Override
-	@POST
+    @ApiOperation(value="creates an user", nickname = "create")
+    @POST
     public Response create(UserDomain user) {
     	LOGGER.info("create(user=:user)".replace(":user", user.toString()));
 
@@ -109,7 +116,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-	@PUT
+    @ApiOperation(value="updates an user", nickname = "update")
+    @PUT
     @Path("{id}")
     public Response update(@PathParam("id") Long id, UserDomain user) {
     	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
@@ -126,7 +134,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-	@DELETE
+    @ApiOperation(value="deletes an user", nickname = "delete")
+    @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
@@ -147,7 +156,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-	@PATCH
+    @ApiOperation(value="updates an user", nickname = "patch")
+    @PATCH
 	@Path("{id}")
 	public Response patch(@PathParam("id") Long id, UserDomain user) {
     	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
