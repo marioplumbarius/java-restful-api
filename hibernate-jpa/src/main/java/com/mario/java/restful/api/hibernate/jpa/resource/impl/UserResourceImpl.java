@@ -32,7 +32,12 @@ import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 @Api(value = "/users", description = "operations on users")
 @Path("/users")
@@ -56,9 +61,25 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="finds an user by {id}", nickname = "find", response=UserDomain.class)
     @GET
     @Path("{id}")
+    @ApiOperation(
+    		value = "finds an user by {id}",
+    		nickname = "find",
+    		response = UserDomain.class
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 200,
+    						message = "found"
+					),
+					@ApiResponse(
+							code = 404,
+							message = "not found"
+					)
+    		}
+	)
     public Response find(@PathParam("id") Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
 
@@ -76,8 +97,21 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="finds all users", nickname = "findAll")
 	@GET
+    @ApiOperation(
+    		value = "finds all users",
+    		nickname = "findAll",
+    		response = UserDomain.class,
+    		responseContainer = "List"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 200,
+    						message = "success"
+					)
+    		}
+	)
     public List<UserDomain> findAll() {
     	LOGGER.info("findAll()");
 
@@ -87,9 +121,35 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="finds all users, given the provided query parameters", nickname = "search")
     @GET
     @Path("search")
+    @ApiOperation(
+    		value = "search users",
+    		nickname = "search",
+    		notes = "use the query parameters to make the search",
+    		response = UserDomain.class,
+    		responseContainer = "List"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 200,
+    						message = "success"
+					)
+    		}
+	)
+    // hide UserDomainBeanParamImpl or remove this one
+    @ApiImplicitParams(
+    		value = {
+    				@ApiImplicitParam(
+    						name = "name",
+    						value = "user's name",
+    						required = true,
+    						dataType = "string",
+    						paramType = "query"
+					)
+    		}
+	)
 	public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
     	LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
@@ -99,9 +159,28 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	}
 
     @Override
-    @ApiOperation(value="creates an user", nickname = "create")
     @POST
-    public Response create(UserDomain user) {
+    @ApiOperation(
+    		value = "creates an user",
+    		nickname = "create"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 201,
+    						message = "created"
+    				),
+    				@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+    				),
+    				@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+    				)
+    		}
+	)
+	public Response create(@ApiParam(value = "user to be created", required = true) UserDomain user) {
     	LOGGER.info("create(user=:user)".replace(":user", user.toString()));
 
     	Response res = null;
@@ -116,10 +195,35 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="updates an user", nickname = "update")
     @PUT
     @Path("{id}")
-    public Response update(@PathParam("id") Long id, UserDomain user) {
+    @ApiOperation(
+    		value = "updates an user",
+    		nickname = "update"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "updated"
+					),
+					@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
+    public Response update(
+    		@PathParam("id") Long id,
+    		@ApiParam(value = "updated user", required = true) UserDomain user) {
     	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
     	Response res = null;
@@ -134,9 +238,28 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="deletes an user", nickname = "delete")
     @DELETE
     @Path("{id}")
+    @ApiOperation(
+    		value = "deletes an user",
+    		nickname = "delete"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "deleted"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
     public Response delete(@PathParam("id") Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
 
@@ -156,9 +279,33 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     @Override
-    @ApiOperation(value="updates an user", nickname = "patch")
     @PATCH
 	@Path("{id}")
+    @ApiOperation(
+    		value="updates an user",
+    		nickname = "patch",
+    		notes = "allows partial update of the entity"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "updated"
+					),
+					@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
 	public Response patch(@PathParam("id") Long id, UserDomain user) {
     	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
