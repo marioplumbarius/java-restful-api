@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
@@ -228,7 +229,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     private Response buildUserIdNotFoundResponse(){
     	// TODO
 		// move error defined messages to a file
-		Map<String, Object> errors = DomainValidator.buildError("userId", "not found");
+		Map<String, Object> errors = DomainValidatorJPAImpl.buildError("userId", "not found");
 		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
     }
 
