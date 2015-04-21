@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -28,7 +27,6 @@ public abstract class BaseEntity extends DatedEntity {
 	private Long id;
 
 	@Transient
-	@JsonIgnore
 	private List<String> propertiesToBeDisplayed;
 
 	/**

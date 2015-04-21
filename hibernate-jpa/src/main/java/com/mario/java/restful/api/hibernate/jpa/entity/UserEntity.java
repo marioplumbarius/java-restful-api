@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -20,7 +19,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * @author marioluan
  *
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "users")
 @ApiModel(description = "user dto", parent = BaseEntity.class)

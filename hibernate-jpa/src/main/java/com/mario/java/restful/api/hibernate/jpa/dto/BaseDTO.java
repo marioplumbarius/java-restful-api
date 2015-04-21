@@ -3,6 +3,8 @@ package com.mario.java.restful.api.hibernate.jpa.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Base DTO. </br>
  * <strong>All DTOs should extend this class.</strong>
@@ -12,6 +14,7 @@ public class BaseDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
+	@JsonIgnore
 	private List<String> propertiesToBeDisplayed;
 
 	/**

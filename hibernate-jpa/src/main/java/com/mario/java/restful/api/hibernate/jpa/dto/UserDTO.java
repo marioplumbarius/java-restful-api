@@ -1,5 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mario.java.restful.api.hibernate.jpa.dto.serializer.UserDTOSerializer;
 
@@ -9,6 +10,7 @@ import com.mario.java.restful.api.hibernate.jpa.dto.serializer.UserDTOSerializer
  * @author msouz23
  */
 @JsonSerialize(using=UserDTOSerializer.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO extends BaseDTO {
 
 	private static final long serialVersionUID = 1L;
