@@ -28,7 +28,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "users")
-@ApiModel(description = "user dto")
+@ApiModel(description = "user dto", parent = BaseDomain.class)
 public class UserDomain extends BaseDomain implements Serializable {
 
 	private static final long serialVersionUID = 1L;

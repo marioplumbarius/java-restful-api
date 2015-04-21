@@ -6,6 +6,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordnik.swagger.annotations.ApiModel;
 
 /**
  * Abstract class which represents the base domain for all domains used by the application.<br>
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @MappedSuperclass
+@ApiModel(subTypes = {UserDomain.class, PetDomain.class}, description = "base dto", parent = DatedDomain.class)
 public abstract class BaseDomain extends DatedDomain {
 
 	@Transient
