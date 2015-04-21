@@ -24,8 +24,8 @@ import javax.ws.rs.core.Response.Status;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
@@ -34,11 +34,17 @@ import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 @Path("/pets")
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
+@Api(value = "/pets", description = "operation on pet", tags = "pet", protocols = "http")
 public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(PetResourceImpl.class.getName());
@@ -60,7 +66,25 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     @Override
 	@GET
     @Path("{id}")
-    public Response find(@PathParam("id") Long id) {
+    @ApiOperation(
+    		value = "finds a pet by {id}",
+    		notes = "",
+    		nickname = "find"
+	)
+    @ApiResponses(
+    		value = {
+					@ApiResponse(
+							code = 404,
+							message = "not found"
+					),
+					@ApiResponse(
+    						code = 200,
+    						message = "found",
+    						response = PetDomain.class
+					)
+    		}
+	)
+    public Response find(@ApiParam(value = "the id of the pet") @PathParam("id") Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
 
         Response res = null;
@@ -78,6 +102,20 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 
     @Override
 	@GET
+	@ApiOperation(
+    		value = "finds all pets",
+    		nickname = "findAll",
+    		notes = ""
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 200,
+    						message = "success",
+    						response = PetDomain.class
+					)
+    		}
+	)
     public List<PetDomain> findAll() {
     	LOGGER.info("findAll()");
 
@@ -89,6 +127,21 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 	@Override
 	@GET
 	@Path("search")
+	@ApiOperation(
+    		value = "search pets",
+    		nickname = "search",
+    		notes = "WARNING: documentation for this operation is under development."
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 200,
+    						message = "success",
+    						response = PetDomain.class
+					)
+    		}
+	)
+    // TODO - Swagger x RESTeasy do not work well with @BeanParam.
 	public List<PetDomain> search(@BeanParam PetDomainBeanParamImpl beanParameters) {
 		LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
@@ -99,7 +152,35 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 
     @Override
 	@POST
-    public Response create(PetDomain pet) {
+	@ApiOperation(
+    		value = "creates a pet",
+    		nickname = "create"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 201,
+    						message = "created"
+    				),
+    				@ApiResponse(
+    						code = 400,
+    						message = "bad syntax"
+    				),
+    				@ApiResponse(
+    						code = 415,
+    						message = "media type not supported"
+    				),
+    				@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+    				),
+    				@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+    				)
+    		}
+	)
+    public Response create(@ApiParam(value = "pet to be created", required = true) PetDomain pet) {
     	LOGGER.info("create(pet=:pet)".replace(":pet", pet.toString()));
 
         Response res = null;
@@ -116,7 +197,41 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     @Override
 	@PUT
     @Path("{id}")
-    public Response update(@PathParam("id") Long id, PetDomain pet) {
+    @ApiOperation(
+    		value = "updates a pet",
+    		nickname = "update"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "updated"
+					),
+					@ApiResponse(
+    						code = 400,
+    						message = "bad syntax"
+    				),
+					@ApiResponse(
+    						code = 415,
+    						message = "media type not supported"
+    				),
+					@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
+    public Response update(
+    		@ApiParam(value = "the id of the pet") @PathParam("id") Long id,
+    		@ApiParam(value = "the updated pet", required = true) PetDomain pet) {
     	LOGGER.info("update(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
 
         Response res = null;
@@ -133,7 +248,35 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     @Override
 	@PATCH
     @Path("{id}")
-    public Response patch(@PathParam("id") Long id, PetDomain pet) {
+    @ApiOperation(
+    		value="updates a pet",
+    		nickname = "patch",
+    		notes = "allows partial update of the entity"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "updated"
+					),
+					@ApiResponse(
+    						code = 422,
+    						message = "unprocessable entity"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
+    // TODO - make this operation be indexed by swagger
+    public Response patch(
+    		@ApiParam(value = "the id of the pet") @PathParam("id") Long id,
+    		@ApiParam(value = "the pet with updated properties", required = true) PetDomain pet) {
     	LOGGER.info("patch(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
 
     	Response res = null;
@@ -153,7 +296,28 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     @Override
 	@DELETE
     @Path("{id}")
-    public Response delete(@PathParam("id") Long id) {
+    @ApiOperation(
+    		value = "deletes a pet",
+    		nickname = "delete"
+	)
+    @ApiResponses(
+    		value = {
+    				@ApiResponse(
+    						code = 204,
+    						message = "deleted"
+					),
+					@ApiResponse(
+    						code = 404,
+    						message = "not found"
+					),
+					@ApiResponse(
+    						code = 500,
+    						message = "internal server error"
+					)
+    		}
+	)
+    public Response delete(
+    		@ApiParam(value = "the id of the pet") @PathParam("id") Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
 
     	Response res = null;
