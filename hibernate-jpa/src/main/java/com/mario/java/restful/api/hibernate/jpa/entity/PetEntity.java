@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain;
+package com.mario.java.restful.api.hibernate.jpa.entity;
 
 import java.io.Serializable;
 
@@ -14,8 +14,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mario.java.restful.api.hibernate.jpa.domain.serializer.PetDomainSerializer;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -24,12 +22,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * @author marioluan
  *
  */
-@JsonSerialize(using=PetDomainSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "pets")
-@ApiModel(description = "pet dto", parent = BaseDomain.class)
-public class PetDomain extends BaseDomain implements Serializable {
+@ApiModel(description = "pet dto", parent = BaseEntity.class)
+public class PetEntity extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,7 +43,7 @@ public class PetDomain extends BaseDomain implements Serializable {
     @NotNull
     @ManyToOne(optional=false)
     @PrimaryKeyJoinColumn
-    private UserDomain user;
+    private UserEntity user;
 
     @Transient
     @ApiModelProperty(value = "the id of the pet's user", required = true)
@@ -55,13 +52,13 @@ public class PetDomain extends BaseDomain implements Serializable {
     /**
      * Default constructor, creates an empty instance.
      */
-    public PetDomain(){}
+    public PetEntity(){}
 
     /**
      * @param name the name to set
      * @param age the age to set
      */
-    public PetDomain(String name, int age) {
+    public PetEntity(String name, int age) {
         this.name = name;
         this.age = age;
     }
@@ -97,14 +94,14 @@ public class PetDomain extends BaseDomain implements Serializable {
     /**
      * @param user the user to set
      */
-    private void setUser(UserDomain user) {
+    private void setUser(UserEntity user) {
         this.user = user;
     }
 
     /**
      * @return the user
      */
-    private UserDomain getUser() {
+    private UserEntity getUser() {
         return this.user;
     }
 
@@ -112,7 +109,7 @@ public class PetDomain extends BaseDomain implements Serializable {
      * @return the userId
      */
     public Long getUserId(){
-        UserDomain user = this.getUser();
+        UserEntity user = this.getUser();
         if(user != null) return user.getId();
         else return null;
     }
@@ -121,30 +118,30 @@ public class PetDomain extends BaseDomain implements Serializable {
      * @param userId the userId to set
      */
     public void setUserId(Long userId){
-        UserDomain user = new UserDomain();
+        UserEntity user = new UserEntity();
         user.setId(userId);
         this.setUser(user);
         this.userId = userId;
     }
 
     /**
-     * Fill all null/missing attributes from the current {@link PetDomain} petDomain instance with attributes from another {@link PetDomain} petDomain instance.
+     * Fill all null/missing attributes from the current {@link PetEntity} petDomain instance with attributes from another {@link PetEntity} petDomain instance.
      *
-     * @param petDomain the petDomain to take the attributes from
+     * @param petEntity the petDomain to take the attributes from
      */
-    public void patch(PetDomain petDomain) {
+    public void patch(PetEntity petEntity) {
         if (this.getName() == null) {
-            this.setName(petDomain.getName());
+            this.setName(petEntity.getName());
         }
 
         if (this.getAge() < 1) {
-            this.setAge(petDomain.getAge());
+            this.setAge(petEntity.getAge());
         }
 
         if (this.getUserId() == null) {
-            this.setUserId(petDomain.getUserId());
+            this.setUserId(petEntity.getUserId());
         }
 
-        this.setCreatedAt(petDomain.getCreatedAt());
+        this.setCreatedAt(petEntity.getCreatedAt());
     }
 }

@@ -21,9 +21,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain_;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
@@ -42,20 +42,20 @@ import com.wordnik.swagger.annotations.ApiResponses;
 @Produces("application/json")
 @RequestScoped
 @Api(value = "/users", description = "operation on user", tags = "user", protocols = "http")
-public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBeanParamImpl> {
+public class UserResourceImpl implements Resource<UserEntity, Long, UserDomainBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
 
-	private Service<UserDomain, Long> service;
-	private DomainValidator domainValidator;
+	private Service<UserEntity, Long> service;
+	private EntityValidator entityValidator;
 
 	public UserResourceImpl(){
 	}
 
     @Inject
-	public UserResourceImpl(@UserService Service<UserDomain, Long> service, DomainValidator domainValidator) {
+	public UserResourceImpl(@UserService Service<UserEntity, Long> service, EntityValidator entityValidator) {
         this.service = service;
-        this.domainValidator = domainValidator;
+        this.entityValidator = entityValidator;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 					@ApiResponse(
     						code = 200,
     						message = "found",
-    						response = UserDomain.class
+    						response = UserEntity.class
 					)
     		}
 	)
@@ -85,7 +85,7 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 
     	Response res = null;
 
-        UserDomain user = this.service.find(id);
+        UserEntity user = this.service.find(id);
 
         if (user == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -108,14 +108,14 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     				@ApiResponse(
     						code = 200,
     						message = "success",
-    						response = UserDomain.class
+    						response = UserEntity.class
 					)
     		}
 	)
-    public List<UserDomain> findAll() {
+    public List<UserEntity> findAll() {
     	LOGGER.info("findAll()");
 
-        List<UserDomain> users = this.service.findAll();
+        List<UserEntity> users = this.service.findAll();
 
         return users;
     }
@@ -133,15 +133,15 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     				@ApiResponse(
     						code = 200,
     						message = "success",
-    						response = UserDomain.class
+    						response = UserEntity.class
 					)
     		}
 	)
     // TODO - Swagger x RESTeasy do not work well with @BeanParam.
-    public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
+    public List<UserEntity> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
     	LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
-    	List<UserDomain> users = this.searchHelper(beanParameters);
+    	List<UserEntity> users = this.searchHelper(beanParameters);
 
 		return users;
 	}
@@ -176,15 +176,15 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     				)
     		}
 	)
-	public Response create(@ApiParam(value = "user to be created", required = true) UserDomain user) {
+	public Response create(@ApiParam(value = "user to be created", required = true) UserEntity user) {
     	LOGGER.info("create(user=:user)".replace(":user", user.toString()));
 
     	Response res = null;
 
-        if (this.domainValidator.isValid(user)) {
+        if (this.entityValidator.isValid(user)) {
             res = this.createHelper(user);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
         }
 
         return res;
@@ -227,15 +227,15 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 	)
     public Response update(
     		@ApiParam(value = "the id of the user") @PathParam("id") Long id,
-    		@ApiParam(value = "the updated user", required = true) UserDomain user) {
+    		@ApiParam(value = "the updated user", required = true) UserEntity user) {
     	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
     	Response res = null;
 
-        if (this.domainValidator.isValid(user)) {
+        if (this.entityValidator.isValid(user)) {
         	res = this.updateHelper(id, user);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
         }
 
         return res;
@@ -314,12 +314,12 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     // TODO - make this operation be indexed by swagger
 	public Response patch(
 			@ApiParam(value = "the id of the user") @PathParam("id") Long id,
-			@ApiParam(value = "the user with updated properties", required = true) UserDomain user) {
+			@ApiParam(value = "the user with updated properties", required = true) UserEntity user) {
     	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
     	Response res = null;
 
-        UserDomain currentUser = this.service.find(id);
+        UserEntity currentUser = this.service.find(id);
 
         if (currentUser != null) {
             user.patch(currentUser);
@@ -331,7 +331,7 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
         return res;
 	}
 
-    private Response updateHelper(Long id, UserDomain user){
+    private Response updateHelper(Long id, UserEntity user){
     	Response res;
 
     	try {
@@ -347,12 +347,12 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     	return res;
     }
 
-    private Response createHelper(UserDomain userDomain){
+    private Response createHelper(UserEntity userEntity){
     	Response res;
 
     	try {
-			this.service.persist(userDomain);
-			URI uri = URI.create("/users/" + userDomain.getId());
+			this.service.persist(userEntity);
+			URI uri = URI.create("/users/" + userEntity.getId());
             res = Response.created(uri).build();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -362,10 +362,10 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     	return res;
     }
 
-    private List<UserDomain> searchHelper(UserDomainBeanParamImpl beanParameters){
-    	List<UserDomain> users = null;
+    private List<UserEntity> searchHelper(UserDomainBeanParamImpl beanParameters){
+    	List<UserEntity> users = null;
 
-    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
+    	Map<SingularAttribute<UserEntity, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
 
 		if(restrictions != null && !restrictions.isEmpty()){
 			users = this.service.findAll(restrictions);
@@ -379,8 +379,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     // TODO - move this method to another [specific] class.
-    private Map<SingularAttribute<UserDomain, ?>, Object> mapBeanParamToRestrictions(UserDomainBeanParamImpl beanParameters){
-    	Map<SingularAttribute<UserDomain, ?>, Object> restrictions = new HashMap<SingularAttribute<UserDomain, ?>, Object>();
+    private Map<SingularAttribute<UserEntity, ?>, Object> mapBeanParamToRestrictions(UserDomainBeanParamImpl beanParameters){
+    	Map<SingularAttribute<UserEntity, ?>, Object> restrictions = new HashMap<SingularAttribute<UserEntity, ?>, Object>();
 
     	if(beanParameters.getName() != null){
     		restrictions.put(UserDomain_.name, beanParameters.getName());
@@ -390,8 +390,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     }
 
     // TODO - find a fancy class for this method
-    private void setUserDomainPropertiesToBeDisplayed(List<UserDomain> users, List<String> propertiesToBeDisplayed){
-    	for(UserDomain user : users){
+    private void setUserDomainPropertiesToBeDisplayed(List<UserEntity> users, List<String> propertiesToBeDisplayed){
+    	for(UserEntity user : users){
     		user.setPropertiesToBeDisplayed(propertiesToBeDisplayed);
     	}
     }

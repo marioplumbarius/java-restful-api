@@ -1,6 +1,5 @@
-package com.mario.java.restful.api.hibernate.jpa.domain.validation;
+package com.mario.java.restful.api.hibernate.jpa.entity.validation;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Validator;
@@ -11,7 +10,7 @@ import javax.validation.Validator;
  * @author marioluan
  *
  */
-public interface DomainValidator {
+public interface EntityValidator {
 
 	/**
 	 * The {@link Validator} validator of the entity.

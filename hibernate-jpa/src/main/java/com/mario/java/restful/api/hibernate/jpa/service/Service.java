@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.BaseEntity;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 
 /**
@@ -14,7 +14,7 @@ import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFo
  * @param <T> the class type of the entity to be managed
  * @param <ID> the class type of the entity's id which will be managed
  */
-public interface Service<T extends BaseDomain, ID extends Serializable> {
+public interface Service<T extends BaseEntity, ID extends Serializable> {
 
 	/**
 	 * Persists the {@link T} entity

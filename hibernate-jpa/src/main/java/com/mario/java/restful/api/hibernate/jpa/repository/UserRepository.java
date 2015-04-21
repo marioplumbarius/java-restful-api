@@ -1,7 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.repository;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 
-public interface UserRepository extends Repository<UserDomain, Long> {
+public interface UserRepository extends Repository<UserEntity, Long> {
 
 }

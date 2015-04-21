@@ -21,11 +21,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.impl.EntityValidatorJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.annotation.PATCH;
@@ -45,22 +45,22 @@ import com.wordnik.swagger.annotations.ApiResponses;
 @Produces("application/json")
 @RequestScoped
 @Api(value = "/pets", description = "operation on pet", tags = "pet", protocols = "http")
-public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanParamImpl> {
+public class PetResourceImpl implements Resource<PetEntity, Long, PetDomainBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(PetResourceImpl.class.getName());
 
-    private Service<PetDomain, Long> petService;
-    private Service<UserDomain, Long> userService;
-    private DomainValidator domainValidator;
+    private Service<PetEntity, Long> petService;
+    private Service<UserEntity, Long> userService;
+    private EntityValidator entityValidator;
 
     public PetResourceImpl() {
     }
 
     @Inject
-    public PetResourceImpl(@PetService Service<PetDomain, Long> petService, @UserService Service<UserDomain, Long> userService, DomainValidator domainValidator) {
+    public PetResourceImpl(@PetService Service<PetEntity, Long> petService, @UserService Service<UserEntity, Long> userService, EntityValidator entityValidator) {
         this.petService = petService;
         this.userService = userService;
-        this.domainValidator = domainValidator;
+        this.entityValidator = entityValidator;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 					@ApiResponse(
     						code = 200,
     						message = "found",
-    						response = PetDomain.class
+    						response = PetEntity.class
 					)
     		}
 	)
@@ -89,7 +89,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 
         Response res = null;
 
-        PetDomain pet = this.petService.find(id);
+        PetEntity pet = this.petService.find(id);
 
         if (pet == null) {
             res = Response.status(Status.NOT_FOUND).build();
@@ -112,14 +112,14 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     				@ApiResponse(
     						code = 200,
     						message = "success",
-    						response = PetDomain.class
+    						response = PetEntity.class
 					)
     		}
 	)
-    public List<PetDomain> findAll() {
+    public List<PetEntity> findAll() {
     	LOGGER.info("findAll()");
 
-        List<PetDomain> pets = this.petService.findAll();
+        List<PetEntity> pets = this.petService.findAll();
 
         return pets;
     }
@@ -137,15 +137,15 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     				@ApiResponse(
     						code = 200,
     						message = "success",
-    						response = PetDomain.class
+    						response = PetEntity.class
 					)
     		}
 	)
     // TODO - Swagger x RESTeasy do not work well with @BeanParam.
-	public List<PetDomain> search(@BeanParam PetDomainBeanParamImpl beanParameters) {
+	public List<PetEntity> search(@BeanParam PetDomainBeanParamImpl beanParameters) {
 		LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
-		List<PetDomain> pets = this.searchHelper(beanParameters);
+		List<PetEntity> pets = this.searchHelper(beanParameters);
 
         return pets;
 	}
@@ -180,15 +180,15 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     				)
     		}
 	)
-    public Response create(@ApiParam(value = "pet to be created", required = true) PetDomain pet) {
+    public Response create(@ApiParam(value = "pet to be created", required = true) PetEntity pet) {
     	LOGGER.info("create(pet=:pet)".replace(":pet", pet.toString()));
 
         Response res = null;
 
-        if (this.domainValidator.isValid(pet)) {
+        if (this.entityValidator.isValid(pet)) {
         	res = this.createHelper(pet);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
         }
 
         return res;
@@ -231,15 +231,15 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
 	)
     public Response update(
     		@ApiParam(value = "the id of the pet") @PathParam("id") Long id,
-    		@ApiParam(value = "the updated pet", required = true) PetDomain pet) {
+    		@ApiParam(value = "the updated pet", required = true) PetEntity pet) {
     	LOGGER.info("update(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
 
         Response res = null;
 
-        if (this.domainValidator.isValid(pet)) {
+        if (this.entityValidator.isValid(pet)) {
             res = this.updateHelper(id, pet);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.domainValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
         }
 
         return res;
@@ -276,12 +276,12 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     // TODO - make this operation be indexed by swagger
     public Response patch(
     		@ApiParam(value = "the id of the pet") @PathParam("id") Long id,
-    		@ApiParam(value = "the pet with updated properties", required = true) PetDomain pet) {
+    		@ApiParam(value = "the pet with updated properties", required = true) PetEntity pet) {
     	LOGGER.info("patch(id=:id, pet=:pet)".replace(":id", id.toString()).replace(":pet", pet.toString()));
 
     	Response res = null;
 
-        PetDomain currentPet = this.petService.find(id);
+        PetEntity currentPet = this.petService.find(id);
 
         if (currentPet != null) {
             pet.patch(currentPet);
@@ -335,7 +335,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
         return res;
     }
 
-    private Response createHelper(PetDomain pet){
+    private Response createHelper(PetEntity pet){
     	Response res;
 
     	if(this.userService.find(pet.getUserId()) != null){
@@ -354,7 +354,7 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     	return res;
     }
 
-    private Response updateHelper(Long id, PetDomain pet){
+    private Response updateHelper(Long id, PetEntity pet){
     	Response res;
 
     	if(this.userService.find(pet.getUserId()) != null){
@@ -374,10 +374,10 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     	return res;
     }
 
-    private List<PetDomain> searchHelper(PetDomainBeanParamImpl beanParameters){
-    	List<PetDomain> pets = null;
+    private List<PetEntity> searchHelper(PetDomainBeanParamImpl beanParameters){
+    	List<PetEntity> pets = null;
 
-    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParameters);
+    	Map<SingularAttribute<PetEntity, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParameters);
 
     	if(restrictions != null && !restrictions.isEmpty()){
     		pets = this.petService.findAll(restrictions);
@@ -393,12 +393,12 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     private Response buildUserIdNotFoundResponse(){
     	// TODO
 		// move error defined messages to a file
-		Map<String, Object> errors = DomainValidatorJPAImpl.buildError("userId", "not found");
+		Map<String, Object> errors = EntityValidatorJPAImpl.buildError("userId", "not found");
 		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
     }
 
-	private Map<SingularAttribute<PetDomain, ?>, Object> mapDomainFilterToRestrictions(PetDomainBeanParamImpl petDomainFilter){
-    	Map<SingularAttribute<PetDomain, ?>, Object> restrictions = new HashMap<SingularAttribute<PetDomain, ?>, Object>();
+	private Map<SingularAttribute<PetEntity, ?>, Object> mapDomainFilterToRestrictions(PetDomainBeanParamImpl petDomainFilter){
+    	Map<SingularAttribute<PetEntity, ?>, Object> restrictions = new HashMap<SingularAttribute<PetEntity, ?>, Object>();
 
     	if(petDomainFilter.getName() != null && !petDomainFilter.equals("")){
     		restrictions.put(PetDomain_.name, petDomainFilter.getName());
@@ -409,18 +409,18 @@ public class PetResourceImpl implements Resource<PetDomain, Long, PetDomainBeanP
     	}
 
     	if(petDomainFilter.getUserId() != null){
-    		UserDomain userDomain = new UserDomain();
-    		userDomain.setId(petDomainFilter.getUserId());
+    		UserEntity userEntity = new UserEntity();
+    		userEntity.setId(petDomainFilter.getUserId());
 
-    		restrictions.put(PetDomain_.user, userDomain);
+    		restrictions.put(PetDomain_.user, userEntity);
     	}
 
     	return restrictions;
     }
 
 	// TODO - find a fancy class for this method
-    private void setPetDomainPropertiesToBeDisplayed(List<PetDomain> pets, List<String> propertiesToBeDisplayed){
-    	for(PetDomain pet : pets){
+    private void setPetDomainPropertiesToBeDisplayed(List<PetEntity> pets, List<String> propertiesToBeDisplayed){
+    	for(PetEntity pet : pets){
     		pet.setPropertiesToBeDisplayed(propertiesToBeDisplayed);
     	}
     }

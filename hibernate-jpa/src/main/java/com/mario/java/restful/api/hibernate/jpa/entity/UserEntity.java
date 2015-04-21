@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain;
+package com.mario.java.restful.api.hibernate.jpa.entity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,8 +11,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mario.java.restful.api.hibernate.jpa.domain.serializer.UserDomainSerializer;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -22,12 +20,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * @author marioluan
  *
  */
-@JsonSerialize(using=UserDomainSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "users")
-@ApiModel(description = "user dto", parent = BaseDomain.class)
-public class UserDomain extends BaseDomain implements Serializable {
+@ApiModel(description = "user dto", parent = BaseEntity.class)
+public class UserEntity extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,18 +34,18 @@ public class UserDomain extends BaseDomain implements Serializable {
 	private String name;
 
 	@OneToMany(mappedBy="user")
-	private List<PetDomain> pets;
+	private List<PetEntity> pets;
 
 	/**
 	 * Default constructor, creates an empty instance.
 	 */
-	public UserDomain() {
+	public UserEntity() {
 	}
 
 	/**
 	 * @param name the name to set
 	 */
-	public UserDomain(String name) {
+	public UserEntity(String name) {
 		this.name = name;
 	}
 
@@ -67,16 +64,16 @@ public class UserDomain extends BaseDomain implements Serializable {
 	}
 
 	/**
-     * Fill all null/missing attributes from the current {@link UserDomain} userDomain instance with attributes from another {@link UserDomain} userDomain instance.
+     * Fill all null/missing attributes from the current {@link UserEntity} userDomain instance with attributes from another {@link UserEntity} userDomain instance.
      *
      * @param petDomain the petDomain to take the attributes from
      */
-	public void patch(UserDomain userDomain) {
+	public void patch(UserEntity userEntity) {
 
 		if(this.getName() == null){
-			this.setName(userDomain.getName());
+			this.setName(userEntity.getName());
 		}
 
-		this.setCreatedAt(userDomain.getCreatedAt());
+		this.setCreatedAt(userEntity.getCreatedAt());
 	}
 }

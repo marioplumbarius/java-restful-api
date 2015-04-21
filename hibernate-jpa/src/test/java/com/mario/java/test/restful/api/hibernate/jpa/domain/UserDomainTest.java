@@ -16,10 +16,10 @@
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-//import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+//import com.mario.java.restful.api.hibernate.jpa.entity.BaseEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 //import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 //import com.mario.java.test.restful.api.hibernate.jpa.factories.NameFactory;
 //import com.mscharhag.oleaster.runner.OleasterRunner;
@@ -28,26 +28,26 @@
 //public class UserDomainTest {
 //
 //    @Mock
-//    private DomainValidator domainValidator;
+//    private EntityValidator domainValidator;
 //
 //    @Mock
-//    private PetDomain pet;
+//    private PetEntity pet;
 //
-//    private UserDomain userDomain;
+//    private UserEntity userDomain;
 //
 //    private String name;
 //    private Long id;
-//    private List<PetDomain> pets;
+//    private List<PetEntity> pets;
 //
 //    {
 //
 //        beforeEach(() -> {
 //            MockitoAnnotations.initMocks(this);
 //
-//            this.userDomain = new UserDomain();
+//            this.userDomain = new UserEntity();
 //            this.name = "any name";
 //            this.id = IdFactory.createValidId();
-//            this.pets = new ArrayList<PetDomain>();
+//            this.pets = new ArrayList<PetEntity>();
 //            this.pets.add(this.pet);
 //        });
 //
@@ -71,7 +71,7 @@
 //            try {
 //                ObjectMapper mapper = new ObjectMapper();
 //                String obj = "{\"name\":\"mario\",\"id\":12,\"createdAt\":null,\"updatedAt\":null,\"age\":22}";
-//                mapper.readValue(obj, UserDomain.class);
+//                mapper.readValue(obj, UserEntity.class);
 //                ignored = true;
 //            } catch (UnrecognizedPropertyException e) {
 //                ignored = false;
@@ -80,8 +80,8 @@
 //            expect(ignored).toBeTrue();
 //        });
 //
-//        it("extends BaseDomain", () -> {
-//            expect(this.userDomain instanceof BaseDomain).toBeTrue();
+//        it("extends BaseEntity", () -> {
+//            expect(this.userDomain instanceof BaseEntity).toBeTrue();
 //        });
 //
 //        it("implements Serializable", () -> {
@@ -130,7 +130,7 @@
 //
 //        describe("#constructor (default)", () -> {
 //            beforeEach(() -> {
-//                this.userDomain = new UserDomain();
+//                this.userDomain = new UserEntity();
 //            });
 //
 //            it("assigns a null id", () -> {
@@ -144,7 +144,7 @@
 //
 //        describe("#constructor (name)", () -> {
 //            beforeEach(() -> {
-//                this.userDomain = new UserDomain(this.name);
+//                this.userDomain = new UserEntity(this.name);
 //            });
 //
 //            it("assigns a null id", () -> {

@@ -10,7 +10,7 @@
 //
 //import org.junit.runner.RunWith;
 //
-//import com.mario.java.restful.api.hibernate.jpa.domain.DatedDomain;
+//import com.mario.java.restful.api.hibernate.jpa.entity.DatedEntity;
 //import com.mscharhag.oleaster.runner.OleasterRunner;
 //
 //@RunWith(OleasterRunner.class)
@@ -20,7 +20,7 @@
 //    // how to test the generated createdAt and updatedAt?
 //    // how to test the it has the mappedsuperclass annotation?
 //
-//    public class DatedDomainMock extends DatedDomain{};
+//    public class DatedDomainMock extends DatedEntity{};
 //
 //    private DatedDomainMock datedDomainMock;
 //

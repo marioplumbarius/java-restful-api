@@ -18,9 +18,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.impl.DomainValidatorJPAImpl;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.impl.EntityValidatorJPAImpl;
 import com.mario.java.test.restful.api.hibernate.jpa.factories.UserFactory;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 
@@ -30,14 +30,14 @@ public class DomainValidatorTest {
 	@Mock
 	private Validator validator;
 
-	private UserDomain entity;
+	private UserEntity entity;
 
 	@Mock
-	private Set<ConstraintViolation<UserDomain>> constraintViolations;
+	private Set<ConstraintViolation<UserEntity>> constraintViolations;
 
-	private DomainValidator domainValidator;
+	private EntityValidator entityValidator;
 
-	private DomainValidator domainValidatorWithoutInjection;
+	private EntityValidator domainValidatorWithoutInjection;
 
 	private boolean response;
 
@@ -45,12 +45,12 @@ public class DomainValidatorTest {
 		beforeEach(() -> {
 			MockitoAnnotations.initMocks(this);
 
-			this.domainValidator = new DomainValidatorJPAImpl(this.validator);
-			this.domainValidatorWithoutInjection = new DomainValidatorJPAImpl();
+			this.entityValidator = new EntityValidatorJPAImpl(this.validator);
+			this.domainValidatorWithoutInjection = new EntityValidatorJPAImpl();
 		});
 
 		afterEach(() -> {
-			this.domainValidator = null;
+			this.entityValidator = null;
 			this.domainValidatorWithoutInjection = null;
 			this.entity = null;
 		});
@@ -64,14 +64,14 @@ public class DomainValidatorTest {
 
 			describe("from fallback constructor", () -> {
 				it("returns the validator", () -> {
-					expect(this.domainValidator.getValidator()).toEqual(this.validator);
+					expect(this.entityValidator.getValidator()).toEqual(this.validator);
 				});
 			});
 		});
 
 		describe("#getErrors", () -> {
 			it("returns the errors", () -> {
-				expect(this.domainValidator.getErrors().isEmpty()).toBeTrue();
+				expect(this.entityValidator.getErrors().isEmpty()).toBeTrue();
 			});
 		});
 
@@ -79,7 +79,7 @@ public class DomainValidatorTest {
 			beforeEach(() -> {
 				Mockito.when(this.validator.validate(this.entity)).thenReturn(this.constraintViolations);
 
-				this.domainValidator.isValid(this.entity);
+				this.entityValidator.isValid(this.entity);
 			});
 
 			it("validates the entity", () -> {

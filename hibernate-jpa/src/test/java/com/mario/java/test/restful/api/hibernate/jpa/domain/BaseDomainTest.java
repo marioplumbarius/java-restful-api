@@ -15,9 +15,9 @@
 //import org.mockito.Mockito;
 //import org.mockito.MockitoAnnotations;
 //
-//import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.DatedDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+//import com.mario.java.restful.api.hibernate.jpa.entity.BaseEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.DatedEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 //import com.mscharhag.oleaster.runner.OleasterRunner;
 //
 //@RunWith(OleasterRunner.class)
@@ -27,14 +27,14 @@
 //	// how to test jsonignore annotations?
 //	// how to test transient annotation?
 //
-//	public class BaseDomainMock extends BaseDomain{
-//		public BaseDomainMock(DomainValidator domainValidator){
+//	public class BaseDomainMock extends BaseEntity{
+//		public BaseDomainMock(EntityValidator domainValidator){
 //			super(domainValidator);
 //		}
 //	}
 //
 //	@Mock
-//	private DomainValidator domainValidator;
+//	private EntityValidator domainValidator;
 //
 //	@InjectMocks
 //	private BaseDomainMock baseDomainMock = new BaseDomainMock(this.domainValidator);
@@ -62,8 +62,8 @@
 //			this.errorResponse = null;
 //		});
 //
-//		it("extends DatedDomain", () -> {
-//			expect(this.baseDomainMock instanceof DatedDomain).toBeTrue();
+//		it("extends DatedEntity", () -> {
+//			expect(this.baseDomainMock instanceof DatedEntity).toBeTrue();
 //		});
 //
 //		describe("#isValid", () -> {

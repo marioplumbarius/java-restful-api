@@ -1,13 +1,13 @@
-package com.mario.java.restful.api.hibernate.jpa.domain.property;
+package com.mario.java.restful.api.hibernate.jpa.dto.property;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 
 /**
- * {@link PetDomain} properties.
+ * {@link PetEntity} properties.
  * @author marioluan
  *
  */
-public enum PetProperty {
+public enum PetDTOProperty {
 
 	ID("id"),
 	NAME("name"),
@@ -18,7 +18,7 @@ public enum PetProperty {
 
 	private final String propertyName;
 
-	private PetProperty(String name){
+	private PetDTOProperty(String name){
 		this.propertyName = name;
 	}
 

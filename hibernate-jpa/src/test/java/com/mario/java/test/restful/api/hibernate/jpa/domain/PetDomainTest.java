@@ -14,9 +14,9 @@
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-//import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
-//import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+//import com.mario.java.restful.api.hibernate.jpa.entity.BaseEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+//import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 //import com.mario.java.test.restful.api.hibernate.jpa.factories.IdFactory;
 //import com.mario.java.test.restful.api.hibernate.jpa.factories.NameFactory;
 //import com.mario.java.test.restful.api.hibernate.jpa.factories.PetFactory;
@@ -26,10 +26,10 @@
 //public class PetDomainTest {
 //
 //	@Mock
-//	private DomainValidator validator;
-//	private PetDomain pet;
-//	private PetDomain updatedPet;
-//	private PetDomain currentPet;
+//	private EntityValidator validator;
+//	private PetEntity pet;
+//	private PetEntity updatedPet;
+//	private PetEntity currentPet;
 //	private Long id;
 //	private String name;
 //	private int age;
@@ -68,7 +68,7 @@
 //			try {
 //				ObjectMapper mapper = new ObjectMapper();
 //				String obj = "{\"name\":\"mario\",\"id\":12,\"createdAt\":null,\"updatedAt\":null,\"timeout\":22}";
-//				mapper.readValue(obj, PetDomain.class);
+//				mapper.readValue(obj, PetEntity.class);
 //				ignored = true;
 //			} catch (UnrecognizedPropertyException e) {
 //				ignored = false;
@@ -77,8 +77,8 @@
 //			expect(ignored).toBeTrue();
 //		});
 //
-//		it("extends BaseDomain", () -> {
-//			expect(this.pet instanceof BaseDomain).toBeTrue();
+//		it("extends BaseEntity", () -> {
+//			expect(this.pet instanceof BaseEntity).toBeTrue();
 //		});
 //
 //		it("implements Serializable", () -> {
@@ -169,7 +169,7 @@
 //		describe("#constructor", () -> {
 //			describe("()", () -> {
 //				beforeEach(() -> {
-//					this.pet = new PetDomain();
+//					this.pet = new PetEntity();
 //				});
 //
 //				it("assigns a null @id", () -> {
@@ -191,7 +191,7 @@
 //
 //			describe("(name, age)", () -> {
 //				beforeEach(() -> {
-//					this.pet = new PetDomain(this.name, this.age);
+//					this.pet = new PetEntity(this.name, this.age);
 //				});
 //
 //				it("assigns the provided @name", () -> {
@@ -204,7 +204,7 @@
 //
 //				describe("(name, age, validator)", () -> {
 //					beforeEach(() -> {
-//						this.pet = new PetDomain(this.name, this.age, this.validator);
+//						this.pet = new PetEntity(this.name, this.age, this.validator);
 //					});
 //
 //					it("assigns the provided @validator", () -> {
@@ -293,7 +293,7 @@
 //
 //		describe("#patch", () -> {
 //			beforeEach(() -> {
-//				this.updatedPet = new PetDomain();
+//				this.updatedPet = new PetEntity();
 //			});
 //
 //			describe("with @name", () -> {

@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain.validation.impl;
+package com.mario.java.restful.api.hibernate.jpa.entity.validation.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,24 +9,24 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.validation.DomainValidator;
+import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 
 /**
- * JPA's implementation of a {@link DomainValidator}.
+ * JPA's implementation of a {@link EntityValidator}.
  * @author marioluan
  *
  */
 @RequestScoped
-public class DomainValidatorJPAImpl implements DomainValidator {
+public class EntityValidatorJPAImpl implements EntityValidator {
 
 	private Validator validator;
 	private Map<String, Object> errors;
 
-	public DomainValidatorJPAImpl() {
+	public EntityValidatorJPAImpl() {
 		this(Validation.buildDefaultValidatorFactory().getValidator());
 	}
 
-	public DomainValidatorJPAImpl(Validator validator){
+	public EntityValidatorJPAImpl(Validator validator){
 		this.validator = validator;
 		this.errors = new HashMap<String, Object>();
 	}

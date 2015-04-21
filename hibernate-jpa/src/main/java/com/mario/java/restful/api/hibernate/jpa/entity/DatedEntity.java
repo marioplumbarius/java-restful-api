@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain;
+package com.mario.java.restful.api.hibernate.jpa.entity;
 
 import java.util.Date;
 import java.util.logging.Logger;
@@ -16,15 +16,15 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 /**
  * Abstract class which exposes a domain with dated attributes (createdAt, updatedAt).<br>
  *
- * All {@link BaseDomain} implementations should extend this class.
+ * All {@link BaseEntity} implementations should extend this class.
  * @author marioluan
  *
  */
 @MappedSuperclass
-@ApiModel(subTypes = {BaseDomain.class}, description = "dated dto")
-public abstract class DatedDomain {
+@ApiModel(subTypes = {BaseEntity.class}, description = "dated dto")
+public abstract class DatedEntity {
 
-	private static final Logger LOGGER = Logger.getLogger(DatedDomain.class.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger(DatedEntity.class.getSimpleName());
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(insertable=true, updatable=false)

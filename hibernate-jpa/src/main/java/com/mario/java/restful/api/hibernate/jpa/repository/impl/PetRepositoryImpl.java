@@ -3,15 +3,15 @@ package com.mario.java.restful.api.hibernate.jpa.repository.impl;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.impl.jpa.RepositoryJPAImpl;
 import com.mario.java.restful.api.hibernate.jpa.repository.util.EntityManagerSingleton;
 
 @RequestScoped
-public class PetRepositoryImpl extends RepositoryJPAImpl<PetDomain, Long> implements PetRepository {
+public class PetRepositoryImpl extends RepositoryJPAImpl<PetEntity, Long> implements PetRepository {
 
-	private static final Class<PetDomain> entityClass = PetDomain.class;
+	private static final Class<PetEntity> entityClass = PetEntity.class;
 	private static final EntityManager entityManager = EntityManagerSingleton.getInstance().getEntityManager();
 
 	public PetRepositoryImpl(){
@@ -19,7 +19,7 @@ public class PetRepositoryImpl extends RepositoryJPAImpl<PetDomain, Long> implem
 	}
 
 	@Override
-	public Class<PetDomain> getEntityClass() {
+	public Class<PetEntity> getEntityClass() {
 		return PetRepositoryImpl.entityClass;
 	}
 	@Override

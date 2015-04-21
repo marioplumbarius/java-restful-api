@@ -7,9 +7,9 @@ import java.util.Map;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain;
 import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
@@ -18,7 +18,7 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserServ
 
 @Model
 @UserService
-public class UserServiceImpl implements Service<UserDomain, Long> {
+public class UserServiceImpl implements Service<UserEntity, Long> {
 
 	private UserRepository userRepository;
 	private PetRepository petRepository;
@@ -33,30 +33,30 @@ public class UserServiceImpl implements Service<UserDomain, Long> {
 	}
 
 	@Override
-	public void persist(UserDomain userDomain) throws Exception {
-		this.userRepository.persist(userDomain);
+	public void persist(UserEntity userEntity) throws Exception {
+		this.userRepository.persist(userEntity);
 	}
 
 	@Override
-	public void update(Long id, UserDomain userDomain) throws Exception, ObjectNotFoundException {
+	public void update(Long id, UserEntity userEntity) throws Exception, ObjectNotFoundException {
 
 		if(this.find(id) != null){
-			userDomain.setId(id);
-			this.userRepository.update(userDomain);
+			userEntity.setId(id);
+			this.userRepository.update(userEntity);
 		} else {
-			throw new ObjectNotFoundException(id, UserDomain.class.getSimpleName());
+			throw new ObjectNotFoundException(id, UserEntity.class.getSimpleName());
 		}
 	}
 
 	@Override
 	public void delete(Long id) throws Exception, ObjectNotFoundException {
-		UserDomain userDomain = this.find(id);
+		UserEntity userEntity = this.find(id);
 
-		if(userDomain != null){
-			this.deletePets(userDomain);
-			this.userRepository.delete(userDomain);
+		if(userEntity != null){
+			this.deletePets(userEntity);
+			this.userRepository.delete(userEntity);
 		} else {
-			throw new ObjectNotFoundException(id, UserDomain.class.getSimpleName());
+			throw new ObjectNotFoundException(id, UserEntity.class.getSimpleName());
 		}
 	}
 
@@ -67,25 +67,25 @@ public class UserServiceImpl implements Service<UserDomain, Long> {
 	}
 
 	@Override
-	public UserDomain find(Long id) {
+	public UserEntity find(Long id) {
 		return this.userRepository.find(id);
 	}
 
 	@Override
-	public List<UserDomain> findAll() {
+	public List<UserEntity> findAll() {
 		return this.userRepository.findAll();
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
-	public <SingularAttribute, Object> List<UserDomain> findAll(Map<SingularAttribute, Object> restrictions) {
+	public <SingularAttribute, Object> List<UserEntity> findAll(Map<SingularAttribute, Object> restrictions) {
 		return this.userRepository.findAll(restrictions);
 	}
 
-	private void deletePets(UserDomain userDomain) throws Exception {
-		Map<javax.persistence.metamodel.SingularAttribute<PetDomain, UserDomain>, Object> restrictions = new HashMap<javax.persistence.metamodel.SingularAttribute<PetDomain,UserDomain>, Object>();
-		restrictions.put(PetDomain_.user, userDomain);
-		List<PetDomain> pets = this.petRepository.findAll(restrictions);
+	private void deletePets(UserEntity userEntity) throws Exception {
+		Map<javax.persistence.metamodel.SingularAttribute<PetEntity, UserEntity>, Object> restrictions = new HashMap<javax.persistence.metamodel.SingularAttribute<PetEntity,UserEntity>, Object>();
+		restrictions.put(PetDomain_.user, userEntity);
+		List<PetEntity> pets = this.petRepository.findAll(restrictions);
 
 		if(pets != null) this.petRepository.deleteAll(pets);
 	}

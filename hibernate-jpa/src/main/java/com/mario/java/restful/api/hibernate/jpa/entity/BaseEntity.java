@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.domain;
+package com.mario.java.restful.api.hibernate.jpa.entity;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  *
  */
 @MappedSuperclass
-@ApiModel(subTypes = {UserDomain.class, PetDomain.class}, description = "base dto", parent = DatedDomain.class)
-public abstract class BaseDomain extends DatedDomain {
+@ApiModel(subTypes = {UserEntity.class, PetEntity.class}, description = "base dto", parent = DatedEntity.class)
+public abstract class BaseEntity extends DatedEntity {
 
 	@Id
 	@GeneratedValue

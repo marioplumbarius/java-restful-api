@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.BaseDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.BaseEntity;
 import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.DomainBeanParam;
 
 /**
@@ -16,7 +16,7 @@ import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.DomainBeanPa
  * @param <ID> the class type of the id of the entities which will be managed by the instance
  * @param <F> the class type of the {@link DomainBeanParam} domainFilter
  */
-public interface Resource<T extends BaseDomain, ID extends Serializable, F extends DomainBeanParam> {
+public interface Resource<T extends BaseEntity, ID extends Serializable, F extends DomainBeanParam> {
 
 	/**
 	 * Finds an {@link T} entity by its {@link ID} id.

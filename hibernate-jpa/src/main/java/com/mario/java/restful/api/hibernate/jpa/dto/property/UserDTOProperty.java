@@ -1,13 +1,13 @@
-package com.mario.java.restful.api.hibernate.jpa.domain.property;
+package com.mario.java.restful.api.hibernate.jpa.dto.property;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 
 /**
- * {@link UserDomain} properties.
+ * {@link UserEntity} properties.
  * @author marioluan
  *
  */
-public enum UserProperty {
+public enum UserDTOProperty {
 
 	ID("id"),
 	NAME("name"),
@@ -16,7 +16,7 @@ public enum UserProperty {
 
 	private final String propertyName;
 
-	private UserProperty(String name){
+	private UserDTOProperty(String name){
 		this.propertyName = name;
 	}
 
