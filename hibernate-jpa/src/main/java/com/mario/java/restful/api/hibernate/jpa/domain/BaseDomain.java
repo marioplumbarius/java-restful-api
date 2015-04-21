@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Abstract class which represents the base domain for all domains used by the application.<br>
  * All domains must extend this class.
@@ -16,6 +18,7 @@ import javax.persistence.Transient;
 public abstract class BaseDomain extends DatedDomain {
 
 	@Transient
+	@JsonIgnore
 	private List<String> propertiesToBeDisplayed;
 
 	/**
