@@ -16,8 +16,10 @@ public class ApiApplicationDocumentationSwaggerImpl implements ApiApplicationDoc
 
 		// TODO - move these configurations to a file and load them from there
 		beanConfig.setVersion("0.0.1");
-        beanConfig.setBasePath("http://localhost:8080/api");
-        beanConfig.setResourcePackage("com.mario.java.restful.api.hibernate.jpa.resource");
+        beanConfig.setSchemes(new String[]{"http"});
+        beanConfig.setHost("localhost:8080");
+        beanConfig.setBasePath("/api");
+        beanConfig.setResourcePackage("com.mario.java.restful.api.hibernate.jpa.resource.impl");
         beanConfig.setScan(true);
 	}
 }
