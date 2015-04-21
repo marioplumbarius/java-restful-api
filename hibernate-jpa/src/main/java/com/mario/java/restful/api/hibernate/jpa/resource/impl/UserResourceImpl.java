@@ -41,7 +41,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-@Api(value = "/users", description = "operation on user", tags = "user")
+@Api(value = "/users", description = "operation on user", tags = "user", protocols = "http")
 public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
