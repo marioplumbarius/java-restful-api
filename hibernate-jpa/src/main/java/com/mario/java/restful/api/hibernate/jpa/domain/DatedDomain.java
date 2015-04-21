@@ -10,6 +10,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * Abstract class which exposes a domain with dated attributes (createdAt, updatedAt).<br>
  *
@@ -24,10 +26,12 @@ public abstract class DatedDomain {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(insertable=true, updatable=false)
+	@ApiModelProperty(value = "the date which the entity was created", readOnly = true)
 	private Date createdAt;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(insertable=false, updatable=true)
+	@ApiModelProperty(value = "the date which the entity was updated", readOnly = true)
 	private Date updatedAt;
 
 	/**
