@@ -32,18 +32,16 @@ import com.mario.java.restful.api.hibernate.jpa.resource.response.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
 import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiImplicitParam;
-import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
-@Api(value = "/users", description = "operations on users")
 @Path("/users")
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
+@Api(value = "/users", description = "operation on user", tags = "user")
 public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
@@ -65,22 +63,24 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @Path("{id}")
     @ApiOperation(
     		value = "finds an user by {id}",
-    		nickname = "find",
-    		response = UserDomain.class
+    		notes = "",
+    		nickname = "find"
 	)
     @ApiResponses(
     		value = {
-    				@ApiResponse(
-    						code = 200,
-    						message = "found"
-					),
 					@ApiResponse(
 							code = 404,
 							message = "not found"
+					),
+					@ApiResponse(
+    						code = 200,
+    						message = "found",
+    						response = UserDomain.class
 					)
     		}
 	)
-    public Response find(@PathParam("id") Long id) {
+    public Response find(
+    		@ApiParam(value = "the id of the user") @PathParam("id") Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
 
     	Response res = null;
@@ -101,14 +101,14 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @ApiOperation(
     		value = "finds all users",
     		nickname = "findAll",
-    		response = UserDomain.class,
-    		responseContainer = "List"
+    		notes = ""
 	)
     @ApiResponses(
     		value = {
     				@ApiResponse(
     						code = 200,
-    						message = "success"
+    						message = "success",
+    						response = UserDomain.class
 					)
     		}
 	)
@@ -126,31 +126,19 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     @ApiOperation(
     		value = "search users",
     		nickname = "search",
-    		notes = "use the query parameters to make the search",
-    		response = UserDomain.class,
-    		responseContainer = "List"
+    		notes = "WARNING: documentation for this operation is under development."
 	)
     @ApiResponses(
     		value = {
     				@ApiResponse(
     						code = 200,
-    						message = "success"
+    						message = "success",
+    						response = UserDomain.class
 					)
     		}
 	)
-    // hide UserDomainBeanParamImpl or remove this one
-    @ApiImplicitParams(
-    		value = {
-    				@ApiImplicitParam(
-    						name = "name",
-    						value = "user's name",
-    						required = true,
-    						dataType = "string",
-    						paramType = "query"
-					)
-    		}
-	)
-	public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
+    // TODO - Swagger x RESTeasy do not work well with @BeanParam.
+    public List<UserDomain> search(@BeanParam UserDomainBeanParamImpl beanParameters) {
     	LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
     	List<UserDomain> users = this.searchHelper(beanParameters);
@@ -169,6 +157,14 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     				@ApiResponse(
     						code = 201,
     						message = "created"
+    				),
+    				@ApiResponse(
+    						code = 400,
+    						message = "bad syntax"
+    				),
+    				@ApiResponse(
+    						code = 415,
+    						message = "media type not supported"
     				),
     				@ApiResponse(
     						code = 422,
@@ -208,6 +204,14 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     						message = "updated"
 					),
 					@ApiResponse(
+    						code = 400,
+    						message = "bad syntax"
+    				),
+					@ApiResponse(
+    						code = 415,
+    						message = "media type not supported"
+    				),
+					@ApiResponse(
     						code = 422,
     						message = "unprocessable entity"
 					),
@@ -222,8 +226,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
     		}
 	)
     public Response update(
-    		@PathParam("id") Long id,
-    		@ApiParam(value = "updated user", required = true) UserDomain user) {
+    		@ApiParam(value = "the id of the user") @PathParam("id") Long id,
+    		@ApiParam(value = "the updated user", required = true) UserDomain user) {
     	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
     	Response res = null;
@@ -260,7 +264,8 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 					)
     		}
 	)
-    public Response delete(@PathParam("id") Long id) {
+    public Response delete(
+    		@ApiParam(value = "the id of the user") @PathParam("id") Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
 
     	Response res = null;
@@ -306,7 +311,10 @@ public class UserResourceImpl implements Resource<UserDomain, Long, UserDomainBe
 					)
     		}
 	)
-	public Response patch(@PathParam("id") Long id, UserDomain user) {
+    // TODO - make this operation be indexed by swagger
+	public Response patch(
+			@ApiParam(value = "the id of the user") @PathParam("id") Long id,
+			@ApiParam(value = "the user with updated properties", required = true) UserDomain user) {
     	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", user.toString()));
 
     	Response res = null;
