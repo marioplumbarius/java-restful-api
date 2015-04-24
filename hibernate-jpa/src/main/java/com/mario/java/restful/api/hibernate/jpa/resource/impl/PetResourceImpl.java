@@ -21,8 +21,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity_;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 import com.mario.java.restful.api.hibernate.jpa.entity.validation.impl.EntityValidatorJPAImpl;
@@ -401,18 +401,18 @@ public class PetResourceImpl implements Resource<PetEntity, Long, PetDomainBeanP
     	Map<SingularAttribute<PetEntity, ?>, Object> restrictions = new HashMap<SingularAttribute<PetEntity, ?>, Object>();
 
     	if(petDomainFilter.getName() != null && !petDomainFilter.equals("")){
-    		restrictions.put(PetDomain_.name, petDomainFilter.getName());
+    		restrictions.put(PetEntity_.name, petDomainFilter.getName());
     	}
 
     	if(petDomainFilter.getAge() > 0){
-    		restrictions.put(PetDomain_.age, petDomainFilter.getAge());
+    		restrictions.put(PetEntity_.age, petDomainFilter.getAge());
     	}
 
     	if(petDomainFilter.getUserId() != null){
     		UserEntity userEntity = new UserEntity();
     		userEntity.setId(petDomainFilter.getUserId());
 
-    		restrictions.put(PetDomain_.user, userEntity);
+    		restrictions.put(PetEntity_.user, userEntity);
     	}
 
     	return restrictions;
