@@ -2,13 +2,13 @@ package com.mario.java.restful.api.hibernate.jpa.application.documentation.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.mario.java.restful.api.hibernate.jpa.application.documentation.ApiApplicationDocumentation;
+import com.mario.java.restful.api.hibernate.jpa.application.documentation.ApplicationDocumentation;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 
 @ApplicationScoped
-public class ApiApplicationDocumentationSwaggerImpl implements ApiApplicationDocumentation {
+public class ApplicationDocumentationSwaggerImpl implements ApplicationDocumentation {
 
-	public ApiApplicationDocumentationSwaggerImpl(){}
+	public ApplicationDocumentationSwaggerImpl(){}
 
 	@Override
 	public void configureAndInitialize() {

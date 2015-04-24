@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.mario.java.restful.api.hibernate.jpa.dto.UserDTO;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
-import com.mario.java.restful.api.hibernate.jpa.mapper.Mapper;
+import com.mario.java.restful.api.hibernate.jpa.mapper.UserMapper;
 
-public class UserMapperImpl implements Mapper<UserEntity, UserDTO> {
+public class UserMapperImpl implements UserMapper {
 
 	@Override
 	public List<UserDTO> mapFromEntitiesToDTOs(List<UserEntity> entities) {

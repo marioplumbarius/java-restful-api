@@ -2,9 +2,9 @@ package com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl;
 
 import javax.ws.rs.QueryParam;
 
-import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.PetDomainBeanParam;
+import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.PetBeanParam;
 
-public class PetDomainBeanParamImpl extends DomainBeanParamImpl implements PetDomainBeanParam {
+public class PetBeanParamImpl extends BeanParamImpl implements PetBeanParam {
 
 	@QueryParam("name")
 	private String name;

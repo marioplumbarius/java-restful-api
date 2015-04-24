@@ -5,7 +5,7 @@ package com.mario.java.restful.api.hibernate.jpa.application.documentation;
  * @author marioluan
  *
  */
-public interface ApiApplicationDocumentation {
+public interface ApplicationDocumentation {
 
 	/**
 	 * Configures and initializes the api documentation.

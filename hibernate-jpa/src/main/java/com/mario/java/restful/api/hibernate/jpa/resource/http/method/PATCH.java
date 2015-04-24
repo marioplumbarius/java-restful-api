@@ -1,4 +1,4 @@
-package com.mario.java.restful.api.hibernate.jpa.resource.annotation;
+package com.mario.java.restful.api.hibernate.jpa.resource.http.method;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

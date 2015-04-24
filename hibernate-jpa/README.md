@@ -2,27 +2,31 @@
 
 **Dependencies:**
 - maven
-- jave 8
+- java 8
 
-## Classes structure
-- **resource**: class which responds to http requests
-- **domain (dto / entity)**: class which is transferred through the application and maps the database table schema
-- **repository (dao)**: class which access database
-- **service**: class which acts as an abstraction layer between the controller and the persistence layers
+## Packages details
+- **application**: contains the JAX-RS application implementation and restful api documentation;
+- **resource**: contains JAX-RS resources used by the application;
+- **repository**: contains classes which communicates with the persistence store; 
+- **service**: contains classes which controls business logic and links the resource to the repository layer;
+- **dto**: contains classes which are transferred from resources to services layers;
+- **entity**: contains classes which maps to the database schema. They are also transferred from the service to the repository layer;
+- **mapper**: contains classes which maps dtos to entities.
 
 ## Api documentation
 Swagger is being used to generate the api documentation in json format. You can find the documentation at: http://localhost:8080/api/swagger.json.
 
 ## building
 ```shell
-$ JAVA_HOME=$JAVA_HOME_8 ./build
+$ ./build
 ```
 
 ## start the application
 ```shell
-$ JAVA_HOME=$JAVA_HOME_8 ./run
+$ ./run
 ```
 
 ## TODO
 - add unit tests
 - add integration tests
+- update javadoc for all classes

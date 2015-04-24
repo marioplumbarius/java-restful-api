@@ -2,9 +2,9 @@ package com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl;
 
 import javax.ws.rs.QueryParam;
 
-import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.UserDomainBeanParam;
+import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.UserBeanParam;
 
-public class UserDomainBeanParamImpl extends DomainBeanParamImpl implements UserDomainBeanParam {
+public class UserBeanParamImpl extends BeanParamImpl implements UserBeanParam {
 
 	@QueryParam("name")
 	private String name;

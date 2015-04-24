@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.ws.rs.QueryParam;
 
-import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.DomainBeanParam;
+import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.BeanParam;
 
-public class DomainBeanParamImpl implements DomainBeanParam {
+public class BeanParamImpl implements BeanParam {
 
 	@QueryParam("displayProperty")
 	private List<String> propertiesToBeDisplayed;

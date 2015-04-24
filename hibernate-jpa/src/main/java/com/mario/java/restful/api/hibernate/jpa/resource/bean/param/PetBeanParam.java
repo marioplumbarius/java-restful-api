@@ -1,7 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.resource.bean.param;
 
 // TODO - document me!
-public interface PetDomainBeanParam extends DomainBeanParam {
+public interface PetBeanParam extends BeanParam {
 
 	public String getName();
 	public void setName(String name);

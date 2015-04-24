@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
-import com.mario.java.restful.api.hibernate.jpa.mapper.Mapper;
+import com.mario.java.restful.api.hibernate.jpa.mapper.PetMapper;
 
-public class PetMapperImpl implements Mapper<PetEntity, PetDTO> {
+public class PetMapperImpl implements PetMapper {
 
 	@Override
 	public List<PetDTO> mapFromEntitiesToDTOs(List<PetEntity> entities) {
@@ -42,7 +42,7 @@ public class PetMapperImpl implements Mapper<PetEntity, PetDTO> {
 		dto.setUserId(entity.getUserId());
 		dto.setPropertiesToBeDisplayed(entity.getPropertiesToBeDisplayed());
 
-		return null;
+		return dto;
 	}
 
 	@Override

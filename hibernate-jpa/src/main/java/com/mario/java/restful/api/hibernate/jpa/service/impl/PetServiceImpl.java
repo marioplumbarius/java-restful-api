@@ -6,7 +6,9 @@ import java.util.Map;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
+import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.mapper.PetMapper;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
@@ -14,42 +16,47 @@ import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetServi
 
 @Model
 @PetService
-public class PetServiceImpl implements Service<PetEntity, Long> {
+public class PetServiceImpl implements Service<PetDTO, Long> {
 
 	private PetRepository petRepository;
+	private PetMapper petMapper;
 
 	public PetServiceImpl() {
 	}
 
 	@Inject
-	public PetServiceImpl(PetRepository petRepository){
+	public PetServiceImpl(PetRepository petRepository, PetMapper petMapper){
 		this.petRepository = petRepository;
+		this.petMapper = petMapper;
 	}
 
 	@Override
-	public void persist(PetEntity pet) throws Exception {
-		this.petRepository.persist(pet);
+	public void persist(PetDTO petDTO) throws Exception {
+		PetEntity petEntity = this.petMapper.mapFromDTOToEntity(petDTO);
+		
+		this.petRepository.persist(petEntity);
 	}
 
 	@Override
-	public void update(Long id, PetEntity pet) throws Exception, ObjectNotFoundException {
+	public void update(Long id, PetDTO petDTO) throws Exception, ObjectNotFoundException {
+		PetEntity petEntity = this.petMapper.mapFromDTOToEntity(petDTO);
 
 		if(this.find(id) != null){
-			pet.setId(id);
-			this.petRepository.update(pet);
+			petEntity.setId(id);
+			this.petRepository.update(petEntity);
 		} else {
-			throw new ObjectNotFoundException(id, PetEntity.class.getSimpleName());
+			throw new ObjectNotFoundException(id, PetDTO.class.getSimpleName());
 		}
 	}
 
 	@Override
 	public void delete(Long id) throws Exception, ObjectNotFoundException {
-		PetEntity pet = this.find(id);
+		PetEntity petEntity = this.petRepository.find(id);
 
-		if(pet != null){
-			this.petRepository.delete(pet);
+		if(petEntity != null){
+			this.petRepository.delete(petEntity);
 		} else {
-			throw new ObjectNotFoundException(id, PetEntity.class.getSimpleName());
+			throw new ObjectNotFoundException(id, PetDTO.class.getSimpleName());
 		}
 	}
 
@@ -59,22 +66,28 @@ public class PetServiceImpl implements Service<PetEntity, Long> {
 	}
 
 	@Override
-	public PetEntity find(Long id) {
-		PetEntity pet = this.petRepository.find(id);
+	public PetDTO find(Long id) {
+		PetEntity petEntity = this.petRepository.find(id);
+		PetDTO petDTO = this.petMapper.mapFromEntityToDTO(petEntity);
 
-		return pet;
+		return petDTO;
 	}
 
 	@Override
-	public List<PetEntity> findAll() {
-		List<PetEntity> pets = this.petRepository.findAll();
-		return pets;
+	public List<PetDTO> findAll() {
+		List<PetEntity> listPetEntity = this.petRepository.findAll();
+		List<PetDTO> listPetDTO = this.petMapper.mapFromEntitiesToDTOs(listPetEntity);
+		
+		return listPetDTO;
 	}
 
 
 	@SuppressWarnings("hiding")
 	@Override
-	public <SingularAttribute, Object> List<PetEntity> findAll(Map<SingularAttribute, Object> restrictions) {
-		return this.petRepository.findAll(restrictions);
+	public <SingularAttribute, Object> List<PetDTO> findAll(Map<SingularAttribute, Object> restrictions) {
+		List<PetEntity> listPetEntity = this.petRepository.findAll(restrictions);
+		List<PetDTO> listPetDTO = this.petMapper.mapFromEntitiesToDTOs(listPetEntity);
+		
+		return listPetDTO;
 	}
 }
