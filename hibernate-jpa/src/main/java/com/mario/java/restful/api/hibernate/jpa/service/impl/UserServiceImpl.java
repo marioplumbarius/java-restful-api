@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.PetDomain_;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity_;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
@@ -84,7 +84,7 @@ public class UserServiceImpl implements Service<UserEntity, Long> {
 
 	private void deletePets(UserEntity userEntity) throws Exception {
 		Map<javax.persistence.metamodel.SingularAttribute<PetEntity, UserEntity>, Object> restrictions = new HashMap<javax.persistence.metamodel.SingularAttribute<PetEntity,UserEntity>, Object>();
-		restrictions.put(PetDomain_.user, userEntity);
+		restrictions.put(PetEntity_.user, userEntity);
 		List<PetEntity> pets = this.petRepository.findAll(restrictions);
 
 		if(pets != null) this.petRepository.deleteAll(pets);
