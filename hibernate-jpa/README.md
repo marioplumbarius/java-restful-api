@@ -10,7 +10,7 @@
 - **repository**: contains classes which communicates with the persistence store; 
 - **service**: contains classes which controls business logic and links the resource to the repository layer;
 - **dto**: contains classes which are transferred from resources to services layers;
-- **entity**: contains classes which maps to the database schema. They are also transferred from the service to the repository layer;
+- **entity**: contains classes which maps to the database schema. They are also being transferred from the service to the repository layer;
 - **mapper**: contains classes which maps dtos to entities.
 
 ## Api documentation
