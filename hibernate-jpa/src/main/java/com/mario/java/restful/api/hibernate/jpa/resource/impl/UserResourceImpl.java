@@ -21,8 +21,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.mario.java.restful.api.hibernate.jpa.domain.UserDomain_;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity_;
 import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
@@ -383,7 +383,7 @@ public class UserResourceImpl implements Resource<UserEntity, Long, UserDomainBe
     	Map<SingularAttribute<UserEntity, ?>, Object> restrictions = new HashMap<SingularAttribute<UserEntity, ?>, Object>();
 
     	if(beanParameters.getName() != null){
-    		restrictions.put(UserDomain_.name, beanParameters.getName());
+    		restrictions.put(UserEntity_.name, beanParameters.getName());
     	}
 
     	return restrictions;
