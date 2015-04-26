@@ -1,6 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.dto.UserDTO;
+import com.mario.java.restful.api.hibernate.jpa.dto.validator.UserDTOValidator;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity_;
-import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl.UserBeanParamImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.http.method.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.http.status.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -48,15 +49,15 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
 	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
 
 	private Service<UserDTO, Long> service;
-	private EntityValidator entityValidator;
+	private UserDTOValidator userDtoValidator;
 
 	public UserResourceImpl(){
 	}
 
     @Inject
-	public UserResourceImpl(@UserService Service<UserDTO, Long> service, EntityValidator entityValidator) {
+	public UserResourceImpl(@UserService Service<UserDTO, Long> service, UserDTOValidator userDtoValidator) {
         this.service = service;
-        this.entityValidator = entityValidator;
+        this.userDtoValidator = userDtoValidator;
     }
 
     @Override
@@ -182,10 +183,10 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
 
     	Response res = null;
 
-        if (this.entityValidator.isValid(userDTO)) {
+        if (this.userDtoValidator.isValid(userDTO)) {
             res = this.createHelper(userDTO);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.userDtoValidator.getErrors()).build();
         }
 
         return res;
@@ -233,10 +234,10 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
 
     	Response res = null;
 
-        if (this.entityValidator.isValid(userDTO)) {
+        if (this.userDtoValidator.isValid(userDTO)) {
         	res = this.updateHelper(id, userDTO);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.userDtoValidator.getErrors()).build();
         }
 
         return res;
@@ -364,7 +365,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     }
 
     private List<UserDTO> searchHelper(UserBeanParamImpl beanParameters){
-    	List<UserDTO> users = null;
+    	List<UserDTO> users = new ArrayList<UserDTO>();
 
     	Map<SingularAttribute<UserEntity, ?>, Object> restrictions = this.mapBeanParamToRestrictions(beanParameters);
 

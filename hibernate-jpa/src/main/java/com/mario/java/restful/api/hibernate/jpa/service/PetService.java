@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers;
+package com.mario.java.restful.api.hibernate.jpa.service;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

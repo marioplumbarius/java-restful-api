@@ -19,11 +19,11 @@ public class UserRepositoryImpl extends RepositoryJPAImpl<UserEntity, Long> impl
 	}
 
 	@Override
-	public Class<UserEntity> getEntityClass() {
+	protected Class<UserEntity> getEntityClass() {
 		return UserRepositoryImpl.entityClass;
 	}
 	@Override
-	public EntityManager getEntityManager() {
+	protected EntityManager getEntityManager() {
 		return UserRepositoryImpl.entityManager;
 	}
 }

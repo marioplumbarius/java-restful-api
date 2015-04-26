@@ -19,11 +19,11 @@ public class PetRepositoryImpl extends RepositoryJPAImpl<PetEntity, Long> implem
 	}
 
 	@Override
-	public Class<PetEntity> getEntityClass() {
+	protected Class<PetEntity> getEntityClass() {
 		return PetRepositoryImpl.entityClass;
 	}
 	@Override
-	public EntityManager getEntityManager() {
+	protected EntityManager getEntityManager() {
 		return PetRepositoryImpl.entityManager;
 	}
 }

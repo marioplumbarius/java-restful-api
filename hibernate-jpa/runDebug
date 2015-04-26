@@ -1,0 +1,1 @@
+JAVA_HOME=$JAVA_HOME_8 mvnDebug jetty:run

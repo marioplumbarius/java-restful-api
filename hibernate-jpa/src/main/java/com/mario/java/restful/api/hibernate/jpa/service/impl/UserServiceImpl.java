@@ -16,7 +16,7 @@ import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.UserRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 
 @Model
 @UserService
@@ -42,6 +42,8 @@ public class UserServiceImpl implements Service<UserDTO, Long> {
 		UserEntity userEntity = userMapper.mapFromDTOToEntity(userDto);
 		
 		this.userRepository.persist(userEntity);
+		
+		userDto.setId(userEntity.getId());
 	}
 
 	@Override
@@ -76,8 +78,12 @@ public class UserServiceImpl implements Service<UserDTO, Long> {
 
 	@Override
 	public UserDTO find(Long id) {
+		UserDTO userDTO = null;
 		UserEntity userEntity = this.userRepository.find(id);
-		UserDTO userDTO = this.userMapper.mapFromEntityToDTO(userEntity);
+		
+		if(userEntity != null) {
+			userDTO = this.userMapper.mapFromEntityToDTO(userEntity);
+		}
 		
 		return userDTO;
 	}

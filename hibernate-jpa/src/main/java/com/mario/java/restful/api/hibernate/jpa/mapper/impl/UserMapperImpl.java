@@ -3,10 +3,13 @@ package com.mario.java.restful.api.hibernate.jpa.mapper.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Model;
+
 import com.mario.java.restful.api.hibernate.jpa.dto.UserDTO;
 import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.mapper.UserMapper;
 
+@Model
 public class UserMapperImpl implements UserMapper {
 
 	@Override
@@ -39,8 +42,10 @@ public class UserMapperImpl implements UserMapper {
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		dto.setPropertiesToBeDisplayed(entity.getPropertiesToBeDisplayed());
+		dto.setCreatedAt(entity.getCreatedAt());
+		dto.setUpdatedAt(entity.getUpdatedAt());
 
-		return null;
+		return dto;
 	}
 
 	@Override
@@ -49,6 +54,8 @@ public class UserMapperImpl implements UserMapper {
 		entity.setId(dto.getId());
 		entity.setName(dto.getName());
 		entity.setPropertiesToBeDisplayed(dto.getPropertiesToBeDisplayed());
+		entity.setCreatedAt(dto.getCreatedAt());
+		entity.setUpdatedAt(dto.getUpdatedAt());
 
 		return entity;
 	}

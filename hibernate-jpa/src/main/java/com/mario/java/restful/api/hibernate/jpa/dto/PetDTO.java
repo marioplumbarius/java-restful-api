@@ -1,6 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mario.java.restful.api.hibernate.jpa.dto.serializer.PetDTOSerializer;
 
@@ -10,6 +11,7 @@ import com.mario.java.restful.api.hibernate.jpa.dto.serializer.PetDTOSerializer;
  */
 @JsonSerialize(using=PetDTOSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonRootName(value="pet")
 public class PetDTO extends BaseDTO {
 
 	private static final long serialVersionUID = 1L;
@@ -87,6 +89,10 @@ public class PetDTO extends BaseDTO {
 
     	if(this.getAge() == 0){
     		this.setAge(petDTO.getAge());
+    	}
+    	
+    	if(this.getUserId() == null) {
+    		this.setUserId(petDTO.getUserId());
     	}
     }
 }

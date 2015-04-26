@@ -11,8 +11,8 @@ import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 import com.mario.java.restful.api.hibernate.jpa.mapper.PetMapper;
 import com.mario.java.restful.api.hibernate.jpa.repository.PetRepository;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
+import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
 
 @Model
 @PetService
@@ -35,6 +35,8 @@ public class PetServiceImpl implements Service<PetDTO, Long> {
 		PetEntity petEntity = this.petMapper.mapFromDTOToEntity(petDTO);
 		
 		this.petRepository.persist(petEntity);
+		
+		petDTO.setId(petEntity.getId());
 	}
 
 	@Override
@@ -67,8 +69,13 @@ public class PetServiceImpl implements Service<PetDTO, Long> {
 
 	@Override
 	public PetDTO find(Long id) {
+		PetDTO petDTO = null;
 		PetEntity petEntity = this.petRepository.find(id);
-		PetDTO petDTO = this.petMapper.mapFromEntityToDTO(petEntity);
+		
+		if(petEntity != null) {
+			petDTO = this.petMapper.mapFromEntityToDTO(petEntity);
+		}
+		
 
 		return petDTO;
 	}

@@ -16,11 +16,16 @@ public enum UserDTOProperty {
 
 	private final String propertyName;
 
-	private UserDTOProperty(String name){
+	private UserDTOProperty(final String name){
 		this.propertyName = name;
 	}
 
 	public String getName(){
 		return this.propertyName;
+	}
+
+	@Override
+	public String toString(){
+		return this.getName();
 	}
 }

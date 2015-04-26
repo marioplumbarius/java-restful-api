@@ -10,9 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * <strong>All DTOs should extend this class.</strong>
  * @author msouz23
  */
-public class BaseDTO implements Serializable {
+public abstract class BaseDTO extends DatedDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	private Long id;
 	@JsonIgnore
 	private List<String> propertiesToBeDisplayed;

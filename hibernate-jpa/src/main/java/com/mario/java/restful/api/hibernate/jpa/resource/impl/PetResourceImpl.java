@@ -1,6 +1,7 @@
 package com.mario.java.restful.api.hibernate.jpa.resource.impl;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,18 +24,20 @@ import javax.ws.rs.core.Response.Status;
 
 import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 import com.mario.java.restful.api.hibernate.jpa.dto.UserDTO;
+import com.mario.java.restful.api.hibernate.jpa.dto.utils.PetDTOUtils;
+import com.mario.java.restful.api.hibernate.jpa.dto.validator.PetDTOValidator;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity_;
-import com.mario.java.restful.api.hibernate.jpa.entity.validation.EntityValidator;
-import com.mario.java.restful.api.hibernate.jpa.entity.validation.impl.EntityValidatorJPAImpl;
+import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
 import com.mario.java.restful.api.hibernate.jpa.repository.exception.ObjectNotFoundException;
 import com.mario.java.restful.api.hibernate.jpa.resource.Resource;
 import com.mario.java.restful.api.hibernate.jpa.resource.bean.param.impl.PetBeanParamImpl;
 import com.mario.java.restful.api.hibernate.jpa.resource.http.method.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.http.status.HttpStatus;
+import com.mario.java.restful.api.hibernate.jpa.resource.utils.ResourceResponseUtils;
+import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.PetService;
-import com.mario.java.restful.api.hibernate.jpa.service.impl.qualifiers.UserService;
+import com.mario.java.restful.api.hibernate.jpa.service.UserService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -52,16 +55,16 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 
     private Service<PetDTO, Long> petService;
     private Service<UserDTO, Long> userService;
-    private EntityValidator entityValidator;
+    private PetDTOValidator petDTOValidator;
 
     public PetResourceImpl() {
     }
 
     @Inject
-    public PetResourceImpl(@PetService Service<PetDTO, Long> petService, @UserService Service<UserDTO, Long> userService, EntityValidator entityValidator) {
+    public PetResourceImpl(@PetService Service<PetDTO, Long> petService, @UserService Service<UserDTO, Long> userService, PetDTOValidator petDTOValidator) {
         this.petService = petService;
         this.userService = userService;
-        this.entityValidator = entityValidator;
+        this.petDTOValidator = petDTOValidator;
     }
 
     @Override
@@ -146,7 +149,9 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 	public List<PetDTO> search(@BeanParam PetBeanParamImpl beanParameters) {
 		LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
-		List<PetDTO> listPetDTO = this.searchHelper(beanParameters);
+		List<PetDTO> listPetDTO = new ArrayList<PetDTO>();
+		
+		listPetDTO = this.searchHelper(beanParameters);
 
         return listPetDTO;
 	}
@@ -186,10 +191,10 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 
         Response res = null;
 
-        if (this.entityValidator.isValid(petDTO)) {
+        if (this.petDTOValidator.isValid(petDTO)) {
         	res = this.createHelper(petDTO);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.petDTOValidator.getErrors()).build();
         }
 
         return res;
@@ -237,10 +242,10 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 
         Response res = null;
 
-        if (this.entityValidator.isValid(petDTO)) {
+        if (this.petDTOValidator.isValid(petDTO)) {
             res = this.updateHelper(id, petDTO);
         } else {
-            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.entityValidator.getErrors()).build();
+            res = Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(this.petDTOValidator.getErrors()).build();
         }
 
         return res;
@@ -349,13 +354,15 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 				res = Response.serverError().build();
 			}
     	} else {
-    		res = this.buildUserIdNotFoundResponse();
+    		res = ResourceResponseUtils.buildResponseWithUserIdNotFoundError();
     	}
 
     	return res;
     }
 
     private Response updateHelper(Long id, PetDTO petDTO){
+    	LOGGER.info("updateHelper(id=:id, petDTO=:petDTO)".replace(":id", id.toString()).replace(":petDTO", petDTO.toString()));
+    	
     	Response res;
 
     	if(this.userService.find(petDTO.getUserId()) != null){
@@ -369,14 +376,14 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 				res = Response.serverError().build();
             }
     	} else {
-    		res = this.buildUserIdNotFoundResponse();
+    		res = ResourceResponseUtils.buildResponseWithUserIdNotFoundError();
     	}
 
     	return res;
     }
 
     private List<PetDTO> searchHelper(PetBeanParamImpl beanParameters){
-    	List<PetDTO> listPetDTO = null;
+    	List<PetDTO> listPetDTO = new ArrayList<PetDTO>();
 
     	Map<SingularAttribute<PetEntity, ?>, Object> restrictions = this.mapDomainFilterToRestrictions(beanParameters);
 
@@ -384,18 +391,11 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     		listPetDTO = this.petService.findAll(restrictions);
 
     		if(listPetDTO != null && !listPetDTO.isEmpty()){
-    			this.setPetDomainPropertiesToBeDisplayed(listPetDTO, beanParameters.getPropertiesToBeDisplayed());
+    			PetDTOUtils.setPetDomainPropertiesToBeDisplayed(listPetDTO, beanParameters.getPropertiesToBeDisplayed());
         	}
     	}
 
     	return listPetDTO;
-    }
-
-    private Response buildUserIdNotFoundResponse(){
-    	// TODO
-		// move error defined messages to a file
-		Map<String, Object> errors = EntityValidatorJPAImpl.buildError("userId", "not found");
-		return Response.status(HttpStatus.UNPROCESSABLE_ENTITY).entity(errors).build();
     }
 
 	private Map<SingularAttribute<PetEntity, ?>, Object> mapDomainFilterToRestrictions(PetBeanParamImpl petDomainFilter){
@@ -410,19 +410,12 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     	}
 
     	if(petDomainFilter.getUserId() != null){
-    		UserDTO userEntity = new UserDTO();
+    		UserEntity userEntity = new UserEntity();
     		userEntity.setId(petDomainFilter.getUserId());
 
     		restrictions.put(PetEntity_.user, userEntity);
     	}
 
     	return restrictions;
-    }
-
-	// TODO - find a fancy class for this method
-    private void setPetDomainPropertiesToBeDisplayed(List<PetDTO> listPetDTO, List<String> propertiesToBeDisplayed){
-    	for(PetDTO petDTO : listPetDTO){
-    		petDTO.setPropertiesToBeDisplayed(propertiesToBeDisplayed);
-    	}
     }
 }

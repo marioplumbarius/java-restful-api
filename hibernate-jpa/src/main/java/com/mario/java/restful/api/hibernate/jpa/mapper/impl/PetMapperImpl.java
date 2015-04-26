@@ -3,10 +3,13 @@ package com.mario.java.restful.api.hibernate.jpa.mapper.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Model;
+
 import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 import com.mario.java.restful.api.hibernate.jpa.mapper.PetMapper;
 
+@Model
 public class PetMapperImpl implements PetMapper {
 
 	@Override
@@ -41,6 +44,8 @@ public class PetMapperImpl implements PetMapper {
 		dto.setAge(entity.getAge());
 		dto.setUserId(entity.getUserId());
 		dto.setPropertiesToBeDisplayed(entity.getPropertiesToBeDisplayed());
+		dto.setCreatedAt(entity.getCreatedAt());
+		dto.setUpdatedAt(entity.getUpdatedAt());
 
 		return dto;
 	}
@@ -53,6 +58,8 @@ public class PetMapperImpl implements PetMapper {
 		entity.setAge(dto.getAge());
 		entity.setUserId(dto.getUserId());
 		entity.setPropertiesToBeDisplayed(dto.getPropertiesToBeDisplayed());
+		entity.setCreatedAt(dto.getCreatedAt());
+		entity.setUpdatedAt(dto.getUpdatedAt());
 
 		return entity;
 	}

@@ -20,8 +20,9 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 
 	private static final Logger LOGGER = Logger.getLogger(RepositoryJPAImpl.class.getSimpleName());
 
-	public abstract Class<T> getEntityClass();
-	public abstract EntityManager getEntityManager();
+	// TODO change method visibility to protected
+	protected abstract Class<T> getEntityClass();
+	protected abstract EntityManager getEntityManager();
 
 	@Override
 	public List<T> findAll(){

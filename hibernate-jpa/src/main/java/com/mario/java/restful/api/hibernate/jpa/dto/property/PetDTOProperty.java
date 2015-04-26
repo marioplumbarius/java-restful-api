@@ -18,11 +18,16 @@ public enum PetDTOProperty {
 
 	private final String propertyName;
 
-	private PetDTOProperty(String name){
+	private PetDTOProperty(final String name){
 		this.propertyName = name;
 	}
 
 	public String getName(){
 		return this.propertyName;
+	}
+
+	@Override
+	public String toString(){
+		return this.getName();
 	}
 }

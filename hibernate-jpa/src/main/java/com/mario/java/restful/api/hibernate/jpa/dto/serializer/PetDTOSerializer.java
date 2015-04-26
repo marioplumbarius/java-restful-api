@@ -7,17 +7,17 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 import com.mario.java.restful.api.hibernate.jpa.dto.property.PetDTOProperty;
-import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
 
-public class PetDTOSerializer extends JsonSerializer<PetEntity> {
+public class PetDTOSerializer extends JsonSerializer<PetDTO> {
 
 	private static final Logger LOGGER = Logger.getLogger(PetDTOSerializer.class.getName());
 
 	private static final String UNKOWN_PROPERTY = "unkown property";
 
 	@Override
-	public void serialize(PetEntity pet, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+	public void serialize(PetDTO pet, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
 		LOGGER.info("serialize(pet=?, jgen=?, provider=?)");
 
 		jgen.writeStartObject();
@@ -25,7 +25,7 @@ public class PetDTOSerializer extends JsonSerializer<PetEntity> {
 		jgen.writeEndObject();
 	}
 
-	private void writeAttributesWrapper(PetEntity pet, JsonGenerator jgen) throws IOException {
+	private void writeAttributesWrapper(PetDTO pet, JsonGenerator jgen) throws IOException {
 		LOGGER.info("writeAttributes(pet=?, jgen=?)");
 
 		if(pet.getPropertiesToBeDisplayed() != null && !pet.getPropertiesToBeDisplayed().isEmpty()){
@@ -35,7 +35,7 @@ public class PetDTOSerializer extends JsonSerializer<PetEntity> {
 		}
 	}
 
-	private void writeCustomAttributes(PetEntity pet, JsonGenerator jgen) throws IOException {
+	private void writeCustomAttributes(PetDTO pet, JsonGenerator jgen) throws IOException {
 		LOGGER.info("writeCustomAttributes(pet=?, jgen=?)");
 
 		for(String propertyName : pet.getPropertiesToBeDisplayed()){
@@ -57,7 +57,7 @@ public class PetDTOSerializer extends JsonSerializer<PetEntity> {
 		}
 	}
 
-	private void writeDefaultAttributes(PetEntity pet, JsonGenerator jgen) throws IOException {
+	private void writeDefaultAttributes(PetDTO pet, JsonGenerator jgen) throws IOException {
 		LOGGER.info("writeDefaultAttributes(pet=?, jgen=?)");
 
 		jgen.writeNumberField(PetDTOProperty.ID.getName(), pet.getId());
