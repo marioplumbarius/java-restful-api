@@ -53,6 +53,7 @@ public class UserServiceImpl implements Service<UserDTO, Long> {
 		if(this.find(id) != null){
 			userEntity.setId(id);
 			this.userRepository.update(userEntity);
+			this.userRepository.refresh(id);
 		} else {
 			throw new ObjectNotFoundException(id, UserDTO.class.getSimpleName());
 		}

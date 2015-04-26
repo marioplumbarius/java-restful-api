@@ -63,6 +63,21 @@ public abstract class RepositoryJPAImpl<T, ID extends Serializable> implements R
 			throw e;
 		}
 	}
+	
+	@Override
+	public void refresh(ID id) {
+		T managedEntity = this.find(id);
+		
+		try {
+			this.getEntityManager().getTransaction().begin();
+			this.getEntityManager().refresh(managedEntity);
+			this.getEntityManager().getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.getEntityManager().getTransaction().rollback();
+			throw e;
+		}
+	}
 
 	@Override
 	public void delete(T entity) throws Exception {

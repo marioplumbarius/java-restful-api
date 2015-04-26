@@ -46,6 +46,7 @@ public class PetServiceImpl implements Service<PetDTO, Long> {
 		if(this.find(id) != null){
 			petEntity.setId(id);
 			this.petRepository.update(petEntity);
+			this.petRepository.refresh(id);
 		} else {
 			throw new ObjectNotFoundException(id, PetDTO.class.getSimpleName());
 		}

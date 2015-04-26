@@ -69,4 +69,10 @@ public interface Repository<T, ID extends Serializable> {
 	 * @throws Exception when the entities could not be deleted
 	 */
 	public void deleteAll(List<T> entities) throws Exception;
+	
+	/**
+	 * Refreshes the state of the entity with the provided id from database.
+	 * @param entity the entity to have its state refreshed
+	 */
+	public void refresh(ID id);
 }
