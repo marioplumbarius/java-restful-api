@@ -192,6 +192,22 @@
 
 	<build>
 		<finalName>java-restful-api</finalName>
+		
+		<filters>
+			<filter>src/main/resources/conf/${env}.properties</filter>
+			<filter>src/main/resources/conf/application.properties</filter>
+		</filters>
+		
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>conf/application.properties</include>
+				</includes>
+			</resource>
+		</resources>
+		
 		<plugins>
 
 			<!-- jetty -->

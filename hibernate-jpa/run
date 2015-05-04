@@ -1,1 +1,1 @@
-JAVA_HOME=$JAVA_HOME_8 mvn jetty:run
+JAVA_HOME=$JAVA_HOME_8 mvn jetty:run -Denv=local
