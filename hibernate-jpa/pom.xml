@@ -49,9 +49,6 @@
 		<junit.version>4.12</junit.version>
 		<mockito-core.version>1.10.19</mockito-core.version>
 		<oleaster.version>0.1.0</oleaster.version>
-
-		<!-- VARIABLES -->
-		<context-path>/api</context-path>
 	</properties>
 
 	<dependencies>
@@ -203,9 +200,6 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty.version}</version>
 				<configuration>
-					<webApp>
-						<contextPath>${context-path}</contextPath>
-					</webApp>
 					<!-- [WARNING] jetty does not load these resources by default -->
 					<jettyEnvXml>src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml>
 					<contextXml>src/main/webapp/WEB-INF/jetty-context.xml</contextXml>

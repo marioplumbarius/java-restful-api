@@ -8,7 +8,7 @@ import javax.ws.rs.core.Application;
 import com.mario.java.restful.api.hibernate.jpa.application.documentation.ApplicationDocumentation;
 
 @ApplicationScoped
-@ApplicationPath("/")
+@ApplicationPath("/api")
 public class HibernateJPAApplication extends Application {
 
 	private ApplicationDocumentation applicationDocumentation;
