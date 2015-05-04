@@ -48,9 +48,10 @@ public class UserServiceImpl implements Service<UserDTO, Long> {
 
 	@Override
 	public void update(Long id, UserDTO userDto) throws Exception, ObjectNotFoundException {
-		UserEntity userEntity = userMapper.mapFromDTOToEntity(userDto);
+		UserDTO userDTOFromDatabase = this.find(id); 
 		
-		if(this.find(id) != null){
+		if(userDTOFromDatabase != null){
+			UserEntity userEntity = userMapper.mapFromDTOToEntity(userDto);
 			userEntity.setId(id);
 			this.userRepository.update(userEntity);
 			this.userRepository.refresh(id);
