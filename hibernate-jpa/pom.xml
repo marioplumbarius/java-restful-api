@@ -10,6 +10,7 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<properties-maven-plugin.version>1.0-alpha-2</properties-maven-plugin.version>
 		<maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
 		<maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
 		<maven-processor-plugin.version>2.2.4</maven-processor-plugin.version>
@@ -269,6 +270,27 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>${properties-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>set-system-properties</goal>
+						</goals>
+						<configuration>
+							<properties>
+								<property>
+									<name>conf.dir</name>
+									<value>/home/marioluan/www/java-restful-api/hibernate-jpa/target/classes/conf/</value>
+								</property>
+							</properties>
+						</configuration>
+					</execution>
+				</executions>
+</plugin>
 
 		</plugins>
 	</build>

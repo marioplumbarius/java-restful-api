@@ -2,6 +2,7 @@ package com.mario.java.restful.api.hibernate.jpa.application.documentation.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.mario.java.restful.api.hibernate.jpa.application.configuration.ApplicationProperties;
 import com.mario.java.restful.api.hibernate.jpa.application.documentation.ApplicationDocumentation;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 
@@ -14,12 +15,11 @@ public class ApplicationDocumentationSwaggerImpl implements ApplicationDocumenta
 	public void configureAndInitialize() {
 		BeanConfig beanConfig = new BeanConfig();
 
-		// TODO - move these configurations to a file and load them from there
-		beanConfig.setVersion("0.0.1");
-        beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setHost("localhost:8080");
-        beanConfig.setBasePath("/api");
-        beanConfig.setResourcePackage("com.mario.java.restful.api.hibernate.jpa.resource.impl");
-        beanConfig.setScan(true);
+		beanConfig.setVersion(ApplicationProperties.getInstance().getProperty("api.version"));
+        beanConfig.setSchemes(new String[]{ApplicationProperties.getInstance().getProperty("api.schemes")});
+        beanConfig.setHost(ApplicationProperties.getInstance().getProperty("api.documentation.host"));
+        beanConfig.setBasePath(ApplicationProperties.getInstance().getProperty("api.context.path"));
+        beanConfig.setResourcePackage(ApplicationProperties.getInstance().getProperty("api.documentation.resource.package"));
+        beanConfig.setScan(ApplicationProperties.getInstance().getProperty("api.documentation.scan").equals("true"));
 	}
 }
