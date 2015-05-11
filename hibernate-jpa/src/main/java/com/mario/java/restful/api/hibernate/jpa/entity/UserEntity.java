@@ -10,9 +10,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 /**
  * Domain class which represents an user on database.
  *
@@ -21,14 +18,12 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 @Entity
 @Table(name = "users")
-@ApiModel(description = "user dto", parent = BaseEntity.class)
 public class UserEntity extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
 	@Size(max = 20)
-	@ApiModelProperty(required = true, value = "the name of the user")
 	private String name;
 
 	@OneToMany(mappedBy="user")

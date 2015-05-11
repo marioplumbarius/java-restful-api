@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 /**
  * Domain class which represents a pet on database.
  * @author marioluan
@@ -23,19 +20,16 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 @Entity
 @Table(name = "pets")
-@ApiModel(description = "pet dto", parent = BaseEntity.class)
 public class PetEntity extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @NotEmpty
     @Size(min = 1, max = 20)
-    @ApiModelProperty(value = "the name of the pet", required = true)
     private String name;
 
     @NotNull
     @Range(min = 1, max = 100)
-    @ApiModelProperty(value = "the age of the pet", required = true)
     private int age;
 
     @NotNull
@@ -44,7 +38,6 @@ public class PetEntity extends BaseEntity implements Serializable {
     private UserEntity user;
 
     @Transient
-    @ApiModelProperty(value = "the id of the pet's user", required = true)
     private Long userId;
 
     /**
