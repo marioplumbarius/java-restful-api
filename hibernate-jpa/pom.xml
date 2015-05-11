@@ -276,6 +276,10 @@
 									<name>conf.dir</name>
 									<value>/home/marioluan/www/java-restful-api/hibernate-jpa/target/classes/conf/</value>
 								</property>
+								<property>
+									<name>properties.file.name</name>
+									<value>application.properties</value>
+								</property>
 							</properties>
 						</configuration>
 					</execution>

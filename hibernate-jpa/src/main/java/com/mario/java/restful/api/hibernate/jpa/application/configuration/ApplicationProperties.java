@@ -11,7 +11,7 @@ public class ApplicationProperties {
 	
 	private static final Logger LOGGER = Logger.getLogger(ApplicationProperties.class.getSimpleName());
 	private static ApplicationProperties instance;
-	private final String fileName = System.getProperty("conf.dir")+"application.properties";
+	private final String fileName = System.getProperty("conf.dir")+System.getProperty("properties.file.name");
 	private Properties properties;
 	
 	protected ApplicationProperties() {
@@ -31,19 +31,18 @@ public class ApplicationProperties {
 	}
 	
 	private void setup() {
+		LOGGER.info("setup()");
+		
 		this.properties = new Properties();
 		InputStream inputStream = null;
 		
 		try {
 			inputStream = new FileInputStream(this.fileName);
-		} catch (FileNotFoundException e) {
-			LOGGER.info("InputStream error:" + e.getMessage());
-		}
-		
-		try {
 			this.properties.load(inputStream);
+		} catch (FileNotFoundException e) {
+			LOGGER.info("Could not load file {file}. Error: {error}".replace("{file}", fileName).replace("{error}", e.getMessage()));
 		} catch (IOException e) {
-			LOGGER.info("load error:" + e.getMessage());
+			LOGGER.info("Could not load properties. Error: {error}".replace("{error}", e.getMessage()));
 		}
 	}
 }
