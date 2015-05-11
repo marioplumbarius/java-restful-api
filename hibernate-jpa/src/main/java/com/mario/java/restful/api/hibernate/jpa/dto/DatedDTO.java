@@ -2,6 +2,11 @@ package com.mario.java.restful.api.hibernate.jpa.dto;
 
 import java.util.Date;
 
+/**
+ * DatedDTO, which contains createdAt and updatedAt attributes.
+ * @author marioluan
+ *
+ */
 public abstract class DatedDTO {
 
 	private Date createdAt;

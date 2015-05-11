@@ -26,7 +26,7 @@ public class PetDTOSerializer extends JsonSerializer<PetDTO> {
 	}
 
 	private void writeAttributesWrapper(PetDTO pet, JsonGenerator jgen) throws IOException {
-		LOGGER.info("writeAttributes(pet=?, jgen=?)");
+		LOGGER.info("writeAttributesWrapper(pet=?, jgen=?)");
 
 		if(pet.getPropertiesToBeDisplayed() != null && !pet.getPropertiesToBeDisplayed().isEmpty()){
 			this.writeCustomAttributes(pet, jgen);

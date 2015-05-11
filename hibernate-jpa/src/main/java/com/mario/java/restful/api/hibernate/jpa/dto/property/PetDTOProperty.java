@@ -1,9 +1,9 @@
 package com.mario.java.restful.api.hibernate.jpa.dto.property;
 
-import com.mario.java.restful.api.hibernate.jpa.entity.PetEntity;
+import com.mario.java.restful.api.hibernate.jpa.dto.PetDTO;
 
 /**
- * {@link PetEntity} properties.
+ * {@link PetDTO} properties.
  * @author marioluan
  *
  */

@@ -33,7 +33,7 @@ public class DTOException extends RuntimeException {
 	
 	/**
 	 * Default Constructor.</br>
-	 * Creates a instance assigning its {@link #error}.
+	 * Creates an instance assigning its {@link #error}.
 	 * @param error the error to set
 	 */
 	public DTOException(Error error) {

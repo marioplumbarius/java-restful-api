@@ -15,6 +15,11 @@ public abstract class BaseDTO extends DatedDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
+	/**
+	 * Since all DTOs may extend this class,
+	 * we need to prevent them from serializing these property.
+	 */
 	@JsonIgnore
 	private List<String> propertiesToBeDisplayed;
 

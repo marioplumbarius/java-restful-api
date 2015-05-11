@@ -22,7 +22,7 @@ public class UserDTO extends BaseDTO {
 	public UserDTO(){}
 
 	/**
-	 * Creates a instance with all attributes set.
+	 * Creates an instance with all attributes set.
 	 * @param name the name to set
 	 */
 	public UserDTO(String name) {

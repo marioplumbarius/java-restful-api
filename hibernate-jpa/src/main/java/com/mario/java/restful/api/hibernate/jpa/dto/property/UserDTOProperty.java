@@ -1,9 +1,9 @@
 package com.mario.java.restful.api.hibernate.jpa.dto.property;
 
-import com.mario.java.restful.api.hibernate.jpa.entity.UserEntity;
+import com.mario.java.restful.api.hibernate.jpa.dto.UserDTO;
 
 /**
- * {@link UserEntity} properties.
+ * {@link UserDTO} properties.
  * @author marioluan
  *
  */

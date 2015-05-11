@@ -20,12 +20,12 @@ public class PetDTO extends BaseDTO {
 	private Long userId;
 
 	/**
-	 * Default constructor. Creates an empty instance;
+	 * Default constructor. Creates an empty instance.
 	 */
 	public PetDTO(){}
 
 	/**
-	 * Creates a instance with all attributes set.
+	 * Creates an instance with all attributes set.
 	 * @param name the name to set
 	 * @param age the age to set
 	 * @param userId the userId to set
