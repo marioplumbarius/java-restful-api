@@ -17,7 +17,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -33,17 +32,11 @@ import com.mario.java.restful.api.hibernate.jpa.resource.http.method.PATCH;
 import com.mario.java.restful.api.hibernate.jpa.resource.http.status.HttpStatus;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
 
 @Path("/users")
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-@Api(value = "/users", description = "operation on user", tags = "user", protocols = "http")
 public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(UserResourceImpl.class.getName());
@@ -63,26 +56,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     @Override
     @GET
     @Path("{id}")
-    @ApiOperation(
-    		value = "finds an user by {id}",
-    		notes = "",
-    		nickname = "find"
-	)
-    @ApiResponses(
-    		value = {
-					@ApiResponse(
-							code = 404,
-							message = "not found"
-					),
-					@ApiResponse(
-    						code = 200,
-    						message = "found",
-    						response = UserDTO.class
-					)
-    		}
-	)
-    public Response find(
-    		@ApiParam(value = "the id of the user") @PathParam("id") Long id) {
+    public Response find(Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
 
     	Response res = null;
@@ -100,20 +74,6 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
 
     @Override
 	@GET
-    @ApiOperation(
-    		value = "finds all users",
-    		nickname = "findAll",
-    		notes = ""
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 200,
-    						message = "success",
-    						response = UserDTO.class
-					)
-    		}
-	)
     public List<UserDTO> findAll() {
     	LOGGER.info("findAll()");
 
@@ -125,21 +85,6 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     @Override
     @GET
     @Path("search")
-    @ApiOperation(
-    		value = "search users",
-    		nickname = "search",
-    		notes = "WARNING: documentation for this operation is under development."
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 200,
-    						message = "success",
-    						response = UserDTO.class
-					)
-    		}
-	)
-    // TODO - Swagger x RESTeasy do not work well with @BeanParam.
     public List<UserDTO> search(@BeanParam UserBeanParamImpl beanParameters) {
     	LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
@@ -150,35 +95,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
 
     @Override
     @POST
-    @ApiOperation(
-    		value = "creates an user",
-    		nickname = "create"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 201,
-    						message = "created"
-    				),
-    				@ApiResponse(
-    						code = 400,
-    						message = "bad syntax"
-    				),
-    				@ApiResponse(
-    						code = 415,
-    						message = "media type not supported"
-    				),
-    				@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-    				),
-    				@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-    				)
-    		}
-	)
-	public Response create(@ApiParam(value = "user to be created", required = true) UserDTO userDTO) {
+	public Response create(UserDTO userDTO) {
     	LOGGER.info("create(user=:user)".replace(":user", userDTO.toString()));
 
     	Response res = null;
@@ -195,41 +112,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     @Override
     @PUT
     @Path("{id}")
-    @ApiOperation(
-    		value = "updates an user",
-    		nickname = "update"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "updated"
-					),
-					@ApiResponse(
-    						code = 400,
-    						message = "bad syntax"
-    				),
-					@ApiResponse(
-    						code = 415,
-    						message = "media type not supported"
-    				),
-					@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    public Response update(
-    		@ApiParam(value = "the id of the user") @PathParam("id") Long id,
-    		@ApiParam(value = "the updated user", required = true) UserDTO userDTO) {
+    public Response update(Long id, UserDTO userDTO) {
     	LOGGER.info("update(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", userDTO.toString()));
 
     	Response res = null;
@@ -246,28 +129,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     @Override
     @DELETE
     @Path("{id}")
-    @ApiOperation(
-    		value = "deletes an user",
-    		nickname = "delete"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "deleted"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    public Response delete(
-    		@ApiParam(value = "the id of the user") @PathParam("id") Long id) {
+    public Response delete(Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
 
     	Response res = null;
@@ -288,35 +150,7 @@ public class UserResourceImpl implements Resource<UserDTO, Long, UserBeanParamIm
     @Override
     @PATCH
 	@Path("{id}")
-    @ApiOperation(
-    		value="updates an user",
-    		nickname = "patch",
-    		notes = "allows partial update of the entity"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "updated"
-					),
-					@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    // TODO - make this operation be indexed by swagger
-	public Response patch(
-			@ApiParam(value = "the id of the user") @PathParam("id") Long id,
-			@ApiParam(value = "the user with updated properties", required = true) UserDTO userDTO) {
+	public Response patch(Long id, UserDTO userDTO) {
     	LOGGER.info("patch(id=:id, user=:user)".replace(":id", id.toString()).replace(":user", userDTO.toString()));
 
     	Response res = null;
