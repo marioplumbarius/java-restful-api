@@ -17,7 +17,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -38,17 +37,11 @@ import com.mario.java.restful.api.hibernate.jpa.resource.utils.ResourceResponseU
 import com.mario.java.restful.api.hibernate.jpa.service.PetService;
 import com.mario.java.restful.api.hibernate.jpa.service.Service;
 import com.mario.java.restful.api.hibernate.jpa.service.UserService;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
 
 @Path("/pets")
 @Consumes("application/json")
 @Produces("application/json")
 @RequestScoped
-@Api(value = "/pets", description = "operation on petDTO", tags = "petDTO", protocols = "http")
 public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl> {
 
 	private static final Logger LOGGER = Logger.getLogger(PetResourceImpl.class.getName());
@@ -70,25 +63,7 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     @Override
 	@GET
     @Path("{id}")
-    @ApiOperation(
-    		value = "finds a petDTO by {id}",
-    		notes = "",
-    		nickname = "find"
-	)
-    @ApiResponses(
-    		value = {
-					@ApiResponse(
-							code = 404,
-							message = "not found"
-					),
-					@ApiResponse(
-    						code = 200,
-    						message = "found",
-    						response = PetDTO.class
-					)
-    		}
-	)
-    public Response find(@ApiParam(value = "the id of the petDTO") @PathParam("id") Long id) {
+    public Response find(Long id) {
     	LOGGER.info("find(id=)".replace(":id", id.toString()));
 
         Response res = null;
@@ -106,20 +81,6 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 
     @Override
 	@GET
-	@ApiOperation(
-    		value = "finds all listPetDTO",
-    		nickname = "findAll",
-    		notes = ""
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 200,
-    						message = "success",
-    						response = PetDTO.class
-					)
-    		}
-	)
     public List<PetDTO> findAll() {
     	LOGGER.info("findAll()");
 
@@ -131,21 +92,6 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 	@Override
 	@GET
 	@Path("search")
-	@ApiOperation(
-    		value = "search listPetDTO",
-    		nickname = "search",
-    		notes = "WARNING: documentation for this operation is under development."
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 200,
-    						message = "success",
-    						response = PetDTO.class
-					)
-    		}
-	)
-    // TODO - Swagger x RESTeasy do not work well with @BeanParam.
 	public List<PetDTO> search(@BeanParam PetBeanParamImpl beanParameters) {
 		LOGGER.info("search(beanParameters=:beanParameters)".replace(":beanParameters", beanParameters.toString()));
 
@@ -158,35 +104,7 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
 
     @Override
 	@POST
-	@ApiOperation(
-    		value = "creates a petDTO",
-    		nickname = "create"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 201,
-    						message = "created"
-    				),
-    				@ApiResponse(
-    						code = 400,
-    						message = "bad syntax"
-    				),
-    				@ApiResponse(
-    						code = 415,
-    						message = "media type not supported"
-    				),
-    				@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-    				),
-    				@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-    				)
-    		}
-	)
-    public Response create(@ApiParam(value = "petDTO to be created", required = true) PetDTO petDTO) {
+    public Response create(PetDTO petDTO) {
     	LOGGER.info("create(petDTO=:petDTO)".replace(":petDTO", petDTO.toString()));
 
         Response res = null;
@@ -203,41 +121,7 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     @Override
 	@PUT
     @Path("{id}")
-    @ApiOperation(
-    		value = "updates a petDTO",
-    		nickname = "update"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "updated"
-					),
-					@ApiResponse(
-    						code = 400,
-    						message = "bad syntax"
-    				),
-					@ApiResponse(
-    						code = 415,
-    						message = "media type not supported"
-    				),
-					@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    public Response update(
-    		@ApiParam(value = "the id of the petDTO") @PathParam("id") Long id,
-    		@ApiParam(value = "the updated petDTO", required = true) PetDTO petDTO) {
+    public Response update(Long id, PetDTO petDTO) {
     	LOGGER.info("update(id=:id, petDTO=:petDTO)".replace(":id", id.toString()).replace(":petDTO", petDTO.toString()));
 
         Response res = null;
@@ -254,35 +138,7 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     @Override
 	@PATCH
     @Path("{id}")
-    @ApiOperation(
-    		value="updates a petDTO",
-    		nickname = "patch",
-    		notes = "allows partial update of the entity"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "updated"
-					),
-					@ApiResponse(
-    						code = 422,
-    						message = "unprocessable entity"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    // TODO - make this operation be indexed by swagger
-    public Response patch(
-    		@ApiParam(value = "the id of the petDTO") @PathParam("id") Long id,
-    		@ApiParam(value = "the petDTO with updated properties", required = true) PetDTO petDTO) {
+    public Response patch(Long id, PetDTO petDTO) {
     	LOGGER.info("patch(id=:id, petDTO=:petDTO)".replace(":id", id.toString()).replace(":petDTO", petDTO.toString()));
 
     	Response res = null;
@@ -302,28 +158,7 @@ public class PetResourceImpl implements Resource<PetDTO, Long, PetBeanParamImpl>
     @Override
 	@DELETE
     @Path("{id}")
-    @ApiOperation(
-    		value = "deletes a petDTO",
-    		nickname = "delete"
-	)
-    @ApiResponses(
-    		value = {
-    				@ApiResponse(
-    						code = 204,
-    						message = "deleted"
-					),
-					@ApiResponse(
-    						code = 404,
-    						message = "not found"
-					),
-					@ApiResponse(
-    						code = 500,
-    						message = "internal server error"
-					)
-    		}
-	)
-    public Response delete(
-    		@ApiParam(value = "the id of the petDTO") @PathParam("id") Long id) {
+    public Response delete(Long id) {
     	LOGGER.info("delete(id=:id)".replace(":id", id.toString()));
 
     	Response res = null;
