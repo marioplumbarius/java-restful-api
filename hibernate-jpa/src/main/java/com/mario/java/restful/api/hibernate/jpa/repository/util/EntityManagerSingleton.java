@@ -3,6 +3,10 @@ package com.mario.java.restful.api.hibernate.jpa.repository.util;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
+/**
+ * Singleton which holds the entity manager instance for the entire application.
+ * @author marioluan
+ */
 public class EntityManagerSingleton {
 
 	private EntityManager entityManager;
