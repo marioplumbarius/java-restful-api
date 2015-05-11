@@ -1,7 +1,6 @@
 package com.mario.java.restful.api.hibernate.jpa.entity;
 
 import java.util.Date;
-import java.util.logging.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -11,16 +10,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Abstract class which exposes a domain with dated attributes (createdAt, updatedAt).<br>
- *
- * All {@link BaseEntity} implementations should extend this class.
+ * Entity which contains dated attributes (createdAt, updatedAt).
  * @author marioluan
  *
  */
 @MappedSuperclass
 public abstract class DatedEntity {
-
-	private static final Logger LOGGER = Logger.getLogger(DatedEntity.class.getSimpleName());
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(insertable=true, updatable=false)
@@ -59,16 +54,12 @@ public abstract class DatedEntity {
 	}
 
 	@PrePersist
-	private void prePersist(){
-		LOGGER.info("prePersist()");
-
+	protected void prePersist(){
 		this.createdAt = new Date();
 	}
 
 	@PreUpdate
-	private void preUpdate(){
-		LOGGER.info("preUpdate()");
-
+	protected void preUpdate(){
 		this.updatedAt = new Date();
 	}
 }

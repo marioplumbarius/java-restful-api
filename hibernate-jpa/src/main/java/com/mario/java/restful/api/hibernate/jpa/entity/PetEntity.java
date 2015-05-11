@@ -14,9 +14,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 /**
- * Domain class which represents a pet on database.
+ * Pet entity.
  * @author marioluan
- *
  */
 @Entity
 @Table(name = "pets")

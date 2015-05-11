@@ -8,19 +8,22 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 /**
- * Abstract class which represents the base domain for all domains used by the application.<br>
- * All domains must extend this class.
- *
+ * Base entity which should be extended by all entities from the application.
  * @author marioluan
- *
  */
 @MappedSuperclass
 public abstract class BaseEntity extends DatedEntity {
 
+	/**
+	 * Primary key
+	 */
 	@Id
 	@GeneratedValue
 	private Long id;
 
+	/**
+	 * Properties from the entity which might be serialized
+	 */
 	@Transient
 	private List<String> propertiesToBeDisplayed;
 

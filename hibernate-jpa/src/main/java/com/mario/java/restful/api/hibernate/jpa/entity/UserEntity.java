@@ -11,10 +11,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Domain class which represents an user on database.
- *
+ * User entity.
  * @author marioluan
- *
  */
 @Entity
 @Table(name = "users")
